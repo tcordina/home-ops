@@ -27,10 +27,11 @@ spec:
         annotations:
           traefik.ingress.kubernetes.io/router.entrypoints: web
     
-    # Configuration pour le service
+    # Configuration pour le service - on garde kong activé mais on expose via ingress
     kong:
-      enabled: false
+      proxy:
+        tls:
+          servicePort: 8443
     
-    # Désactiver metrics-scraper si vous n'en avez pas besoin
     metricsScraper:
       enabled: false
