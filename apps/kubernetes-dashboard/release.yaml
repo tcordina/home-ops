@@ -1,4 +1,4 @@
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: kubernetes-dashboard
@@ -26,6 +26,8 @@ spec:
           - kube.lab.home
         annotations:
           traefik.ingress.kubernetes.io/router.entrypoints: web
+          # Indique à Traefik que le backend utilise HTTPS
+          traefik.ingress.kubernetes.io/service.serversscheme: https
     
     # Configuration pour le service - on garde kong activé mais on expose via ingress
     kong:
