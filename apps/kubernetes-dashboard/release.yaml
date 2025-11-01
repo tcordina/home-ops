@@ -23,7 +23,7 @@ spec:
         enabled: true
         ingressClassName: nginx
         hosts:
-          - kube.lab.home
+          - kube.lan.tablar.ovh
         pathType: Prefix
     
     # Configuration Kong (nécessaire pour le chart)
