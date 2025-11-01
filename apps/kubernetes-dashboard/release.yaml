@@ -25,12 +25,6 @@ spec:
         hosts:
           - kube.lab.home
         pathType: Prefix
-    web:
-      service:
-        type: LoadBalancer
-        extraSpec:
-          externalIPs:
-            - 192.168.1.100
     
     # Configuration Kong (nécessaire pour le chart)
     kong:

@@ -19,19 +19,10 @@ spec:
     createNamespace: true
   values:
     controller:
-      # Utiliser hostPort pour exposer sur la VM directement
-      # hostPort:
-      #   enabled: true
-      #   ports:
-      #     http: 80
-      #     https: 443
-      
-      # OU utiliser NodePort si vous préférez
       service:
-        type: NodePort
-        nodePorts:
-          http: 30080
-          https: 30443
+        type: LoadBalancer
+        externalIPs:
+          - 192.168.1.100
       
       # Publier le service sur l'IP de l'hôte
       publishService:
