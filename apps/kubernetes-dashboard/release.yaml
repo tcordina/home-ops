@@ -21,14 +21,21 @@ spec:
     app:
       ingress:
         enabled: true
-        ingressClassName: traefik
+        ingressClassName: nginx
         hosts:
-          - kube.tablar.ovh
+          - kube.lab.home
+        pathType: Prefix
         annotations:
-          traefik.ingress.kubernetes.io/router.entrypoints: web
-          # traefik.ingress.kubernetes.io/router.tls.certresolver: default
-      tls:
-        enabled: false
+          nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+          nginx.ingress.kubernetes.io/ssl-redirect: "false"
     
+    # Configuration Kong (nécessaire pour le chart)
+    kong:
+      proxy:
+        tls:
+          enabled: true
+          servicePort: 8443
+    
+    # Métriques (optionnel)
     metricsScraper:
       enabled: false
