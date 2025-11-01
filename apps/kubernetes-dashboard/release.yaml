@@ -23,13 +23,13 @@ spec:
         enabled: true
         ingressClassName: traefik
         hosts:
-          - kube.lab.home
+          - kube.tablar.ovh
         annotations:
           traefik.ingress.kubernetes.io/router.entrypoints: websecure
           traefik.ingress.kubernetes.io/router.tls.certresolver: default
       tls:
         - hosts:
-          - kube.lab.home
+          - kube.tablar.ovh
     
     # Configuration pour le service - on garde kong activé mais on expose via ingress
     kong:
