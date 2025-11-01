@@ -39,8 +39,8 @@ spec:
       initdb:
         scripts:
           init.sql: |
-            CREATE EXTENSION IF NOT EXISTS vectors;
+            CREATE EXTENSION IF NOT EXISTS vector CASCADE;
             CREATE EXTENSION IF NOT EXISTS earthdistance CASCADE;
     
     # Nom du service (pour se connecter depuis Immich)
-    # immich-postgresql:5432
+    # immich-immich-postgresql:5432
