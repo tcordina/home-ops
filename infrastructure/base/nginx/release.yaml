@@ -20,18 +20,18 @@ spec:
   values:
     controller:
       # Utiliser hostPort pour exposer sur la VM directement
-      hostPort:
-        enabled: true
-        ports:
-          http: 80
-          https: 443
+      # hostPort:
+      #   enabled: true
+      #   ports:
+      #     http: 80
+      #     https: 443
       
       # OU utiliser NodePort si vous préférez
-      # service:
-      #   type: NodePort
-      #   nodePorts:
-      #     http: 30080
-      #     https: 30443
+      service:
+        type: NodePort
+        nodePorts:
+          http: 30080
+          https: 30443
       
       # Publier le service sur l'IP de l'hôte
       publishService:
