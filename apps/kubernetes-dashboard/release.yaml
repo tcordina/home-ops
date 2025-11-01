@@ -25,17 +25,10 @@ spec:
         hosts:
           - kube.tablar.ovh
         annotations:
-          traefik.ingress.kubernetes.io/router.entrypoints: websecure
-          traefik.ingress.kubernetes.io/router.tls.certresolver: default
+          traefik.ingress.kubernetes.io/router.entrypoints: web
+          # traefik.ingress.kubernetes.io/router.tls.certresolver: default
       tls:
-        - hosts:
-          - kube.tablar.ovh
-    
-    # Configuration pour le service - on garde kong activé mais on expose via ingress
-    kong:
-      proxy:
-        tls:
-          servicePort: 8443
+        enabled: false
     
     metricsScraper:
       enabled: false
