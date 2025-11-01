@@ -1,0 +1,95 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: immich
+  namespace: flux-system
+spec:
+  interval: 1h
+  type: oci
+  url: oci://ghcr.io/immich-app/immich-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: immich
+  namespace: flux-system
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: immich
+      version: '0.x'
+      sourceRef:
+        kind: HelmRepository
+        name: immich
+        namespace: flux-system
+      interval: 12h
+  targetNamespace: immich
+  install:
+    createNamespace: true
+  values:
+    # Configuration du contrôleur principal
+    controllers:
+      main:
+        containers:
+          main:
+            image:
+              tag: v2.0.0
+            env:
+              REDIS_HOSTNAME: '{{ printf "%s-valkey" .Release.Name }}'
+              IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
+              # Variables DB si vous utilisez une DB externe
+              DB_HOSTNAME: immich-postgresql:5432
+              DB_USERNAME: immich
+              DB_PASSWORD: immich
+              DB_DATABASE_NAME: immich
+    
+    # Configuration Immich
+    immich:
+      persistence:
+        library:
+          # Créer un PVC pour le stockage des photos
+          existingClaim: ""
+          # Si vide, un PVC sera créé automatiquement
+      
+      # Métriques Prometheus (optionnel)
+      metrics:
+        enabled: false
+    
+    # Valkey (Redis fork) - cache pour les jobs
+    valkey:
+      enabled: true
+      persistence:
+        data:
+          enabled: true
+          size: 1Gi
+          type: persistentVolumeClaim
+          accessMode: ReadWriteOnce
+          storageClass: local-path
+    
+    # Serveur Immich (API + Web)
+    server:
+      enabled: true
+      ingress:
+        main:
+          enabled: true
+          ingressClassName: nginx
+          annotations:
+            nginx.ingress.kubernetes.io/proxy-body-size: "0"
+          hosts:
+            - host: immich.lan.tablar.ovh
+              paths:
+                - path: /
+                  service:
+                    identifier: main
+    
+    # Machine Learning (reconnaissance faciale, objets, etc.)
+    machine-learning:
+      enabled: false
+      # persistence:
+      #   cache:
+      #     enabled: true
+      #     size: 10Gi
+      #     type: persistentVolumeClaim
+      #     accessMode: ReadWriteOnce
+      #     storageClass: local-path

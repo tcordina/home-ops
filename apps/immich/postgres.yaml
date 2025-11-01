@@ -1,0 +1,49 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: bitnami
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://charts.bitnami.com/bitnami
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: immich-postgresql
+  namespace: flux-system
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: postgresql
+      version: '16.x'
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+        namespace: flux-system
+      interval: 12h
+  targetNamespace: immich
+  install:
+    createNamespace: true
+  values:
+    auth:
+      username: immich
+      password: immich
+      database: immich
+    
+    primary:
+      persistence:
+        enabled: true
+        size: 10Gi
+        storageClass: local-path
+      
+      # PostgreSQL avec extensions pour Immich
+      initdb:
+        scripts:
+          init.sql: |
+            CREATE EXTENSION IF NOT EXISTS vectors;
+            CREATE EXTENSION IF NOT EXISTS earthdistance CASCADE;
+    
+    # Nom du service (pour se connecter depuis Immich)
+    # immich-postgresql:5432
