@@ -25,9 +25,11 @@ spec:
         hosts:
           - kube.lab.home
         annotations:
-          traefik.ingress.kubernetes.io/router.entrypoints: web
-          # Indique à Traefik que le backend utilise HTTPS
-          traefik.ingress.kubernetes.io/service.serversscheme: https
+          traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          traefik.ingress.kubernetes.io/router.tls.certresolver: default
+      tls:
+        - hosts:
+          - kube.lab.home
     
     # Configuration pour le service - on garde kong activé mais on expose via ingress
     kong:
