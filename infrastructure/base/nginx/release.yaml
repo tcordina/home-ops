@@ -1,0 +1,47 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ingress-nginx
+  namespace: flux-system
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: ingress-nginx
+      version: '4.x'
+      sourceRef:
+        kind: HelmRepository
+        name: ingress-nginx
+        namespace: flux-system
+      interval: 12h
+  targetNamespace: ingress-nginx
+  install:
+    createNamespace: true
+  values:
+    controller:
+      # Utiliser hostPort pour exposer sur la VM directement
+      hostPort:
+        enabled: true
+        ports:
+          http: 80
+          https: 443
+      
+      # OU utiliser NodePort si vous préférez
+      # service:
+      #   type: NodePort
+      #   nodePorts:
+      #     http: 30080
+      #     https: 30443
+      
+      # Publier le service sur l'IP de l'hôte
+      publishService:
+        enabled: true
+      
+      # Métriques Prometheus (optionnel)
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: false
+      
+      # Configuration pour single-node
+      replicaCount: 1
