@@ -1,0 +1,51 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: homarr
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: homarr
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: oci://ghcr.io/homarr-labs/charts/homarr
+  ref:
+    semver: "8.x"
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: homarr
+  namespace: flux-system
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: homarr
+    namespace: flux-system
+  targetNamespace: homarr
+  values:
+    env:
+      TZ: "Europe/Paris"
+
+    # Ingress configuration
+    service:
+      enabled: true
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      hosts:
+        - host: homarr.lan.tablar.ovh
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+
+    # Persistent storage configuration
+    persistence:
+      homarrDatabase:
+        enabled: true
+        storageClassName: "default"
+        size: "1Gi"
