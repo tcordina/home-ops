@@ -19,22 +19,22 @@ spec:
     provider: sops
     secretRef:
       name: sops-age
-  healthChecks:
-    # homarr
-    - name: homarr
-      kind: HelmRelease
-      namespace: flux-system
-      apiVersion: helm.toolkit.fluxcd.io/v2
-    - name: db-encryption
-      kind: Secret
-      namespace: homarr
-      apiVersion: v1
-    # immich
-    - name: immich
-      kind: HelmRelease
-      namespace: flux-system
-      apiVersion: helm.toolkit.fluxcd.io/v2
-    - name: postgresql
-      kind: StatefulSet
-      namespace: immich
-      apiVersion: apps/v1
+  # healthChecks:
+  #   # homarr
+  #   - name: homarr
+  #     kind: HelmRelease
+  #     namespace: flux-system
+  #     apiVersion: helm.toolkit.fluxcd.io/v2
+  #   - name: db-encryption
+  #     kind: Secret
+  #     namespace: homarr
+  #     apiVersion: v1
+  #   # immich
+  #   - name: immich
+  #     kind: HelmRelease
+  #     namespace: flux-system
+  #     apiVersion: helm.toolkit.fluxcd.io/v2
+  #   - name: postgresql
+  #     kind: StatefulSet
+  #     namespace: immich
+  #     apiVersion: apps/v1
