@@ -40,6 +40,16 @@ spec:
     name: immich
     namespace: flux-system
   targetNamespace: immich
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Ingress
+              name: immich-immich-server
+            patch: |
+              - op: add
+                path: /spec/ingressClassName
+                value: nginx
   values:
     # Configuration du contrôleur principal
     controllers:
