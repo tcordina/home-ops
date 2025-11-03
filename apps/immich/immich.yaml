@@ -1,4 +1,9 @@
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: immich
+---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
@@ -35,8 +40,6 @@ spec:
     name: immich
     namespace: flux-system
   targetNamespace: immich
-  install:
-    createNamespace: true
   values:
     # Configuration du contrôleur principal
     controllers:
