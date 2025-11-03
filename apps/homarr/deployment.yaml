@@ -47,5 +47,6 @@ spec:
     persistence:
       homarrDatabase:
         enabled: true
-        storageClassName: "default"
-        size: "1Gi"
+        storageClassName: local-path
+        name: homarr-database
+        size: 1Gi
