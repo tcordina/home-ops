@@ -4,14 +4,15 @@ metadata:
   name: infrastructure
   namespace: flux-system
 spec:
-  interval: 10m
+  interval: 1h
+  retryInterval: 2m
+  timeout: 5m
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: infrastructure
   path: ./infrastructure
   prune: true
   wait: true
-  timeout: 5m
   decryption:
     provider: sops
     secretRef:
