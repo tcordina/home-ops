@@ -10,8 +10,8 @@ spec:
   # dependsOn:
   #   - name: infra-configs
   sourceRef:
-    kind: ExternalArtifact
-    name: apps
+    kind: GitRepository
+    name: flux-system
   path: ./apps
   prune: true
   wait: true

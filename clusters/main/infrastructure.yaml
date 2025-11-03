@@ -8,8 +8,8 @@ spec:
   retryInterval: 2m
   timeout: 5m
   sourceRef:
-    kind: ExternalArtifact
-    name: infrastructure
+    kind: GitRepository
+    name: flux-system
   path: ./infrastructure
   prune: true
   wait: true
