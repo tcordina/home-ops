@@ -35,14 +35,16 @@ spec:
   interval: 30m
   chart:
     spec:
-      chart: uptime-kuma/uptime-kuma
-      version: '2.22.x'
+      chart: uptime-kuma
+      version: '2.x'
       sourceRef:
         kind: HelmRepository
         name: uptime-kuma
         namespace: flux-system
       interval: 12h
   targetNamespace: uptime-kuma
+  install:
+    createNamespace: true
   values:
     # use alpine instead of debian based image
     image:
@@ -52,9 +54,7 @@ spec:
 
     ingress:
       enabled: true
-      className: "nginx"
-      extraLabels:
-        {}
+      className: nginx
       hosts:
         - host: uptime.lan.tablar.ovh
           paths:
