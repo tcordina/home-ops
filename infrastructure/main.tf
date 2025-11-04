@@ -65,7 +65,8 @@ resource "proxmox_vm_qemu" "master-node" {
   # Cloud-Init configuration
   cicustom   = "vendor=local:snippets/cloud-init-master.yaml" # inside /var/lib/vz/snippets/
   nameserver = "1.1.1.1 1.0.0.1"
-  ipconfig0  = "ip=192.168.1.100/24,gw=192.168.1.1,ip6=dhcp"
+  ipconfig0  = "ip=192.168.1.100/24,gw=192.168.1.1"
+  ipconfig1  = "ip=10.0.1.1/24"
   skip_ipv6  = true
   ciuser     = "ubuntu"
   cipassword = "ubuntu"
@@ -108,20 +109,28 @@ EOT
     bridge = "vmbr0"
     model  = "virtio"
   }
+
+  # Create the corresponding bridge in the proxmox UI
+  # pve > system > network > create > linux bridge > ipv4 10.0.1.0 > create > apply configuration
+  network {
+    id = 1
+    bridge = "vmbr10"
+    model = "virtio"
+  }
 }
 
 resource "proxmox_vm_qemu" "worker-nodes" {
   count = 2
 
-  vmid        = "20${count.index+1}"
+  vmid        = "${200 + count.index+1}"
   name        = "worker-node-${count.index+1}"
   target_node = "pve"
   pool        = "k3s-cluster"
   agent       = 1
   cpu {
-    cores     = 2
+    cores     = 3
   }
-  memory      = 2048
+  memory      = 3072
   boot        = "order=scsi0" # has to be the same as the OS disk of the template
   clone       = "ubuntu24-cloudinit" # The name of the template
   scsihw      = "virtio-scsi-single"
@@ -131,7 +140,8 @@ resource "proxmox_vm_qemu" "worker-nodes" {
   # Cloud-Init configuration
   cicustom   = "vendor=local:snippets/cloud-init-worker.yaml" # inside /var/lib/vz/snippets/
   nameserver = "1.1.1.1 1.0.0.1"
-  ipconfig0  = "ip=192.168.1.10${count.index+1}/24,gw=192.168.1.1,ip6=dhcp"
+  ipconfig0  = "ip=192.168.1.${100 + count.index+1}/24,gw=192.168.1.1"
+  ipconfig1  = "ip=10.0.1.${count.index+2}/24"
   skip_ipv6  = true
   ciuser     = "ubuntu"
   cipassword = "ubuntu"
@@ -169,5 +179,11 @@ resource "proxmox_vm_qemu" "worker-nodes" {
     id = 0
     bridge = "vmbr0"
     model  = "virtio"
+  }
+
+  network {
+    id = 1
+    bridge = "vmbr10"
+    model = "virtio"
   }
 }

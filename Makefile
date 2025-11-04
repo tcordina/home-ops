@@ -1,4 +1,4 @@
-tf_dir := $(abspath ./proxmox)
+tf_dir := $(abspath ./infrastructure)
 flux_dir = $(abspath ./flux)
 
 
