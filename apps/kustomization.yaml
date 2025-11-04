@@ -3,5 +3,5 @@ kind: Kustomization
 resources:
   - ./homarr
   - ./immich
-  - ./kubernetes-dashboard
+#  - ./kubernetes-dashboard
   - ./uptime-kuma
