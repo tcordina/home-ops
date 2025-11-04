@@ -37,7 +37,7 @@ spec:
       service:
         type: LoadBalancer
         externalIPs:
-          - 192.168.1.100
+          - 10.0.1.1
       
       # Publier le service sur l'IP de l'hôte
       publishService:
