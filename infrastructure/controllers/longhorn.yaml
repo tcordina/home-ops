@@ -7,8 +7,8 @@ metadata:
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: longhorn-repo
-  namespace: longhorn-system
+  name: longhorn
+  namespace: flux-system
 spec:
   interval: 1m0s
   url: https://charts.longhorn.io
@@ -17,7 +17,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: longhorn-release
-  namespace: longhorn-system
+  namespace: flux-system
 spec:
   chart:
     spec:
@@ -25,9 +25,14 @@ spec:
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
-        name: longhorn-repo
+        name: longhorn
+        namespace: flux-system
       version: v1.10.0
+  targetNamespace: longhorn-system
   interval: 1m0s
+  values:
+    longhornUI:
+      replicas: 1 # default 2
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -48,7 +53,8 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - http:
+  - host: "longhorn.lan.tablar.ovh"
+    http:
       paths:
       - pathType: Prefix
         path: "/"
