@@ -36,6 +36,9 @@ spec:
           value: immich
         - name: POSTGRES_DB
           value: immich
+        # Store data in a subdir. Using a mount point directly as the data directory crashes the container
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
         ports:
         - containerPort: 5432
           name: postgresql
