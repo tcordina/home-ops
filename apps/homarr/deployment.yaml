@@ -47,6 +47,6 @@ spec:
     persistence:
       homarrDatabase:
         enabled: true
-        storageClassName: default
+        storageClassName: longhorn
         name: homarr-database
         size: 1Gi
