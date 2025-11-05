@@ -23,7 +23,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: local-path
+  storageClassName: default
   resources:
     requests:
       storage: 10Gi
@@ -88,7 +88,7 @@ spec:
           size: 1Gi
           type: persistentVolumeClaim
           accessMode: ReadWriteOnce
-          storageClass: local-path
+          storageClass: default
     
     # Serveur Immich (API + Web)
     server:
@@ -115,4 +115,4 @@ spec:
       #     size: 10Gi
       #     type: persistentVolumeClaim
       #     accessMode: ReadWriteOnce
-      #     storageClass: local-path
+      #     storageClass: default
