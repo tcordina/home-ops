@@ -41,7 +41,7 @@ spec:
           value: /var/lib/postgresql/data/pgdata
         ports:
         - containerPort: 5432
-          name: immich-postgresql
+          name: postgresql
         volumeMounts:
         - name: data
           mountPath: /var/lib/postgresql/data
