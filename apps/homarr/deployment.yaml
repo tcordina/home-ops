@@ -8,7 +8,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
   name: homarr
-  namespace: flux-system
+  namespace: homarr
 spec:
   interval: 1h
   url: oci://ghcr.io/homarr-labs/charts/homarr
@@ -19,14 +19,13 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: homarr
-  namespace: flux-system
+  namespace: homarr
 spec:
   interval: 30m
   chartRef:
     kind: OCIRepository
     name: homarr
-    namespace: flux-system
-  targetNamespace: homarr
+    namespace: homarr
   values:
     env:
       TZ: "Europe/Paris"
