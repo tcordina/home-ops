@@ -30,6 +30,8 @@ spec:
       version: v1.10.0
   interval: 1m0s
   values:
+    defaultBackupStore:
+      backupTarget: nfs://192.168.1.30:/mnt/default/longhorn-backups
     longhornUI:
       replicas: 1 # default 2
     # persistence:
