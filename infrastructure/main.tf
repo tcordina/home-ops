@@ -53,9 +53,9 @@ resource "proxmox_vm_qemu" "master-node" {
   pool        = "k3s-cluster"
   agent       = 1
   cpu {
-    cores     = 2
+    cores     = 3
   }
-  memory      = 2048
+  memory      = 3072
   boot        = "order=scsi0" # has to be the same as the OS disk of the template
   clone       = "ubuntu24-cloudinit" # The name of the template
   scsihw      = "virtio-scsi-single"
@@ -90,7 +90,7 @@ EOT
         disk {
           storage = "local-lvm"
           # The size of the disk should be at least as big as the disk in the template. If it's smaller, the disk will be recreated
-          size    = "10G" 
+          size    = "40G" 
         }
       }
     }
@@ -161,7 +161,7 @@ resource "proxmox_vm_qemu" "worker-nodes" {
         disk {
           storage = "local-lvm"
           # The size of the disk should be at least as big as the disk in the template. If it's smaller, the disk will be recreated
-          size    = "20G" 
+          size    = "40G" 
         }
       }
     }
