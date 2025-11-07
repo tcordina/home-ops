@@ -36,8 +36,6 @@ spec:
     controller:
       service:
         type: LoadBalancer
-        externalIPs:
-          - 10.0.1.1
       
       # Publier le service sur l'IP de l'hôte
       publishService:
