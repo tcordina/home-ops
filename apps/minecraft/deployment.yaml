@@ -58,13 +58,13 @@ spec:
       whitelist: "BaggleStory, Calmax7, EnerV2, Edragne"
       ops: "BaggleStory"
       spawnProtection: 0
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: StatefulSet
-              name: minecraft-server
-            patch: |
-              - op: add
-                path: /spec/template/spec/containers/0/ports/0/hostPort
-                value: 25565
+  # postRenderers:
+  #   - kustomize:
+  #       patches:
+  #         - target:
+  #             kind: StatefulSet
+  #             name: minecraft-server
+  #           patch: |
+  #             - op: add
+  #               path: /spec/template/spec/containers/0/ports/0/hostPort
+  #               value: 25565
