@@ -25,7 +25,7 @@ spec:
       chart: minecraft-server
       sourceRef:
         kind: HelmRepository
-        name: minecraft
+        name: itzg
         namespace: minecraft
   values:
     workloadAsStatefulSet: true
