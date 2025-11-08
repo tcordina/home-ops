@@ -32,12 +32,12 @@ spec:
     workloadAsStatefulSet: true
     strategyType: OnDelete
     nodeSelector:
-      kubernetes.io/hostname: ubuntu-4gb-nbg1-1
-    tolerations:
-      - key: "dedicated"
-        operator: "Equal"
-        value: "minecraft"
-        effect: "NoSchedule"
+      kubernetes.io/hostname: worker-node-1 # ubuntu-4gb-nbg1-1
+    # tolerations:
+    #   - key: "dedicated"
+    #     operator: "Equal"
+    #     value: "minecraft"
+    #     effect: "NoSchedule"
 
     persistence:
       storageClass: local-path
