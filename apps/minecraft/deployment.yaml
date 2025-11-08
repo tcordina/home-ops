@@ -59,22 +59,17 @@ spec:
       ops: "BaggleStory"
       spawnProtection: 0
     
-    livenessProbe:
-      command:
-        - mc-health
-      initialDelaySeconds: 30
-      periodSeconds: 5
-      failureThreshold: 20
-      successThreshold: 1
-      timeoutSeconds: 5
     readinessProbe:
-      command:
-        - mc-health
+      exec:
+        command: [ "/usr/local/bin/mc-monitor", "status", "--host", "localhost" ]
       initialDelaySeconds: 30
       periodSeconds: 5
-      failureThreshold: 20
-      successThreshold: 1
-      timeoutSeconds: 5
+      failureThreshold: 18
+    livenessProbe:
+      exec:
+        command: ["/usr/local/bin/mc-monitor", "status", "--host", "localhost"]
+      initialDelaySeconds: 120
+      periodSeconds: 60
   # postRenderers:
   #   - kustomize:
   #       patches:
