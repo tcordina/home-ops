@@ -65,7 +65,7 @@ spec:
       initialDelaySeconds: 30
       periodSeconds: 5
       failureThreshold: 20
-      successThreshold: 5
+      successThreshold: 1
       timeoutSeconds: 5
     readinessProbe:
       command:
@@ -73,7 +73,7 @@ spec:
       initialDelaySeconds: 30
       periodSeconds: 5
       failureThreshold: 20
-      successThreshold: 5
+      successThreshold: 1
       timeoutSeconds: 5
   # postRenderers:
   #   - kustomize:
