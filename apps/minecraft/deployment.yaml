@@ -58,6 +58,23 @@ spec:
       whitelist: "BaggleStory, Calmax7, EnerV2, Edragne"
       ops: "BaggleStory"
       spawnProtection: 0
+    
+    livenessProbe:
+      command:
+        - mc-health
+      initialDelaySeconds: 30
+      periodSeconds: 5
+      failureThreshold: 20
+      successThreshold: 5
+      timeoutSeconds: 5
+    readinessProbe:
+      command:
+        - mc-health
+      initialDelaySeconds: 30
+      periodSeconds: 5
+      failureThreshold: 20
+      successThreshold: 5
+      timeoutSeconds: 5
   # postRenderers:
   #   - kustomize:
   #       patches:
