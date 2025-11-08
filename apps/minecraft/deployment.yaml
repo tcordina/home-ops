@@ -68,7 +68,3 @@ spec:
               - op: add
                 path: /spec/template/spec/containers/0/ports/0/hostPort
                 value: 25565
-  valuesFrom:
-    - kind: ConfigMap
-      name: minecraft-control
-      valuesKey: values.yaml  # Override replicaCount
