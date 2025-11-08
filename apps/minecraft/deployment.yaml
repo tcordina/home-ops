@@ -39,7 +39,7 @@ spec:
         effect: "NoSchedule"
 
     persistence:
-      storageClass: longhorn
+      storageClass: local-path
       dataDir:
         enabled: true
         Size: 1Gi
