@@ -4,5 +4,5 @@ resources:
   - ./homarr
   - ./immich
 #  - ./kubernetes-dashboard
-  - ./minecraft
+#  - ./minecraft
   - ./uptime-kuma

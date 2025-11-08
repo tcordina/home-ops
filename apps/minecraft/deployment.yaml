@@ -78,6 +78,7 @@ spec:
   #         - target:
   #             kind: StatefulSet
   #             name: minecraft-server
+  #             namespace: minecraft
   #           patch: |
   #             - op: add
   #               path: /spec/template/spec/containers/0/ports/0/hostPort
