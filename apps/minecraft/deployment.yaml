@@ -22,7 +22,7 @@ spec:
   interval: 15m
   chart:
     spec:
-      chart: minecraft-server
+      chart: minecraft
       sourceRef:
         kind: HelmRepository
         name: itzg
