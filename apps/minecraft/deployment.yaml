@@ -27,6 +27,7 @@ spec:
         kind: HelmRepository
         name: itzg
         namespace: minecraft
+      version: "4.26.4"
   values:
     workloadAsStatefulSet: true
     strategyType: OnDelete
