@@ -24,7 +24,7 @@ spec:
     spec:
       chart: minecraft-server
       sourceRef:
-        kind: GitRepository
+        kind: HelmRepository
         name: flux-system
         namespace: minecraft
   values:
