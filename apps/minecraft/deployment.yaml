@@ -17,7 +17,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: minecraft-server
-  namespace: default
+  namespace: minecraft
 spec:
   interval: 15m
   chart:

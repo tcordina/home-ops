@@ -30,9 +30,19 @@ spec:
       version: v1.10.0
   interval: 1m0s
   values:
+    defaultSettings:
+      systemManagedComponentsNodeSelector: "storage:longhorn"
     defaultBackupStore:
       backupTarget: nfs://192.168.1.30:/mnt/default/longhorn-backups
+    longhornDriver:
+      nodeSelector:
+        storage: longhorn
+    longhornManager:
+      nodeSelector:
+        storage: longhorn
     longhornUI:
+      nodeSelector:
+        storage: longhorn
       replicas: 1 # default 2
     # persistence:
     #   reclaimPolicy: Retain # default Delete
