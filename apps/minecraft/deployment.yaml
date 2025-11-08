@@ -1,0 +1,74 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: minecraft
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: itzg
+  namespace: minecraft
+spec:
+  interval: 12h
+  url: https://itzg.github.io/minecraft-server-charts/
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: minecraft-server
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: minecraft-server
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: minecraft
+  values:
+    workloadAsStatefulSet: true
+    strategyType: OnDelete
+    nodeSelector:
+      kubernetes.io/hostname: ubuntu-4gb-nbg1-1
+    tolerations:
+      - key: "dedicated"
+        operator: "Equal"
+        value: "minecraft"
+        effect: "NoSchedule"
+
+    persistence:
+      storageClass: longhorn
+      dataDir:
+        enabled: true
+        Size: 1Gi
+
+    minecraftServer:
+      eula: "TRUE"
+      version: "1.21.8"
+      type: "FABRIC"
+      modUrls:
+        - https://cdn.modrinth.com/data/P7dR8mSH/versions/Q8ssLFZp/fabric-api-0.133.0%2B1.21.8.jar
+        - https://cdn.modrinth.com/data/Ha28R6CL/versions/Y91MRWtG/fabric-language-kotlin-1.13.5%2Bkotlin.2.2.10.jar
+        - https://cdn.modrinth.com/data/Lw4dU9Z6/versions/DrZTzBjp/our-villager-discounts-1.21.7%2Bbuild.0-fabric.jar
+      motd: "Votre attestation s'il vous plait !"
+      maxPlayers: 4
+      difficulty: "hard"
+      whitelist: "BaggleStory, Calmax7, EnerV2, Edragne"
+      ops: "BaggleStory"
+      spawnProtection: 0
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: StatefulSet
+              name: minecraft-server
+            patch: |
+              - op: add
+                path: /spec/template/spec/containers/0/ports/0/hostPort
+                value: 25565
+  valuesFrom:
+    - kind: ConfigMap
+      name: minecraft-control
+      valuesKey: values.yaml  # Override replicaCount
