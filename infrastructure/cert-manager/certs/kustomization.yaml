@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - issuers.yaml
   - certificate.yaml
+  - secret.secrets.yaml

@@ -3,4 +3,3 @@ kind: Kustomization
 resources:
   - manager-release.yaml
   - webhook-release.yaml
-  - secret.secrets.yaml
