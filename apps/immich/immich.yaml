@@ -98,6 +98,10 @@ spec:
           ingressClassName: nginx
           annotations:
             nginx.ingress.kubernetes.io/proxy-body-size: "0"
+            nginx.ingress.kubernetes.io/ssl-redirect: "true"
+          tls:
+            - hosts:
+              - immich.lan.tablar.ovh
           hosts:
             - host: immich.lan.tablar.ovh
               paths:
