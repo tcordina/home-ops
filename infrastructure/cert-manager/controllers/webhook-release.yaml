@@ -27,4 +27,4 @@ spec:
   dependsOn:
     - name: cert-manager
   values:
-    groupName: acme.ovh.com
+    groupName: acme.lan.tablar.ovh
