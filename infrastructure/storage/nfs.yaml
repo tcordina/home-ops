@@ -24,6 +24,9 @@ spec:
         name: csi-driver-nfs
         namespace: kube-system
       interval: 12h
+  values:
+    controller:
+      runOnMaster: true
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
