@@ -46,6 +46,6 @@ spec:
     persistence:
       homarrDatabase:
         enabled: true
-        storageClassName: longhorn
+        storageClassName: nfs-csi
         name: homarr-database
         size: 1Gi

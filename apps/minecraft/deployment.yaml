@@ -40,7 +40,7 @@ spec:
     #     effect: "NoSchedule"
 
     persistence:
-      storageClass: longhorn
+      storageClass: nfs-csi
       dataDir:
         enabled: true
         Size: 1Gi

@@ -23,7 +23,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: longhorn
+  storageClassName: nfs-csi
   resources:
     requests:
       storage: 10Gi
@@ -87,7 +87,7 @@ spec:
           size: 1Gi
           type: persistentVolumeClaim
           accessMode: ReadWriteOnce
-          storageClass: longhorn
+          storageClass: nfs-csi
     
     # Serveur Immich (API + Web)
     server:
@@ -118,4 +118,4 @@ spec:
       #     size: 10Gi
       #     type: persistentVolumeClaim
       #     accessMode: ReadWriteOnce
-      #     storageClass: longhorn
+      #     storageClass: nfs-csi
