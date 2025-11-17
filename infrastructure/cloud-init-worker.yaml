@@ -34,4 +34,4 @@ runcmd:
   - # Install k3s worker
   - NODE_IP=$(ip -4 addr show | grep -oP 'inet \K10\.0\.1.\d+')
   - NODE_EXT_IP=$(ip -4 addr show | grep -oP 'inet \K192\.168\.1.\d+')
-  - curl -sfL https://get.k3s.io | K3S_URL=https://10.0.1.1:6443 K3S_TOKEN=$REMOTE_TOKEN sh -s - agent --node-ip $NODE_IP --node-external-ip $NODE_EXT_IP
+  - curl -sfL https://get.k3s.io | K3S_URL=https://10.0.1.1:6443 K3S_TOKEN=$REMOTE_TOKEN sh -s - agent --node-ip $NODE_IP --node-external-ip $NODE_EXT_IP # --node-label "storage=longhorn"

@@ -24,6 +24,8 @@ sed -i "s/127\.0\.0\.1/$MASTER_IP/g" ~/.kube/config
 echo -e "\nBootstrapping Flux..."
 
 kubectl create namespace flux-system
+
+# key generated with `$ age-keygen -o age.agekey`
 kubectl create secret generic sops-age --from-file=age.agekey=$DIR/age.agekey --namespace=flux-system
 
 export GITLAB_TOKEN=$GITLAB_TOKEN

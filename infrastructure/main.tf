@@ -56,6 +56,7 @@ resource "proxmox_vm_qemu" "master-node" {
     cores     = 3
   }
   memory      = 3072
+  balloon     = 2048
   boot        = "order=scsi0" # has to be the same as the OS disk of the template
   clone       = "ubuntu24-cloudinit" # The name of the template
   scsihw      = "virtio-scsi-single"
@@ -131,6 +132,7 @@ resource "proxmox_vm_qemu" "worker-nodes" {
     cores     = 3
   }
   memory      = 3072
+  balloon     = 2048
   boot        = "order=scsi0" # has to be the same as the OS disk of the template
   clone       = "ubuntu24-cloudinit" # The name of the template
   scsihw      = "virtio-scsi-single"
