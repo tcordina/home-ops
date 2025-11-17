@@ -11,7 +11,7 @@ spec:
   renewBefore: 120h # renew 5 days before expiration
   
   issuerRef:
-    name: letsencrypt-staging
+    name: letsencrypt-prod
     kind: ClusterIssuer
   
   dnsNames:
