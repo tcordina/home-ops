@@ -35,6 +35,7 @@ metadata:
   namespace: immich
 spec:
   interval: 30m
+  timeout: 10m
   chartRef:
     kind: OCIRepository
     name: immich
