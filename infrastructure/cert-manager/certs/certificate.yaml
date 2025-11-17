@@ -5,24 +5,19 @@ metadata:
   name: wildcard-tablar-ovh
   namespace: default
 spec:
-  # Nom du secret qui contiendra le certificat
   secretName: wildcard-tablar-ovh-tls
   
-  # Durée de validité et renouvellement
-  duration: 2160h # 90 jours
-  renewBefore: 360h # renouveler 15 jours avant expiration
+  duration: 2160h # valid for 90 days
+  renewBefore: 120h # renew 5 days before expiration
   
-  # ClusterIssuer à utiliser
   issuerRef:
     name: letsencrypt-staging
     kind: ClusterIssuer
   
-  # Domaines couverts par le certificat
   dnsNames:
     - lan.tablar.ovh
     - "*.lan.tablar.ovh"
   
-  # Utilisation du certificat
   usages:
     - digital signature
     - key encipherment
