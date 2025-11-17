@@ -103,6 +103,7 @@ spec:
           tls:
             - hosts:
               - immich.lan.tablar.ovh
+              secretName: wildcard-tablar-ovh-tls
           hosts:
             - host: immich.lan.tablar.ovh
               paths:
