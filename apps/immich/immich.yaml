@@ -99,17 +99,15 @@ spec:
           ingressClassName: nginx
           annotations:
             nginx.ingress.kubernetes.io/proxy-body-size: "0"
-            nginx.ingress.kubernetes.io/ssl-redirect: "true"
-          tls:
-            - hosts:
-              - immich.lan.tablar.ovh
-              secretName: wildcard-tablar-ovh-tls
           hosts:
             - host: immich.lan.tablar.ovh
               paths:
                 - path: /
                   service:
                     identifier: main
+          tls:
+            - hosts:
+              - immich.lan.tablar.ovh
     
     # Machine Learning (reconnaissance faciale, objets, etc.)
     machine-learning:

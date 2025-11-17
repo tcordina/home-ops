@@ -45,7 +45,6 @@ spec:
       tls:
         - hosts:
           - homarr.lan.tablar.ovh
-          secretName: wildcard-tablar-ovh-tls
 
     # Persistent storage configuration
     persistence:

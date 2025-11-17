@@ -61,7 +61,6 @@ spec:
       tls:
         - hosts:
           - uptime.lan.tablar.ovh
-          secretName: wildcard-tablar-ovh-tls
     
     volume:
       enabled: true

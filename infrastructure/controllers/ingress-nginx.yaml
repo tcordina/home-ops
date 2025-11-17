@@ -34,15 +34,15 @@ spec:
       service:
         type: LoadBalancer
       
-      # Publier le service sur l'IP de l'hôte
       publishService:
         enabled: true
       
-      # Métriques Prometheus (optionnel)
       metrics:
         enabled: true
         serviceMonitor:
           enabled: false
       
-      # Configuration pour single-node
       replicaCount: 1
+
+      extraArgs:
+        default-ssl-certificate: "default/wildcard-tablar-ovh-tls"
