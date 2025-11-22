@@ -99,6 +99,7 @@ spec:
         ephemeral-storage: 256Mi
     
     replicas: 1
+    concurrent: 1
     
     rbac:
       create: true
