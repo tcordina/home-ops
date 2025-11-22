@@ -3,5 +3,4 @@ kind: Kustomization
 resources:
   - ./controllers
   - ./cert-manager/kustomization.yaml
-  - ./gitlab-registry
   - ./storage
