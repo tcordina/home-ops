@@ -1,0 +1,116 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gitlab-runner
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: gitlab-runner
+  namespace: gitlab-runner
+spec:
+  interval: 1h
+  url: https://charts.gitlab.io
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitlab-runner-cache
+  namespace: gitlab-runner
+spec:
+  accessModes:
+    - ReadWriteMany  # Allow sharing between pods
+  storageClassName: nfs-csi
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gitlab-runner
+  namespace: gitlab-runner
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: gitlab-runner
+      version: '0.x'
+      sourceRef:
+        kind: HelmRepository
+        name: gitlab-runner
+        namespace: gitlab-runner
+      interval: 12h
+  values:
+    gitlabUrl: https://gitlab.com/
+    runners:
+      tags: "docker"
+      config: |
+        [[runners]]
+          [runners.kubernetes]
+            namespace = "{{.Release.Namespace}}"
+            image = "ubuntu:22.04"
+            
+            # needed for docker in docker
+            privileged = true
+            
+            cpu_request = "500m"
+            cpu_limit = "2"
+            memory_request = "512Mi"
+            memory_limit = "2Gi"
+            
+            helper_image = "gitlab/gitlab-runner-helper:x86_64-latest"
+            
+            [[runners.kubernetes.volumes.empty_dir]]
+              name = "docker-certs"
+              mount_path = "/certs/client"
+              medium = "Memory"
+          
+            [[runners.kubernetes.services]]
+              name = "docker:24-dind"
+              alias = "docker"
+              command = ["--tls=false"]
+            
+            [[runners.kubernetes.volumes.empty_dir]]
+              name = "docker-certs"
+              mount_path = "/certs/client"
+              medium = "Memory"
+              
+            [[runners.kubernetes.volumes.pvc]]
+              name = "gitlab-runner-cache"
+              mount_path = "/cache"
+    
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+        ephemeral-storage: 512Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+        ephemeral-storage: 256Mi
+    
+    replicas: 1
+    
+    rbac:
+      create: true
+      rules:
+        - resources: ["events"]
+          verbs: ["list", "watch"]
+        - resources: ["namespaces"]
+          verbs: ["create", "delete"]
+        - resources: ["pods"]
+          verbs: ["create","delete","get"]
+        - apiGroups: [""]
+          resources: ["pods/attach","pods/exec"]
+          verbs: ["get","create","patch","delete"]
+        - apiGroups: [""]
+          resources: ["pods/log"]
+          verbs: ["get","list"]
+        - resources: ["secrets"]
+          verbs: ["create","delete","get","update"]
+        - resources: ["serviceaccounts"]
+          verbs: ["get"]
+        - resources: ["services"]
+          verbs: ["create","get"]
