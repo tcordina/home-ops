@@ -1,0 +1,52 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: discord-bot
+  namespace: discord-bot
+spec:
+  image: registry.gitlab.com/tcordina/discord-bot
+  interval: 1m  # Check for new images every minute
+  secretRef:
+    name: gitlab-registry-secret
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: discord-bot
+  namespace: discord-bot
+spec:
+  imageRepositoryRef:
+    name: discord-bot
+  policy:
+    alphabetical:
+      order: asc
+  filterTags:
+    pattern: '^latest$'
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageUpdateAutomation
+metadata:
+  name: discord-bot
+  namespace: discord-bot
+spec:
+  interval: 1m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        email: fluxcdbot@users.noreply.github.com
+        name: fluxcdbot
+      messageTemplate: |
+        [ci skip] Update discord-bot image to {{range .Updated.Images}}{{println .}}{{end}}
+    push:
+      branch: main
+  update:
+    path: ./flux/discord-bot
+    strategy: Setters
