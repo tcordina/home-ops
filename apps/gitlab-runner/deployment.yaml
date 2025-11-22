@@ -73,7 +73,7 @@ spec:
             memory_limit = "2Gi"
             
             helper_image = "gitlab/gitlab-runner-helper:x86_64-latest"
-          
+
             [[runners.kubernetes.services]]
               name = "docker:29-dind"
               alias = "docker"
@@ -83,7 +83,7 @@ spec:
               name = "docker-certs"
               mount_path = "/certs/client"
               medium = "Memory"
-              
+            
             [[runners.kubernetes.volumes.pvc]]
               name = "gitlab-runner-cache"
               mount_path = "/cache"
@@ -108,7 +108,7 @@ spec:
         - resources: ["namespaces"]
           verbs: ["create", "delete"]
         - resources: ["pods"]
-          verbs: ["create","delete","get"]
+          verbs: ["list","watch","create","delete","get"]
         - apiGroups: [""]
           resources: ["pods/attach","pods/exec"]
           verbs: ["get","create","patch","delete"]
