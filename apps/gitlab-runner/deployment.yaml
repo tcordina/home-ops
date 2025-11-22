@@ -66,7 +66,7 @@ spec:
             memory_limit = "2Gi"
             
             helper_image = "gitlab/gitlab-runner-helper:x86_64-latest"
-            
+
             [[runners.kubernetes.services]]
               name = "docker:29-dind"
               alias = "docker"
@@ -92,7 +92,7 @@ spec:
         ephemeral-storage: 256Mi
     
     replicas: 1
-    concurrent: 1
+    concurrent: 3
     
     rbac:
       create: true
