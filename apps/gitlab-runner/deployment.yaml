@@ -42,6 +42,11 @@ spec:
         name: gitlab-runner
         namespace: gitlab-runner
       interval: 12h
+  valuesFrom:
+  - kind: Secret
+    name: gitlab-runner-secret
+    valuesKey: runner-registration-token
+    targetPath: runnerRegistrationToken
   values:
     gitlabUrl: https://gitlab.com/
     runners:
