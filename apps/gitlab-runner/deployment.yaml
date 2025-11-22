@@ -53,9 +53,16 @@ spec:
       tags: "docker"
       config: |
         [[runners]]
+          environment = [
+            "DOCKER_HOST=tcp://127.0.0.1:2376",
+            "DOCKER_TLS_CERTDIR=/certs",
+            "DOCKER_TLS_VERIFY=1",
+            "DOCKER_CERT_PATH=$DOCKER_TLS_CERTDIR/client"
+          ]
+
           [runners.kubernetes]
             namespace = "{{.Release.Namespace}}"
-            image = "ubuntu:22.04"
+            image = "ubuntu:24.04"
             
             # needed for docker in docker
             privileged = true
@@ -68,7 +75,7 @@ spec:
             helper_image = "gitlab/gitlab-runner-helper:x86_64-latest"
           
             [[runners.kubernetes.services]]
-              name = "docker:24-dind"
+              name = "docker:29-dind"
               alias = "docker"
               command = ["--tls=false"]
             
