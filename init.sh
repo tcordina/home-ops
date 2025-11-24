@@ -30,10 +30,11 @@ kubectl create secret generic sops-age --from-file=age.agekey=$DIR/age.agekey --
 
 export GITLAB_TOKEN=$GITLAB_TOKEN
 flux bootstrap gitlab \
+    --components-extra=image-reflector-controller,image-automation-controller \
     --token-auth \
     --owner=tcordina \
     --repository=homelab-flux \
     --branch=main \
     --path=clusters/main \
-    --author-email flux@tablar.ovh \
+    --author-email fluxcdbot@users.noreply.gitlab.com \
     --personal

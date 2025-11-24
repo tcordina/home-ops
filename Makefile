@@ -1,29 +1,47 @@
-.PHONY: tf-plan tf-apply tf-destroy flux-update encrypt-secrets
+.PHONY: tf-plan tf-apply tf-destroy flux-pull flux-push flux-update encrypt-secrets
 
-tf_dir := $(abspath ./infrastructure)
-flux_dir = $(abspath ./flux)
+TF_DIR := $(abspath ./infrastructure)
+FLUX_DIR = $(abspath ./flux)
 
 
 # --- TERRAFORM --- #
 tf-plan:
-	cd $(tf_dir)/$(ns) && terraform plan -var-file="$(tf_dir)/secrets.auto.tfvars"
+	cd $(TF_DIR) && terraform plan -var-file="$(TF_DIR)/secrets.auto.tfvars"
 
 tf-apply:
-	cd $(tf_dir)/$(ns) && terraform apply -var-file="$(tf_dir)/secrets.auto.tfvars" -auto-approve
+	cd $(TF_DIR) && terraform apply -var-file="$(TF_DIR)/secrets.auto.tfvars" -auto-approve
 
 tf-destroy:
-	cd $(tf_dir)/$(ns) && terraform destroy -var-file="$(tf_dir)/secrets.auto.tfvars" -auto-approve
+	cd $(TF_DIR) && terraform destroy -var-file="$(TF_DIR)/secrets.auto.tfvars" -auto-approve
 
 
 # --- FLUX --- #
-flux-update:
-	cd $(flux_dir) && git add . && git commit -m "." && git push origin main && flux reconcile source git flux-system
+flux-pull:
+	@echo "⬇️ Pulling latest changes..."
+	@cd $(FLUX_DIR) && git pull origin main
+
+flux-push:
+	@cd $(FLUX_DIR) && \
+	if git diff --quiet && git diff --staged --quiet; then \
+		echo "✅ No changes to commit"; \
+	else \
+		echo "📝 Committing changes..."; \
+		git add -A; \
+		git commit -m "flux: update configuration [$(shell date '+%Y-%m-%d %H:%M')]"; \
+	fi
+	@echo "⬆️  Pushing to remote..."
+	@cd $(FLUX_DIR) && git push origin main
+	@echo "🔄 Reconciling Flux..."
+	@flux reconcile source git flux-system
+
+flux-update: flux-pull flux-push
+	@echo "✨ Flux updated successfully!"
 
 
 # --- SOPS --- #
 encrypt-secrets:
-	@find $(flux_dir) -name "secret.yaml" -type f | while read file; do \
+	@find $(FLUX_DIR) -name "secret.yaml" -type f | while read file; do \
 		dir=$$(dirname "$$file"); \
-		sops --encrypt --output "$$dir/secret.secrets.yaml" --config $(flux_dir)/.sops.yaml "$$file"; \
-		echo "✓ Encrypted $$file -> $$dir/secret.secrets.yaml"; \
+		sops --encrypt --output "$$dir/secret.secrets.yaml" --config $(FLUX_DIR)/.sops.yaml "$$file"; \
+		echo "✅ Encrypted $$file -> $$dir/secret.secrets.yaml"; \
 	done

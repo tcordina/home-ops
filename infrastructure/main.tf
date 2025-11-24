@@ -7,12 +7,18 @@ terraform {
   }
 }
 
+variable "proxmox_ip" {
+  sensitive = false
+  type = string
+}
+
 variable "proxmox_api_token" {
   sensitive = true
+  type = string
 }
 
 provider "proxmox" {
-  pm_api_url          = "https://192.168.1.21:8006/api2/json"
+  pm_api_url          = "https://${var.proxmox_ip}:8006/api2/json"
   pm_api_token_id     = "terraform-prov@pve!mytoken"
   pm_api_token_secret = var.proxmox_api_token
   pm_tls_insecure     = true
@@ -30,8 +36,8 @@ data "local_file" "cloud_init-worker" {
 resource "null_resource" "cloud_init_upload" {
   provisioner "local-exec" {
     command = <<-EOT
-      scp ${path.module}/cloud-init-master.yaml root@192.168.1.21:/var/lib/vz/snippets/cloud-init-master.yaml
-      scp ${path.module}/cloud-init-worker.yaml root@192.168.1.21:/var/lib/vz/snippets/cloud-init-worker.yaml
+      scp ${path.module}/cloud-init-master.yaml root@${var.proxmox_url}:/var/lib/vz/snippets/cloud-init-master.yaml
+      scp ${path.module}/cloud-init-worker.yaml root@${var.proxmox_url}:/var/lib/vz/snippets/cloud-init-worker.yaml
     EOT
   }
   
@@ -91,7 +97,7 @@ EOT
         disk {
           storage = "local-lvm"
           # The size of the disk should be at least as big as the disk in the template. If it's smaller, the disk will be recreated
-          size    = "40G" 
+          size    = "10G" 
         }
       }
     }
@@ -163,7 +169,7 @@ resource "proxmox_vm_qemu" "worker-nodes" {
         disk {
           storage = "local-lvm"
           # The size of the disk should be at least as big as the disk in the template. If it's smaller, the disk will be recreated
-          size    = "40G" 
+          size    = "10G" 
         }
       }
     }
