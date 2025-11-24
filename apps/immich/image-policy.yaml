@@ -7,8 +7,6 @@ metadata:
 spec:
   image: ghcr.io/immich-app/immich-server
   interval: 5m
-  secretRef:
-    name: gitlab-registry-secret
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImagePolicy
