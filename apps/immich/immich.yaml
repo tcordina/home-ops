@@ -3,17 +3,6 @@ kind: Namespace
 metadata:
   name: immich
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: OCIRepository
-metadata:
-  name: immich
-  namespace: immich
-spec:
-  interval: 1h
-  url: oci://ghcr.io/immich-app/immich-charts/immich
-  ref:
-    semver: "0.x"
----
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -27,13 +16,24 @@ spec:
     requests:
       storage: 10Gi
 ---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: immich
+  namespace: immich
+spec:
+  interval: 1h
+  url: oci://ghcr.io/immich-app/immich-charts/immich
+  ref:
+    semver: "0.x"
+---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: immich
   namespace: immich
 spec:
-  interval: 30m
+  interval: 1h
   timeout: 10m
   chartRef:
     kind: OCIRepository
