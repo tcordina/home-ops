@@ -4,7 +4,7 @@ metadata:
   name: discord-bot
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: Deployment # TODO : use helm release instead
 metadata:
   name: discord-bot
   namespace: discord-bot
