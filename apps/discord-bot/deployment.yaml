@@ -23,8 +23,8 @@ spec:
         - name: gitlab-registry-secret
       containers:
         - name: discord-bot
-          image: registry.gitlab.com/tcordina/discord-bot:latest@sha256:540bcfdca51cbca455baa32a93170dc6d3d01e883a2d261def17ed0531f63717 # {"$imagepolicy": "discord-bot:discord-bot"}
-          imagePullPolicy: Always
+          image: registry.gitlab.com/tcordina/discord-bot:latest@sha256:540bcfdca51cbca455baa32a93170dc6d3d01e883a2d261def17ed0531f63717 # {"$imagepolicy": "flux-system:discord-bot"}
+          imagePullPolicy: IfNotPresent
           env:
             - name: DISCORD_TOKEN
               valueFrom:
