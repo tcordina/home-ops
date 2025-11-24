@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: discord-bot
-          image: registry.gitlab.com/tcordina/discord-bot:latest@sha256:4c67e8ab6d4651947a20c059468cb15baec7a2fc3dd56e510e04a2d8d6fbfd92 # {"$imagepolicy": "flux-system:discord-bot"}
+          image: registry.gitlab.com/tcordina/discord-bot:latest@sha256:243c42934e235102e34446ff688bfca656cb1ad97e2016493afb1d57fd0878f0 # {"$imagepolicy": "flux-system:discord-bot"}
           imagePullPolicy: IfNotPresent
           env:
             - name: DISCORD_TOKEN
