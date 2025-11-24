@@ -18,8 +18,6 @@ spec:
       labels:
         app: discord-bot
     spec:
-      # imagePullSecrets:
-      #   - name: gitlab-registry-secret
       containers:
         - name: discord-bot
           image: registry.gitlab.com/tcordina/discord-bot:latest@sha256:4c67e8ab6d4651947a20c059468cb15baec7a2fc3dd56e510e04a2d8d6fbfd92 # {"$imagepolicy": "flux-system:discord-bot"}

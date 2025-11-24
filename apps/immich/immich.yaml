@@ -57,7 +57,7 @@ spec:
         containers:
           main:
             image:
-              tag: v2
+              tag: v2.2.3 # {"$imagepolicy": "flux-system:immich-server"}
             env:
               REDIS_HOSTNAME: '{{ printf "%s-valkey" .Release.Name }}'
               # IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
