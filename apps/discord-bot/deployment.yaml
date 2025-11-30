@@ -23,18 +23,11 @@ spec:
           image: registry.gitlab.com/tcordina/discord-bot:latest@sha256:243c42934e235102e34446ff688bfca656cb1ad97e2016493afb1d57fd0878f0 # {"$imagepolicy": "flux-system:discord-bot"}
           imagePullPolicy: IfNotPresent
           env:
-            - name: DISCORD_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: discord-bot-secrets
-                  key: discord-token
-            - name: HCLOUD_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: discord-bot-secrets
-                  key: hcloud-token
             - name: LOG_LEVEL
               value: "INFO"
+          envFrom:
+            - secretRef:
+                name: discord-bot-secrets
           resources:
             requests:
               memory: "256Mi"
