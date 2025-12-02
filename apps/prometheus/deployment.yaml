@@ -65,6 +65,8 @@ spec:
         externalPrefixNilUsesHelmValues: false
         storageSpec:
           volumeClaimTemplate:
+            metadata:
+              name: data
             spec:
               storageClassName: nfs-csi
               accessModes: ["ReadWriteOnce"]
