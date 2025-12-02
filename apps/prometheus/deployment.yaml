@@ -56,6 +56,13 @@ spec:
         tls:
           - hosts:
               - prometheus.lan.tablar.ovh
+      prometheusSpec:
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        probeSelectorNilUsesHelmValues: false
+        scrapeConfigSelectorNilUsesHelmValues: false
+        ruleSelectorNilUsesHelmValues: false
+        externalPrefixNilUsesHelmValues: false
     
     prometheusOperator:
       namespaces:
