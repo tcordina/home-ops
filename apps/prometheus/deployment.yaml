@@ -63,10 +63,18 @@ spec:
         scrapeConfigSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false
         externalPrefixNilUsesHelmValues: false
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: nfs-csi
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 10Gi
     
-    prometheusOperator:
-      namespaces:
-        releaseNamespace: true
-        additional:
-          - kube-system
-          - immich
+    # prometheusOperator:
+    #   namespaces:
+    #     releaseNamespace: true
+    #     additional:
+    #       - kube-system
+    #       - immich
