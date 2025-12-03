@@ -36,8 +36,8 @@ data "local_file" "cloud_init-worker" {
 resource "null_resource" "cloud_init_upload" {
   provisioner "local-exec" {
     command = <<-EOT
-      scp ${path.module}/cloud-init-master.yaml root@${var.proxmox_url}:/var/lib/vz/snippets/cloud-init-master.yaml
-      scp ${path.module}/cloud-init-worker.yaml root@${var.proxmox_url}:/var/lib/vz/snippets/cloud-init-worker.yaml
+      scp ${path.module}/cloud-init-master.yaml root@${var.proxmox_ip}:/var/lib/vz/snippets/cloud-init-master.yaml
+      scp ${path.module}/cloud-init-worker.yaml root@${var.proxmox_ip}:/var/lib/vz/snippets/cloud-init-worker.yaml
     EOT
   }
   
@@ -59,9 +59,9 @@ resource "proxmox_vm_qemu" "master-node" {
   pool        = "k3s-cluster"
   agent       = 1
   cpu {
-    cores     = 3
+    cores     = 4
   }
-  memory      = 3072
+  memory      = 12288
   balloon     = 2048
   boot        = "order=scsi0" # has to be the same as the OS disk of the template
   clone       = "ubuntu24-cloudinit" # The name of the template
@@ -126,72 +126,72 @@ EOT
   }
 }
 
-resource "proxmox_vm_qemu" "worker-nodes" {
-  count = 2
+# resource "proxmox_vm_qemu" "worker-nodes" {
+#   count = 2
 
-  vmid        = "${200 + count.index+1}"
-  name        = "worker-node-${count.index+1}"
-  target_node = "pve"
-  pool        = "k3s-cluster"
-  agent       = 1
-  cpu {
-    cores     = 3
-  }
-  memory      = 3072
-  balloon     = 2048
-  boot        = "order=scsi0" # has to be the same as the OS disk of the template
-  clone       = "ubuntu24-cloudinit" # The name of the template
-  scsihw      = "virtio-scsi-single"
-  vm_state    = "running"
-  automatic_reboot = true
+#   vmid        = "${200 + count.index+1}"
+#   name        = "worker-node-${count.index+1}"
+#   target_node = "pve"
+#   pool        = "k3s-cluster"
+#   agent       = 1
+#   cpu {
+#     cores     = 4
+#   }
+#   memory      = 3072
+#   balloon     = 2048
+#   boot        = "order=scsi0" # has to be the same as the OS disk of the template
+#   clone       = "ubuntu24-cloudinit" # The name of the template
+#   scsihw      = "virtio-scsi-single"
+#   vm_state    = "running"
+#   automatic_reboot = true
 
-  # Cloud-Init configuration
-  cicustom   = "vendor=local:snippets/cloud-init-worker.yaml" # inside /var/lib/vz/snippets/
-  nameserver = "1.1.1.1 1.0.0.1"
-  ipconfig0  = "ip=192.168.1.${100 + count.index+1}/24,gw=192.168.1.1"
-  ipconfig1  = "ip=10.0.1.${count.index+2}/24"
-  skip_ipv6  = true
-  ciuser     = "ubuntu"
-  cipassword = "ubuntu"
-  sshkeys    = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOrNZ7JA97YCtp8zNmrF0t3XwhgOi3eytHdA057yIhRX thibaud@M1"
+#   # Cloud-Init configuration
+#   cicustom   = "vendor=local:snippets/cloud-init-worker.yaml" # inside /var/lib/vz/snippets/
+#   nameserver = "1.1.1.1 1.0.0.1"
+#   ipconfig0  = "ip=192.168.1.${100 + count.index+1}/24,gw=192.168.1.1"
+#   ipconfig1  = "ip=10.0.1.${count.index+2}/24"
+#   skip_ipv6  = true
+#   ciuser     = "ubuntu"
+#   cipassword = "ubuntu"
+#   sshkeys    = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOrNZ7JA97YCtp8zNmrF0t3XwhgOi3eytHdA057yIhRX thibaud@M1"
 
-  depends_on = [proxmox_pool.k3s-pool, null_resource.cloud_init_upload, proxmox_vm_qemu.master-node]
+#   depends_on = [proxmox_pool.k3s-pool, null_resource.cloud_init_upload, proxmox_vm_qemu.master-node]
 
-  # Most cloud-init images require a serial device for their display
-  serial {
-    id = 0
-  }
+#   # Most cloud-init images require a serial device for their display
+#   serial {
+#     id = 0
+#   }
 
-  disks {
-    scsi {
-      scsi0 {
-        # We have to specify the disk from our template, else Terraform will think it's not supposed to be there
-        disk {
-          storage = "local-lvm"
-          # The size of the disk should be at least as big as the disk in the template. If it's smaller, the disk will be recreated
-          size    = "10G" 
-        }
-      }
-    }
-    ide {
-      # Some images require a cloud-init disk on the IDE controller, others on the SCSI or SATA controller
-      ide1 {
-        cloudinit {
-          storage = "local-lvm"
-        }
-      }
-    }
-  }
+#   disks {
+#     scsi {
+#       scsi0 {
+#         # We have to specify the disk from our template, else Terraform will think it's not supposed to be there
+#         disk {
+#           storage = "local-lvm"
+#           # The size of the disk should be at least as big as the disk in the template. If it's smaller, the disk will be recreated
+#           size    = "10G" 
+#         }
+#       }
+#     }
+#     ide {
+#       # Some images require a cloud-init disk on the IDE controller, others on the SCSI or SATA controller
+#       ide1 {
+#         cloudinit {
+#           storage = "local-lvm"
+#         }
+#       }
+#     }
+#   }
 
-  network {
-    id = 0
-    bridge = "vmbr0"
-    model  = "virtio"
-  }
+#   network {
+#     id = 0
+#     bridge = "vmbr0"
+#     model  = "virtio"
+#   }
 
-  network {
-    id = 1
-    bridge = "vmbr10"
-    model = "virtio"
-  }
-}
+#   network {
+#     id = 1
+#     bridge = "vmbr10"
+#     model = "virtio"
+#   }
+# }
