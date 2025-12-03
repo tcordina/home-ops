@@ -51,7 +51,7 @@ spec:
                 value: nginx
   values:
     controllers:
-      main:
+      immich:
         containers:
           main:
             image:
@@ -66,11 +66,22 @@ spec:
               DB_DATABASE_NAME: immich
             resources:
               requests:
-                memory: "512Mi"
+                memory: "256Mi"
                 cpu: "10m"
               limits:
                 memory: "1024Mi"
                 cpu: "500m"
+      valkey:
+        containers:
+          main:
+            resources:
+              requests:
+                memory: "8Mi"
+                cpu: "10m"
+              limits:
+                memory: "32Mi"
+                cpu: "50m"
+
 
     immich:
       persistence:
