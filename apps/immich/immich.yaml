@@ -64,6 +64,13 @@ spec:
               DB_USERNAME: immich
               DB_PASSWORD: immich
               DB_DATABASE_NAME: immich
+            resources:
+              requests:
+                memory: "512Mi"
+                cpu: "10m"
+              limits:
+                memory: "1024Mi"
+                cpu: "500m"
 
     immich:
       persistence:
@@ -82,13 +89,6 @@ spec:
           type: persistentVolumeClaim
           accessMode: ReadWriteOnce
           storageClass: nfs-csi
-      resources:
-        requests:
-          memory: "8Mi"
-          cpu: "10m"
-        limits:
-          memory: "32Mi"
-          cpu: "100m"
 
     server:
       enabled: true
@@ -107,13 +107,6 @@ spec:
           tls:
             - hosts:
                 - immich.lan.tablar.ovh
-      resources:
-        requests:
-          memory: "512Mi"
-          cpu: "10m"
-        limits:
-          memory: "1024Mi"
-          cpu: "500m"
 
     machine-learning:
       enabled: false
