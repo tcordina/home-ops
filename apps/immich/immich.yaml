@@ -51,11 +51,10 @@ spec:
                 value: nginx
   values:
     controllers:
-      immich:
+      main:
         containers:
           main:
             image:
-              repository: ghcr.io/immich-app/immich-server
               tag: v2.3.1 # {"$imagepolicy": "flux-system:immich-server:tag"}
             env:
               REDIS_HOSTNAME: '{{ printf "%s-valkey" .Release.Name }}'
@@ -65,24 +64,6 @@ spec:
               DB_USERNAME: immich
               DB_PASSWORD: immich
               DB_DATABASE_NAME: immich
-            resources:
-              requests:
-                memory: "256Mi"
-                cpu: "10m"
-              limits:
-                memory: "1024Mi"
-                cpu: "500m"
-      valkey:
-        containers:
-          main:
-            resources:
-              requests:
-                memory: "8Mi"
-                cpu: "10m"
-              limits:
-                memory: "32Mi"
-                cpu: "50m"
-
 
     immich:
       persistence:
