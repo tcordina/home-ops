@@ -82,14 +82,13 @@ spec:
           type: persistentVolumeClaim
           accessMode: ReadWriteOnce
           storageClass: nfs-csi
-      hardcodedValues:
-        resources:
-          requests:
-            memory: "8Mi"
-            cpu: "10m"
-          limits:
-            memory: "32Mi"
-            cpu: "100m"
+      resources:
+        requests:
+          memory: "8Mi"
+          cpu: "10m"
+        limits:
+          memory: "32Mi"
+          cpu: "100m"
 
     server:
       enabled: true
@@ -108,14 +107,13 @@ spec:
           tls:
             - hosts:
                 - immich.lan.tablar.ovh
-      hardcodedValues:
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "10m"
-          limits:
-            memory: "1024Mi"
-            cpu: "500m"
+      resources:
+        requests:
+          memory: "512Mi"
+          cpu: "10m"
+        limits:
+          memory: "1024Mi"
+          cpu: "500m"
 
     machine-learning:
       enabled: false
