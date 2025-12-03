@@ -27,33 +27,40 @@ spec:
         app: immich-postgresql
     spec:
       containers:
-      - name: immich-postgresql
-        image: tensorchord/pgvecto-rs:pg16-v0.3.0
-        env:
-        - name: POSTGRES_USER
-          value: immich
-        - name: POSTGRES_PASSWORD
-          value: immich
-        - name: POSTGRES_DB
-          value: immich
-        # Store data in a subdir. Using a mount point directly as the data directory crashes the container
-        - name: PGDATA
-          value: /var/lib/postgresql/data/pgdata
-        ports:
-        - containerPort: 5432
-          name: postgresql
-        volumeMounts:
-        - name: data
-          mountPath: /var/lib/postgresql/data
+        - name: immich-postgresql
+          image: tensorchord/pgvecto-rs:pg16-v0.3.0
+          env:
+            - name: POSTGRES_USER
+              value: immich
+            - name: POSTGRES_PASSWORD
+              value: immich
+            - name: POSTGRES_DB
+              value: immich
+            # Store data in a subdir. Using a mount point directly as the data directory crashes the container
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - containerPort: 5432
+              name: postgresql
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "10m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
   volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: nfs-csi
-      resources:
-        requests:
-          storage: 5Gi
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: nfs-csi
+        resources:
+          requests:
+            storage: 5Gi
 ---
 apiVersion: v1
 kind: Service
@@ -64,6 +71,6 @@ spec:
   selector:
     app: immich-postgresql
   ports:
-  - port: 5432
-    targetPort: 5432
+    - port: 5432
+      targetPort: 5432
   clusterIP: None

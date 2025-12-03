@@ -30,8 +30,8 @@ spec:
                 name: discord-bot-secrets
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "100m"
+              memory: "96Mi"
+              cpu: "10m"
             limits:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: "128Mi"
+              cpu: "100m"
