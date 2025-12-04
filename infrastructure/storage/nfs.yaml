@@ -38,6 +38,7 @@ parameters:
   server: 192.168.1.30
   share: /mnt/default/cluster
 reclaimPolicy: Delete
+allowVolumeExpansion: true
 volumeBindingMode: Immediate
 moutOptions:
   - hard
