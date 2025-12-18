@@ -55,7 +55,7 @@ spec:
         containers:
           main:
             image:
-              tag: v2.3.1 # {"$imagepolicy": "flux-system:immich-server:tag"}
+              tag: v2.4.0 # {"$imagepolicy": "flux-system:immich-server:tag"}
             env:
               REDIS_HOSTNAME: '{{ printf "%s-valkey" .Release.Name }}'
               # IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
@@ -64,7 +64,6 @@ spec:
               DB_USERNAME: immich
               DB_PASSWORD: immich
               DB_DATABASE_NAME: immich
-
     immich:
       persistence:
         library:
@@ -72,7 +71,6 @@ spec:
       # Prometheus metrics
       metrics:
         enabled: true
-
     valkey:
       enabled: true
       persistence:
@@ -82,7 +80,6 @@ spec:
           type: persistentVolumeClaim
           accessMode: ReadWriteOnce
           storageClass: nfs-csi
-
     server:
       enabled: true
       ingress:
@@ -100,7 +97,6 @@ spec:
           tls:
             - hosts:
                 - immich.lan.tablar.ovh
-
     machine-learning:
       enabled: false
       # persistence:
