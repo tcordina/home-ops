@@ -63,6 +63,9 @@ spec:
         scrapeConfigSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false
         externalPrefixNilUsesHelmValues: false
+        scrapeInterval: "120s"
+        retention: 10d
+        retentionSize: "9GiB"
         storageSpec:
           volumeClaimTemplate:
             metadata:
