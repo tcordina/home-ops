@@ -39,6 +39,21 @@ spec:
             # Store data in a subdir. Using a mount point directly as the data directory crashes the container
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
+          args:
+            - -c
+            - shared_preload_libraries=vectors.so
+            - -c
+            - search_path="$user", public, vectors
+            - -c
+            - logging_collector=off
+            - -c
+            - log_destination=stderr
+            - -c
+            - log_statement=all
+            - -c
+            - log_duration=on
+            - -c
+            - log_line_prefix=%m [%p] %q%u@%d 
           ports:
             - containerPort: 5432
               name: postgresql
@@ -50,8 +65,8 @@ spec:
               memory: "64Mi"
               cpu: "10m"
             limits:
-              memory: "128Mi"
-              cpu: "100m"
+              memory: "1024Mi"
+              cpu: "1000m"
   volumeClaimTemplates:
     - metadata:
         name: data
