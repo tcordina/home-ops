@@ -5,5 +5,5 @@ resources:
   - ./gitlab-runner
 #  - ./homarr
   - ./immich
-  - ./prometheus
+  - ./monitoring
   - ./uptime-kuma

@@ -28,6 +28,16 @@ spec:
       namespace: monitoring
   values:
     grafana:
+      additionalDataSources:
+        - name: Loki
+          type: loki
+          url: http://loki-gateway.cluster.local
+          access: proxy
+          isDefault: false
+          jsonData:
+            httpHeaderName1: "X-Scope-OrgID"
+          secureJsonData:
+            httpHeaderValue1: "fake"
       ingress:
         enabled: true
         ingressClassName: nginx
