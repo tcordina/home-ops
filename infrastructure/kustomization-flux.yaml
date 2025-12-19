@@ -1,0 +1,79 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infrastructure-storage
+  namespace: flux-system
+spec:
+  interval: 5m
+  path: "./infrastructure/storage"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: csi-driver-nfs
+      namespace: kube-system
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infrastructure-monitoring
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: infrastructure-storage
+  interval: 5m
+  path: "./infrastructure/monitoring"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: kube-prometheus-stack
+      namespace: monitoring
+
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: loki
+      namespace: monitoring
+
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: promtail
+      namespace: monitoring
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infrastructure-ingress-nginx
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: infrastructure-monitoring
+  interval: 5m
+  path: "./infrastructure/ingress-nginx"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: ingress-nginx
+      namespace: ingress-nginx
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
