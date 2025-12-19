@@ -55,7 +55,7 @@ spec:
         containers:
           main:
             image:
-              tag: v2.4.0 # {"$imagepolicy": "flux-system:immich-server:tag"}
+              tag: v2.4.1 # {"$imagepolicy": "flux-system:immich-server:tag"}
             env:
               REDIS_HOSTNAME: '{{ printf "%s-valkey" .Release.Name }}'
               # IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
@@ -76,10 +76,10 @@ spec:
       persistence:
         data:
           enabled: false
-      #     size: 1Gi
-      #     type: persistentVolumeClaim
-      #     accessMode: ReadWriteOnce
-      #     storageClass: nfs-csi
+          #     size: 1Gi
+          #     type: persistentVolumeClaim
+          #     accessMode: ReadWriteOnce
+          #     storageClass: nfs-csi
     server:
       enabled: true
       ingress:
