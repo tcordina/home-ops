@@ -74,7 +74,7 @@ spec:
           existingClaim: immich-library
       # Prometheus metrics
       metrics:
-        enabled: false
+        enabled: true
 
     valkey:
       enabled: true

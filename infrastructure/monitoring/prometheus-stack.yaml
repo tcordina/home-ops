@@ -26,7 +26,7 @@ spec:
       additionalDataSources:
         - name: Loki
           type: loki
-          url: http://loki-gateway.cluster.local
+          url: http://loki-gateway
           access: proxy
           isDefault: false
           jsonData:
@@ -68,8 +68,9 @@ spec:
         scrapeConfigSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false
         externalPrefixNilUsesHelmValues: false
-        scrapeInterval: "120s"
-        retention: 10d
+        scrapeInterval: 5m
+        evaluationInterval: 5m
+        retention: 2d
         retentionSize: "9GiB"
         storageSpec:
           volumeClaimTemplate:
@@ -81,10 +82,3 @@ spec:
               resources:
                 requests:
                   storage: 10Gi
-    
-    # prometheusOperator:
-    #   namespaces:
-    #     releaseNamespace: true
-    #     additional:
-    #       - kube-system
-    #       - immich
