@@ -1,0 +1,107 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nextcloud
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: nextcloud
+  namespace: nextcloud
+spec:
+  interval: 24h
+  url: https://nextcloud.github.io/helm/
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-data
+  namespace: nextcloud
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: nfs-csi
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-postgres-data
+  namespace: nextcloud
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: nfs-csi
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &service-name nextcloud
+  namespace: *service-name
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: nextcloud
+      version: '8.x'
+      sourceRef:
+        kind: HelmRepository
+        name: *service-name
+        namespace: *service-name
+      interval: 12h
+  values:
+    image:
+      tag: stable-fpm-alpine
+    nextcloud:
+      host: nextcloud.lan.tablar.ovh
+      username: admin
+      password: admin
+    persistence:
+      enabled: true
+      existingClaim: nextcloud-data
+    nginx:
+      enabled: true
+    internalDatabase:
+      enabled: false
+    externalDatabase:
+      enabled: true
+      type: postgresql
+      host: "nextcloud-postgresql:5432"
+      database: *service-name
+      user: *service-name
+      password: *service-name
+    postgresql:
+      enabled: true
+      global:
+        postgresql:
+          auth:
+            database: *service-name
+            username: *service-name
+            password: *service-name
+      primary:
+        persistence:
+          enabled: true
+          existingClaim: nextcloud-postgres-data
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        nginx.ingress.kubernetes.io/affinity: cookie
+        nginx.ingress.kubernetes.io/enable-cors: "true"
+        nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
+      host: nextcloud.lan.tablar.ovh
+      path: /
+      pathType: Prefix
+      tls:
+        - hosts:
+            - nextcloud.lan.tablar.ovh
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
