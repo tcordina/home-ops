@@ -13,20 +13,6 @@ spec:
   interval: 1h
   url: https://charts.gitlab.io
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: gitlab-runner-cache
-  namespace: gitlab-runner
-spec:
-  accessModes:
-    - ReadWriteMany  # Allow sharing between pods
-  storageClassName: nfs-csi
-  volumeName: pv-gitlab-runner-cache
-  resources:
-    requests:
-      storage: 10Gi
----
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
