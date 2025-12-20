@@ -73,6 +73,7 @@ spec:
       spec:
         accessModes: [ "ReadWriteOnce" ]
         storageClassName: nfs-csi
+        volumeName: pv-immich-postgresql
         resources:
           requests:
             storage: 5Gi

@@ -22,6 +22,7 @@ spec:
   accessModes:
     - ReadWriteMany  # Allow sharing between pods
   storageClassName: nfs-csi
+  volumeName: pv-gitlab-runner-cache
   resources:
     requests:
       storage: 10Gi
