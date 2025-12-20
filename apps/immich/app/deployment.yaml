@@ -25,6 +25,27 @@ spec:
     - kustomize:
         patches:
           - target:
+              kind: Deployment
+              name: immich-server
+            patch: |-
+                  apiVersion: apps/v1
+                  kind: Deployment
+                  metadata:
+                    name: not-used
+                  spec:
+                    template:
+                      spec:
+                        containers:
+                          - name: main
+                            resources:
+                              requests:
+                                memory: "1024Mi"
+                                cpu: "10m"
+                              limits:
+                                memory: "4096Mi"
+                                cpu: "2000m"
+
+          - target:
               kind: Ingress
               name: immich-server
             patch: |
@@ -46,6 +67,7 @@ spec:
               DB_USERNAME: immich
               DB_PASSWORD: immich
               DB_DATABASE_NAME: immich
+
     immich:
       persistence:
         library:
@@ -53,6 +75,7 @@ spec:
       # Prometheus metrics
       metrics:
         enabled: false
+
     valkey:
       enabled: true
       persistence:
@@ -62,6 +85,7 @@ spec:
           #     type: persistentVolumeClaim
           #     accessMode: ReadWriteOnce
           #     storageClass: nfs-csi
+
     server:
       enabled: true
       ingress:
@@ -79,6 +103,7 @@ spec:
           tls:
             - hosts:
                 - immich.lan.tablar.ovh
+
     machine-learning:
       enabled: false
       # persistence:
