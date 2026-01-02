@@ -31,7 +31,7 @@ spec:
       replicas: 1
       persistence:
         enabled: true
-        storageClass: nfs-csi
+        storageClass: local-path
       initContainers:
       - name: fix-permissions
         image: busybox:latest

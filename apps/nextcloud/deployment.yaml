@@ -16,7 +16,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nextcloud-data
+  name: nextcloud-library
   namespace: nextcloud
 spec:
   accessModes:
@@ -29,7 +29,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nextcloud-postgres-data
+  name: nextcloud-postgresql-data
   namespace: nextcloud
 spec:
   accessModes:
@@ -64,7 +64,7 @@ spec:
       password: admin
     persistence:
       enabled: true
-      existingClaim: nextcloud-data
+      existingClaim: nextcloud-library
     nginx:
       enabled: true
     internalDatabase:

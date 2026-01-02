@@ -77,7 +77,7 @@ spec:
             metadata:
               name: data
             spec:
-              storageClassName: nfs-csi
+              storageClassName: local-path
               accessModes: ["ReadWriteOnce"]
               resources:
                 requests:
