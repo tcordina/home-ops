@@ -36,7 +36,7 @@ metadata:
 provisioner: nfs.csi.k8s.io
 parameters:
   server: 192.168.1.30
-  share: /mnt/default/cluster
+  share: /mnt/main/k8s-volumes
   subDir: ${pvc.metadata.name}-pv
 reclaimPolicy: Delete
 allowVolumeExpansion: true
