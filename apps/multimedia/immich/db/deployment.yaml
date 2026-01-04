@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: &service-name immich-postgresql
+spec:
+  serviceName: *service-name
+  replicas: 1
+  selector:
+    matchLabels:
+      app: *service-name
+  template:
+    metadata:
+      labels:
+        app: *service-name
+    spec:
+      containers:
+        - name: *service-name
+          image: tensorchord/pgvecto-rs:pg16-v0.3.0
+          env:
+            - name: POSTGRES_USER
+              value: immich
+            - name: POSTGRES_PASSWORD
+              value: immich
+            - name: POSTGRES_DB
+              value: immich
+            # Store data in a subdir. Using a mount point directly as the data directory crashes the container
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          args:
+            - -c
+            - shared_preload_libraries=vectors.so
+            - -c
+            - search_path="$user", public, vectors
+            - -c
+            - logging_collector=off
+            - -c
+            - log_destination=stderr
+            - -c
+            - log_statement=all
+            - -c
+            - log_duration=on
+            - -c
+            - log_line_prefix=%m [%p] %q%u@%d 
+          ports:
+            - containerPort: 5432
+              name: postgresql
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+            - name: init
+              mountPath: /docker-entrypoint-initdb.d
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "10m"
+            limits:
+              memory: "1024Mi"
+              cpu: "1000m"
+
+      volumes:
+        - name: init
+          configMap:
+            name: immich-postgres-init
+            items:
+              - key: init.sql
+                path: init.sql
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: nfs-csi
+        resources:
+          requests:
+            storage: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: immich-postgresql
+  namespace: immich
+spec:
+  selector:
+    app: immich-postgresql
+  ports:
+    - port: 5432
+      targetPort: 5432
+  clusterIP: None
