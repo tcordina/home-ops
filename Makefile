@@ -37,6 +37,19 @@ flux-push:
 flux-update: flux-pull flux-push
 	@echo "✨ Flux updated successfully!"
 
+flux-override:
+	@cd $(FLUX_DIR) && \
+	if git diff --quiet && git diff --staged --quiet; then \
+		echo "✅ No changes to commit"; \
+	else \
+		echo "📝 Committing changes..."; \
+		git add -A; \
+		git commit --amend --no-edit; \
+	fi
+	@echo "⬆️  Pushing to remote..."
+	@cd $(FLUX_DIR) && git push origin main --force
+	@echo "🔄 Reconciling Flux..."
+	@flux reconcile source git flux-system
 
 # --- SOPS --- #
 encrypt-secrets:

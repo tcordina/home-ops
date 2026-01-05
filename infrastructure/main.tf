@@ -2,7 +2,7 @@ terraform {
   required_providers {
     proxmox = {
       source = "Telmate/proxmox"
-      version = "3.0.2-rc05"
+      version = "3.0.2-rc07"
     }
   }
 }
@@ -62,7 +62,7 @@ resource "proxmox_vm_qemu" "master-node" {
     cores     = 4
   }
   memory      = 12288
-  balloon     = 2048
+  balloon     = 6144
   boot        = "order=scsi0" # has to be the same as the OS disk of the template
   clone       = "ubuntu24-cloudinit" # The name of the template
   scsihw      = "virtio-scsi-single"
@@ -97,7 +97,7 @@ EOT
         disk {
           storage = "local-lvm"
           # The size of the disk should be at least as big as the disk in the template. If it's smaller, the disk will be recreated
-          size    = "10G" 
+          size    = "40G" 
         }
       }
     }
