@@ -3,7 +3,6 @@ apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageRepository
 metadata:
   name: discord-bot
-  namespace: flux-system
 spec:
   image: registry.gitlab.com/tcordina/discord-bot
   interval: 5m  # Check for new images every 5 minutes
@@ -14,7 +13,6 @@ apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImagePolicy
 metadata:
   name: discord-bot
-  namespace: flux-system
 spec:
   imageRepositoryRef:
     name: discord-bot

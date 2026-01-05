@@ -1,13 +1,7 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: discord-bot
----
 apiVersion: apps/v1
 kind: Deployment # TODO : use helm release instead
 metadata:
   name: discord-bot
-  namespace: discord-bot
 spec:
   replicas: 1
   selector:
