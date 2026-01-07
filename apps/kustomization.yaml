@@ -3,5 +3,3 @@ kind: Kustomization
 resources:
   - ./default
   - ./multimedia
-  # - ./pihole
-  # - ./uptime-kuma
