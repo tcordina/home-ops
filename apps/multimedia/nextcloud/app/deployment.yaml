@@ -10,7 +10,7 @@ spec:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &service-name nextcloud
+  name: &app nextcloud
 spec:
   interval: 1h
   chart:
@@ -19,7 +19,7 @@ spec:
       version: '8.x'
       sourceRef:
         kind: HelmRepository
-        name: *service-name
+        name: *app
       interval: 12h
   values:
     image:
@@ -50,17 +50,17 @@ spec:
       enabled: true
       type: postgresql
       host: "nextcloud-postgresql:5432"
-      database: *service-name
-      user: *service-name
-      password: *service-name
+      database: *app
+      user: *app
+      password: *app
     # postgresql:
     #   enabled: true
     #   global:
     #     postgresql:
     #       auth:
-    #         database: *service-name
-    #         username: *service-name
-    #         password: *service-name
+    #         database: *app
+    #         username: *app
+    #         password: *app
     #   primary:
     #     persistence:
     #       enabled: true
