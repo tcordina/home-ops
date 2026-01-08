@@ -52,7 +52,7 @@ spec:
     volumeMounts:
       - mountPath: /movies-library
         name: movies-library
-        readOnly: true
+        readOnly: false
 
     persistence:
       cache:
