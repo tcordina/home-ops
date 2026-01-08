@@ -41,6 +41,23 @@ spec:
                         emptyDir:
                           medium: Memory
                           sizeLimit: 1Gi
+          - target:
+              kind: Deployment
+              name: jellyfin
+            patch: |-
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: not-used
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: jellyfin
+                        envFrom:
+                          # sets POSTGRES_USER and POSTGRES_PASSWORD
+                          - secretRef:
+                              name: jellyfin-postgres-auth
 
   values:
     image:
@@ -70,10 +87,6 @@ spec:
           value: "5432"
         - name: POSTGRES_DB
           value: jellyfin
-      envFrom:
-        # sets POSTGRES_USER and POSTGRES_PASSWORD
-        - secretRef:
-            name: jellyfin-postgres-auth
 
     metrics:
       enabled: true
