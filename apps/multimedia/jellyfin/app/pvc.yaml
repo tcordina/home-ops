@@ -6,7 +6,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: nfs-csi
+  # accessing the sqlite db through nfs causes concurrency access errors. *postgres implementation waiting room*
+  storageClassName: local-path
   resources:
     requests:
       storage: 1Gi

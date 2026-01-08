@@ -41,28 +41,28 @@ spec:
                         emptyDir:
                           medium: Memory
                           sizeLimit: 1Gi
-          - target:
-              kind: Deployment
-              name: jellyfin
-            patch: |-
-              apiVersion: apps/v1
-              kind: Deployment
-              metadata:
-                name: not-used
-              spec:
-                template:
-                  spec:
-                    containers:
-                      - name: jellyfin
-                        envFrom:
-                          # sets POSTGRES_USER and POSTGRES_PASSWORD
-                          - secretRef:
-                              name: jellyfin-postgres-auth
+          # - target:
+          #     kind: Deployment
+          #     name: jellyfin
+          #   patch: |-
+          #     apiVersion: apps/v1
+          #     kind: Deployment
+          #     metadata:
+          #       name: not-used
+          #     spec:
+          #       template:
+          #         spec:
+          #           containers:
+          #             - name: jellyfin
+          #               envFrom:
+          #                 # sets POSTGRES_USER and POSTGRES_PASSWORD
+          #                 - secretRef:
+          #                     name: jellyfin-postgres-auth
 
   values:
-    image:
-      repository: ghcr.io/jpvenson/jellyfin.pgsql
-      tag: 10.11.0-1
+    # image:
+    #   repository: ghcr.io/jpvenson/jellyfin.pgsql
+    #   tag: 10.11.0-1
     ingress:
       enabled: true
       className: nginx
@@ -75,18 +75,14 @@ spec:
         - hosts:
            - jellyfin.lan.tablar.ovh
     
-    jellyfin:
-      env:
-        - name: JELLYFIN_FFmpeg__probesize
-          value: "50000000"
-        - name: JELLYFIN_FFmpeg__analyzeduration
-          value: "50000000"
-        - name: POSTGRES_HOST
-          value: jellyfin-postgres
-        - name: POSTGRES_PORT
-          value: "5432"
-        - name: POSTGRES_DB
-          value: jellyfin
+    # jellyfin:
+    #   env:
+    #     - name: POSTGRES_HOST
+    #       value: jellyfin-postgres
+    #     - name: POSTGRES_PORT
+    #       value: "5432"
+    #     - name: POSTGRES_DB
+    #       value: jellyfin
 
     metrics:
       enabled: true
