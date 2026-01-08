@@ -1,3 +1,4 @@
+---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -8,10 +9,33 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
+    - name: jellyfin-postgres
+  interval: 1h
+  path: ./apps/multimedia/jellyfin/app
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system 
+    namespace: flux-system
+  timeout: 15m
+  targetNamespace: multimedia
+  wait: false
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app jellyfin-postgres
+  namespace: flux-system
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  dependsOn:
     - name: infrastructure
       namespace: flux-system
   interval: 1h
-  path: ./apps/multimedia/jellyfin/app
+  path: ./apps/multimedia/jellyfin/db
   prune: true
   retryInterval: 2m
   sourceRef:
