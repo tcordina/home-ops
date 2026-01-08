@@ -49,7 +49,7 @@ spec:
     externalDatabase:
       enabled: true
       type: postgresql
-      host: "nextcloud-postgresql:5432"
+      host: "nextcloud-postgres:5432"
       database: *app
       user: *app
       password: *app

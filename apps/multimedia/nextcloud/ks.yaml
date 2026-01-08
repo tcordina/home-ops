@@ -45,3 +45,7 @@ spec:
   timeout: 15m
   targetNamespace: multimedia
   wait: false
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
