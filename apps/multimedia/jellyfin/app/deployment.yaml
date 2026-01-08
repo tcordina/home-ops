@@ -43,16 +43,30 @@ spec:
                           sizeLimit: 1Gi
 
   values:
-    volumes:
-      - name: movies-library
-        nfs:
-          server: 192.168.1.30
-          path: /mnt/main/movies-library
+    ingress:
+      enabled: true
+      className: nginx
+      hosts:
+        - host: jellyfin.lan.tablar.ovh
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - hosts:
+           - jellyfin.lan.tablar.ovh
+    
+    jellyfin:
+      env:
+        - name: JELLYFIN_FFmpeg__probesize
+          value: "50000000"
+        - name: JELLYFIN_FFmpeg__analyzeduration
+          value: "50000000"
 
-    volumeMounts:
-      - mountPath: /movies-library
-        name: movies-library
-        readOnly: false
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        interval: 5m
 
     persistence:
       cache:
@@ -65,24 +79,6 @@ spec:
         enabled: true
         existingClaim: jellyfin-media
 
-    metrics:
-      enabled: true
-      serviceMonitor:
-        enabled: true
-        interval: 5m
-
-    ingress:
-      enabled: true
-      className: nginx
-      hosts:
-        - host: jellyfin.lan.tablar.ovh
-          paths:
-            - path: /
-              pathType: ImplementationSpecific
-      tls:
-        - hosts:
-           - jellyfin.lan.tablar.ovh
-
     resources: {}
       # limits:
       #   cpu: 100m
@@ -90,3 +86,14 @@ spec:
       # requests:
       #   cpu: 100m
       #   memory: 128Mi
+
+    volumes:
+      - name: movies-library
+        nfs:
+          server: 192.168.1.30
+          path: /mnt/main/movies-library
+
+    volumeMounts:
+      - mountPath: /movies-library
+        name: movies-library
+        readOnly: false
