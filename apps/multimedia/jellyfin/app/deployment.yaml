@@ -21,6 +21,27 @@ spec:
           kind: HelmRepository
           name: *app
         interval: 12h
+
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: jellyfin
+            patch: |-
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: not-used
+              spec:
+                template:
+                  spec:
+                    volumes:
+                      - name: cache
+                        emptyDir:
+                          medium: Memory
+                          sizeLimit: 1Gi
+
   values:
     volumes:
       - name: movies-library
@@ -34,11 +55,11 @@ spec:
         readOnly: true
 
     persistence:
-      config:
+      cache:
         # set to false to use emptyDir
         enabled: false
-      cache:
-        enabled: false
+      config:
+        existingClaim: jellyfin-config
       # media produced by jellyfin like thumbnails
       media:
         enabled: true

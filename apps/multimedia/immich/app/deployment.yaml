@@ -25,27 +25,27 @@ spec:
               kind: Deployment
               name: immich-server
             patch: |-
-                  apiVersion: apps/v1
-                  kind: Deployment
-                  metadata:
-                    name: not-used
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: not-used
+              spec:
+                template:
                   spec:
-                    template:
-                      spec:
-                        containers:
-                          - name: main
-                            resources:
-                              requests:
-                                memory: "1024Mi"
-                                cpu: "10m"
-                              limits:
-                                memory: "4096Mi"
-                                cpu: "2000m"
+                    containers:
+                      - name: main
+                        resources:
+                          requests:
+                            memory: "1024Mi"
+                            cpu: "10m"
+                          limits:
+                            memory: "4096Mi"
+                            cpu: "2000m"
 
           - target:
               kind: Ingress
               name: immich-server
-            patch: |
+            patch: |-
               - op: add
                 path: /spec/ingressClassName
                 value: nginx
