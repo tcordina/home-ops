@@ -2,7 +2,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: sonarr
+  name: qbittorrent
 spec:
   interval: 12h
   layerSelector:
@@ -15,15 +15,15 @@ spec:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: sonarr
+  name: qbittorrent
 spec:
   chartRef:
     kind: OCIRepository
-    name: sonarr
+    name: qbittorrent
   interval: 1h
   values:
     controllers:
-      sonarr:
+      qbittorrent:
         pod:
           securityContext:
             fsGroup: 1000
@@ -34,35 +34,28 @@ spec:
         containers:
           app:
             image:
-              repository: linuxserver/sonarr
-              tag: 4.0.16
+              repository: linuxserver/qbittorrent
+              tag: 5.1.4
             env:
-              SONARR__APP__INSTANCENAME: Sonarr
-              SONARR__AUTH__METHOD: External
-              SONARR__AUTH__REQUIRED: DisabledForLocalAddresses
-              SONARR__LOG__DBENABLED: "False"
-              SONARR__LOG__LEVEL: info
-              SONARR__SERVER__PORT: &port 8989
-              SONARR__UPDATE__BRANCH: develop
+              TZ: Europe/Paris
+              QBT_WEBUI_PORT: &port 8080
+              QBT_TORRENTING_PORT: 50413
             probes:
-              liveness: &probes
+              liveness:
                 enabled: true
-                custom: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
                 spec:
-                  httpGet:
-                    path: /ping
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
+                  failureThreshold: 30
+                  periodSeconds: 5
             resources:
               requests:
-                cpu: 20m
-                memory: 384Mi
+                cpu: 10m
               limits:
-                memory: 2Gi
+                cpu: 100m
+                memory: 1Gi
             # securityContext:
             #   allowPrivilegeEscalation: false
             #   readOnlyRootFilesystem: true
@@ -75,11 +68,11 @@ spec:
             port: *port
 
     ingress:
-      sonarr:
+      qbittorrent:
         enabled: true
         className: nginx
         hosts:
-          - host: sonarr.lan.tablar.ovh
+          - host: torrent.lan.tablar.ovh
             paths:
               - path: /
                 pathType: Prefix
@@ -88,17 +81,17 @@ spec:
                   port: *port
         tls:
           - hosts:
-            - sonarr.lan.tablar.ovh
+            - torrent.lan.tablar.ovh
 
     persistence:
       config:
-        existingClaim: sonarr-config
-      media:
+        existingClaim: qbittorrent-config
+      downloads:
         type: nfs
         server: 192.168.1.30
-        path: /mnt/main/movies-library
+        path: /mnt/main/movies-library/data/downloads
         globalMounts:
-          - path: /data/nas-media
+          - path: /data/downloads
             readOnly: false
       tmpfs:
         type: emptyDir
