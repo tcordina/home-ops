@@ -113,7 +113,7 @@ spec:
       - name: movies-library
         nfs:
           server: 192.168.1.30
-          path: /mnt/main/movies-library
+          path: /mnt/main/movies-library/data/media
 
     volumeMounts:
       - mountPath: /movies-library

@@ -10,3 +10,4 @@ resources:
   - ./immich/ks.yaml
   - ./jellyfin/ks.yaml
   - ./nextcloud/ks.yaml
+  - ./sonarr/ks.yaml
