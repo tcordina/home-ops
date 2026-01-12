@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m
-  path: "./infrastructure/flux-system/image-update-automation/app"
+  path: ./kubernetes/infrastructure/flux-system/image-update-automation/app
   prune: true
   wait: true
   sourceRef:

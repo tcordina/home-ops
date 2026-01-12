@@ -7,7 +7,7 @@ spec:
   dependsOn:
   - name: csi-driver-nfs
   interval: 5m
-  path: "./infrastructure/monitoring/prometheus-stack/app"
+  path: ./kubernetes/infrastructure/monitoring/prometheus-stack/app
   prune: true
   wait: true
   targetNamespace: monitoring

@@ -32,8 +32,8 @@ flux bootstrap gitlab \
     --components-extra=image-reflector-controller,image-automation-controller \
     --token-auth \
     --owner=tcordina \
-    --repository=homelab-flux \
+    --repository=homelab-cluster \
     --branch=main \
-    --path=clusters/main \
+    --path=kubernetes/clusters/main \
     --author-email fluxcdbot@users.noreply.gitlab.com \
     --personal

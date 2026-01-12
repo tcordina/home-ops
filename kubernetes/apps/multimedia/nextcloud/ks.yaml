@@ -11,7 +11,7 @@ spec:
   dependsOn:
     - name: nextcloud-postgres
   interval: 1h
-  path: ./apps/multimedia/nextcloud/app
+  path: ./kubernetes/apps/multimedia/nextcloud/app
   prune: true
   retryInterval: 2m
   sourceRef:
@@ -35,7 +35,7 @@ spec:
     - name: infrastructure
       namespace: flux-system
   interval: 1h
-  path: ./apps/multimedia/nextcloud/db
+  path: ./kubernetes/apps/multimedia/nextcloud/db
   prune: true
   retryInterval: 2m
   sourceRef:

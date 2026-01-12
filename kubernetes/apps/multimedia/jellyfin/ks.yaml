@@ -12,7 +12,7 @@ spec:
     - name: infrastructure
       namespace: flux-system
   interval: 1h
-  path: ./apps/multimedia/jellyfin/app
+  path: ./kubernetes/apps/multimedia/jellyfin/app
   prune: true
   retryInterval: 2m
   sourceRef:
@@ -36,7 +36,7 @@ spec:
 #     - name: infrastructure
 #       namespace: flux-system
 #   interval: 1h
-#   path: ./apps/multimedia/jellyfin/db
+#   path: ./kubernetes/apps/multimedia/jellyfin/db
 #   prune: true
 #   retryInterval: 2m
 #   sourceRef:

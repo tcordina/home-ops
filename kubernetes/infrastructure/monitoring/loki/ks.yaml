@@ -7,7 +7,7 @@ spec:
   dependsOn:
   - name: prometheus-stack
   interval: 5m
-  path: "./infrastructure/monitoring/loki/app"
+  path: ./kubernetes/infrastructure/monitoring/loki/app
   prune: true
   wait: true
   targetNamespace: monitoring

@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m
-  path: "./infrastructure/kube-system/csi-driver-nfs/app"
+  path: ./kubernetes/infrastructure/kube-system/csi-driver-nfs/app
   prune: true
   wait: true
   sourceRef:

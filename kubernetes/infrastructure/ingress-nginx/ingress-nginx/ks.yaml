@@ -7,7 +7,7 @@ spec:
   dependsOn:
   - name: prometheus-stack
   interval: 5m
-  path: "./infrastructure/ingress-nginx/ingress-nginx/app"
+  path: ./kubernetes/infrastructure/ingress-nginx/ingress-nginx/app
   prune: true
   wait: true
   targetNamespace: ingress-nginx

@@ -11,12 +11,12 @@ spec:
     - name: infrastructure
       namespace: flux-system
   interval: 1h
-  path: ./apps/default/gitlab-runner/app
+  path: ./kubernetes/apps/default/gitlab-runner/app
   prune: true
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
-    name: flux-system 
+    name: flux-system
     namespace: flux-system
   timeout: 15m
   wait: false

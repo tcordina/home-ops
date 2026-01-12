@@ -11,7 +11,7 @@ spec:
   dependsOn:
     - name: immich-postgres
   interval: 1h
-  path: ./apps/multimedia/immich/app
+  path: ./kubernetes/apps/multimedia/immich/app
   prune: true
   retryInterval: 2m
   sourceRef:
@@ -35,7 +35,7 @@ spec:
     - name: infrastructure
       namespace: flux-system
   interval: 1h
-  path: ./apps/multimedia/immich/db
+  path: ./kubernetes/apps/multimedia/immich/db
   prune: true
   retryInterval: 2m
   sourceRef:
