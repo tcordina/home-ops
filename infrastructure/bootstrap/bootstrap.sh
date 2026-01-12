@@ -2,8 +2,7 @@
 
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-# retrieve MASTER_IP and GITLAB_TOKEN from .env file
-source $DIR/.env
+source $DIR/../.env
 
 
 # --- CONFIGURE KUBECTL --- #
@@ -17,7 +16,7 @@ sleep 5
 
 echo -e "\nConfiguring local kubectl..."
 scp ubuntu@$MASTER_IP:/etc/rancher/k3s/k3s.yaml ~/.kube/config
-sed -i "s/127\.0\.0\.1/$MASTER_IP/g" ~/.kube/config
+sed -i "s/127\.0\.0\.1/$LOADBALANCER_IP/g" ~/.kube/config
 
 
 # --- BOOTSTRAP FLUXCD --- #
@@ -25,7 +24,7 @@ echo -e "\nBootstrapping Flux..."
 
 kubectl create namespace flux-system
 
-# key generated with `$ age-keygen -o age.agekey`
+# key generated with `$ age-keygen -o ./infrastructure/bootstrap/age.agekey`
 kubectl create secret generic sops-age --from-file=age.agekey=$DIR/age.agekey --namespace=flux-system
 
 export GITLAB_TOKEN=$GITLAB_TOKEN

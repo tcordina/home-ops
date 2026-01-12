@@ -1,6 +1,7 @@
-.PHONY: tf-plan tf-apply tf-destroy flux-pull flux-push flux-update encrypt-secrets
+.PHONY: tf-plan tf-apply tf-destroy flux-pull flux-push flux-update encrypt-secrets init-cluster
 
-TF_DIR := $(abspath ./infrastructure)
+INFRA_DIR = $(abspath ./infrastructure)
+TF_DIR = $(INFRA_DIR)/terraform
 FLUX_DIR = $(abspath ./flux)
 
 
@@ -51,10 +52,19 @@ flux-override:
 	@echo "🔄 Reconciling Flux..."
 	@flux reconcile source git flux-system
 
+
 # --- SOPS --- #
-encrypt-secrets:
+encrypt-secret:
+	sops --encrypt --output "$(ns)/secret.secrets.yaml" --config $(FLUX_DIR)/.sops.yaml "$(ns)/secret.yaml";
+
+encrypt-all:
 	@find $(FLUX_DIR) -name "secret.yaml" -type f | while read file; do \
 		dir=$$(dirname "$$file"); \
 		sops --encrypt --output "$$dir/secret.secrets.yaml" --config $(FLUX_DIR)/.sops.yaml "$$file"; \
 		echo "✅ Encrypted $$file -> $$dir/secret.secrets.yaml"; \
 	done
+
+
+# --- INIT --- #
+init-cluster:
+	@cd $(INFRA_DIR)/bootstrap && bash bootstrap.sh
