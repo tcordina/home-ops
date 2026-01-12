@@ -1,14 +1,8 @@
 ---
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: ingress-nginx
----
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: ingress-nginx
-  namespace: ingress-nginx
 spec:
   interval: 1h
   url: https://kubernetes.github.io/ingress-nginx
@@ -17,7 +11,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: ingress-nginx
-  namespace: ingress-nginx
 spec:
   interval: 30m
   chart:
@@ -27,21 +20,20 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: ingress-nginx
-        namespace: ingress-nginx
       interval: 12h
   values:
     controller:
       service:
         type: LoadBalancer
-      
+
       publishService:
         enabled: true
-      
+
       metrics:
         enabled: true
         serviceMonitor:
           enabled: false
-      
+
       replicaCount: 1
 
       extraArgs:

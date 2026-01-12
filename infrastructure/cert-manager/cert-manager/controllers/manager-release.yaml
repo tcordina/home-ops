@@ -1,9 +1,4 @@
 ---
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: cert-manager
----
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
@@ -30,7 +25,7 @@ spec:
         namespace: cert-manager
       interval: 12h
   values:
-    crds: 
+    crds:
       enabled: true
       keep: true
     prometheus:

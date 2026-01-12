@@ -1,0 +1,15 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-csi
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: 192.168.1.30
+  share: /mnt/main/k8s-volumes
+  subDir: ${pvc.metadata.name}-pv
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
+moutOptions:
+  - hard
+  - nfsvers=4.1

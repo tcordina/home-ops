@@ -2,7 +2,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
   name: kube-prometheus-stack
-  namespace: monitoring
 spec:
   interval: 1h
   url: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
@@ -13,14 +12,12 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: kube-prometheus-stack
-  namespace: monitoring
 spec:
   interval: 1h
   timeout: 10m
   chartRef:
       kind: OCIRepository
       name: kube-prometheus-stack
-      namespace: monitoring
   values:
     grafana:
       additionalDataSources:
@@ -51,7 +48,7 @@ spec:
         tls:
           - hosts:
               - alertmanager.lan.tablar.ovh
-    
+
     prometheus:
       ingress:
         enabled: true
