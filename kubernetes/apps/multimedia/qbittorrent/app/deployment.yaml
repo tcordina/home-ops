@@ -1,0 +1,100 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: qbittorrent
+spec:
+  interval: 12h
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 4.6.0
+  url: oci://ghcr.io/bjw-s-labs/helm/app-template
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: qbittorrent
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: qbittorrent
+  interval: 1h
+  values:
+    controllers:
+      qbittorrent:
+        pod:
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
+        containers:
+          app:
+            image:
+              repository: linuxserver/qbittorrent
+              tag: 5.1.4
+            env:
+              TZ: Europe/Paris
+              QBT_WEBUI_PORT: &port 8080
+              QBT_TORRENTING_PORT: 50413
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                cpu: 100m
+                memory: 1Gi
+            # securityContext:
+            #   allowPrivilegeEscalation: false
+            #   readOnlyRootFilesystem: true
+            #   capabilities: { drop: ["ALL"] }
+
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+
+    ingress:
+      qbittorrent:
+        enabled: true
+        className: nginx
+        hosts:
+          - host: torrent.lan.tablar.ovh
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: app
+                  port: *port
+        tls:
+          - hosts:
+            - torrent.lan.tablar.ovh
+
+    persistence:
+      config:
+        existingClaim: qbittorrent-config
+      downloads:
+        type: nfs
+        server: 192.168.1.30
+        path: /mnt/main/movies-library/data/downloads
+        globalMounts:
+          - path: /data/downloads
+            readOnly: false
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+            subPath: tmp

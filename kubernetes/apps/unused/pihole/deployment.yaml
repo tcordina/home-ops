@@ -1,0 +1,60 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: pihole
+  namespace: pihole
+spec:
+  interval: 24h
+  url: https://mojo2600.github.io/pihole-kubernetes/
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pihole
+  namespace: pihole
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: pihole
+      version: '2.x'
+      sourceRef:
+        kind: HelmRepository
+        name: pihole
+        namespace: pihole
+      interval: 1h
+  values:
+    DNS1: 9.9.9.9
+    DNS2: 1.1.1.1
+
+    persistentVolumeClaim:
+      enabled: true
+      existingClaim: data-pihole
+
+    admin:
+      existingSecret: pihole-admin
+
+    serviceDns:
+      # combine the TCP and UDP services
+      mixedService: true
+      loadBalancerIP: 192.168.1.100
+      type: LoadBalancer
+
+    serviceDhcp:
+      enabled: false
+
+    podDnsConfig:
+      enabled: true
+      policy: "None"
+      nameservers:
+      - 127.0.0.1
+      - 9.9.9.9
+
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      hosts:
+        - pihole.lan.tablar.ovh
+      tls:
+        - hosts:
+            - pihole.lan.tablar.ovh

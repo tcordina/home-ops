@@ -1,0 +1,112 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: immich
+spec:
+  interval: 12h
+  url: oci://ghcr.io/immich-app/immich-charts/immich
+  ref:
+    semver: "0.x"
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: immich
+spec:
+  interval: 1h
+  timeout: 1h
+  chartRef:
+    kind: OCIRepository
+    name: immich
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: immich-server
+            patch: |-
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: not-used
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: main
+                        resources:
+                          requests:
+                            memory: "1024Mi"
+                            cpu: "10m"
+                          limits:
+                            memory: "4096Mi"
+                            cpu: "2000m"
+
+          - target:
+              kind: Ingress
+              name: immich-server
+            patch: |-
+              - op: add
+                path: /spec/ingressClassName
+                value: nginx
+  values:
+    controllers:
+      main:
+        containers:
+          main:
+            image:
+              tag: v2.4.1 # {"$imagepolicy": "flux-system:immich-server:tag"}
+            env:
+              REDIS_HOSTNAME: '{{ printf "%s-valkey" .Release.Name }}'
+              # IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
+              DB_HOSTNAME: immich-postgres
+              DB_PORT: "5432"
+              DB_USERNAME: immich
+              DB_PASSWORD: immich
+              DB_DATABASE_NAME: immich
+
+    immich:
+      persistence:
+        library:
+          existingClaim: immich-library
+      # Prometheus metrics
+      metrics:
+        enabled: true
+
+    valkey:
+      enabled: true
+      persistence:
+        data:
+          enabled: false
+          #     size: 1Gi
+          #     type: persistentVolumeClaim
+          #     accessMode: ReadWriteOnce
+          #     storageClass: nfs-csi
+
+    server:
+      enabled: true
+      ingress:
+        main:
+          enabled: true
+          ingressClassName: nginx
+          annotations:
+            nginx.ingress.kubernetes.io/proxy-body-size: "0"
+          hosts:
+            - host: immich.lan.tablar.ovh
+              paths:
+                - path: /
+                  service:
+                    identifier: main
+          tls:
+            - hosts:
+                - immich.lan.tablar.ovh
+
+    machine-learning:
+      enabled: false
+      # persistence:
+      #   cache:
+      #     enabled: true
+      #     size: 10Gi
+      #     type: persistentVolumeClaim
+      #     accessMode: ReadWriteOnce
+      #     storageClass: nfs-csi

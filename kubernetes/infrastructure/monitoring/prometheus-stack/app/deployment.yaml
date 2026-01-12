@@ -1,0 +1,81 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: kube-prometheus-stack
+spec:
+  interval: 1h
+  url: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
+  ref:
+    semver: "79.x"
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+spec:
+  interval: 1h
+  timeout: 10m
+  chartRef:
+      kind: OCIRepository
+      name: kube-prometheus-stack
+  values:
+    grafana:
+      additionalDataSources:
+        - name: Loki
+          type: loki
+          url: http://loki-gateway
+          access: proxy
+          isDefault: false
+          jsonData:
+            httpHeaderName1: "X-Scope-OrgID"
+          secureJsonData:
+            httpHeaderValue1: "fake"
+      ingress:
+        enabled: true
+        ingressClassName: nginx
+        hosts:
+          - grafana.lan.tablar.ovh
+        tls:
+          - hosts:
+              - grafana.lan.tablar.ovh
+
+    alertmanager:
+      ingress:
+        enabled: true
+        ingressClassName: nginx
+        hosts:
+          - alertmanager.lan.tablar.ovh
+        tls:
+          - hosts:
+              - alertmanager.lan.tablar.ovh
+
+    prometheus:
+      ingress:
+        enabled: true
+        ingressClassName: nginx
+        hosts:
+          - prometheus.lan.tablar.ovh
+        tls:
+          - hosts:
+              - prometheus.lan.tablar.ovh
+      prometheusSpec:
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        probeSelectorNilUsesHelmValues: false
+        scrapeConfigSelectorNilUsesHelmValues: false
+        ruleSelectorNilUsesHelmValues: false
+        externalPrefixNilUsesHelmValues: false
+        scrapeInterval: 5m
+        evaluationInterval: 5m
+        retention: 2d
+        retentionSize: "9GiB"
+        storageSpec:
+          volumeClaimTemplate:
+            metadata:
+              name: data
+            spec:
+              storageClassName: local-path
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 10Gi

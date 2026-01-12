@@ -1,0 +1,121 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: jellyfin
+spec:
+  interval: 12h
+  url: https://jellyfin.github.io/jellyfin-helm
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app jellyfin
+spec:
+  interval: 1h
+  timeout: 1h
+  chart:
+      spec:
+        chart: jellyfin
+        version: '*'
+        sourceRef:
+          kind: HelmRepository
+          name: *app
+        interval: 12h
+
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: jellyfin
+            patch: |-
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: not-used
+              spec:
+                template:
+                  spec:
+                    volumes:
+                      - name: cache
+                        emptyDir:
+                          medium: Memory
+                          sizeLimit: 1Gi
+          # - target:
+          #     kind: Deployment
+          #     name: jellyfin
+          #   patch: |-
+          #     apiVersion: apps/v1
+          #     kind: Deployment
+          #     metadata:
+          #       name: not-used
+          #     spec:
+          #       template:
+          #         spec:
+          #           containers:
+          #             - name: jellyfin
+          #               envFrom:
+          #                 # sets POSTGRES_USER and POSTGRES_PASSWORD
+          #                 - secretRef:
+          #                     name: jellyfin-postgres-auth
+
+  values:
+    # image:
+    #   repository: ghcr.io/jpvenson/jellyfin.pgsql
+    #   tag: 10.11.0-1
+    ingress:
+      enabled: true
+      className: nginx
+      hosts:
+        - host: jellyfin.lan.tablar.ovh
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - hosts:
+           - jellyfin.lan.tablar.ovh
+    
+    # jellyfin:
+    #   env:
+    #     - name: POSTGRES_HOST
+    #       value: jellyfin-postgres
+    #     - name: POSTGRES_PORT
+    #       value: "5432"
+    #     - name: POSTGRES_DB
+    #       value: jellyfin
+
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        interval: 5m
+
+    persistence:
+      cache:
+        # set to false to use emptyDir
+        enabled: false
+      config:
+        existingClaim: jellyfin-config
+      # media produced by jellyfin like thumbnails
+      media:
+        enabled: true
+        existingClaim: jellyfin-media
+
+    resources: {}
+      # limits:
+      #   cpu: 100m
+      #   memory: 128Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 128Mi
+
+    volumes:
+      - name: movies-library
+        nfs:
+          server: 192.168.1.30
+          path: /mnt/main/movies-library/data/media
+
+    volumeMounts:
+      - mountPath: /movies-library
+        name: movies-library
+        readOnly: false

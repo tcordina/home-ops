@@ -1,0 +1,24 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: discord-bot
+spec:
+  image: registry.gitlab.com/tcordina/discord-bot
+  interval: 5m  # Check for new images every 5 minutes
+  secretRef:
+    name: gitlab-registry-secret
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: discord-bot
+spec:
+  imageRepositoryRef:
+    name: discord-bot
+  filterTags:
+    pattern: '^latest$'
+  policy:
+    alphabetical: {}
+  digestReflectionPolicy: Always
+  interval: 5m
