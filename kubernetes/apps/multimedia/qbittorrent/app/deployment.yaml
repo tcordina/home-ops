@@ -1,100 +1,127 @@
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
-kind: OCIRepository
+kind: HelmRepository
 metadata:
   name: qbittorrent
 spec:
   interval: 12h
-  layerSelector:
-    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
-    operation: copy
-  ref:
-    tag: 4.6.0
-  url: oci://ghcr.io/bjw-s-labs/helm/app-template
+  url: https://rtomik.github.io/helm-charts
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: qbittorrent
+  name: &app qbittorrent
 spec:
-  chartRef:
-    kind: OCIRepository
-    name: qbittorrent
   interval: 1h
+  chart:
+    spec:
+      chart: qbittorrent-vpn
+      version: '0.0.2'
+      sourceRef:
+        kind: HelmRepository
+        name: *app
+      interval: 12h
   values:
-    controllers:
-      qbittorrent:
-        pod:
-          securityContext:
-            fsGroup: 1000
-            fsGroupChangePolicy: "OnRootMismatch"
-            runAsGroup: 1000
-            runAsNonRoot: true
-            runAsUser: 1000
-        containers:
-          app:
-            image:
-              repository: linuxserver/qbittorrent
-              tag: 5.1.4
-            env:
-              TZ: Europe/Paris
-              QBT_WEBUI_PORT: &port 8080
-              QBT_TORRENTING_PORT: 50413
-            probes:
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
-              startup:
-                enabled: true
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 5
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                cpu: 100m
-                memory: 1Gi
-            # securityContext:
-            #   allowPrivilegeEscalation: false
-            #   readOnlyRootFilesystem: true
-            #   capabilities: { drop: ["ALL"] }
+    qbittorrent:
+      image:
+        repository: linuxserver/qbittorrent
+        tag: 5.1.4
+      env:
+      - name: TZ
+        value: "Europe/Paris"
+      - name: WEBUI_PORT
+        value: &port 8080
+      - name: TORRENTING_PORT
+        value: &torrentPort 50349
+      - name: PUID
+        value: "0"
+      - name: PGID
+        value: "0"
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+        limits:
+          cpu: 1000m
+          memory: 2Gi
+      service:
+        port: *port
+      bittorrentPort: *torrentPort
+      persistence:
+        config:
+          enabled: true
+          existingClaim: "qbittorrent-config"
+      extraVolumeMounts:
+        - name: qbittorrent-downloads
+          mountPath: /data/downloads
 
-    service:
-      app:
-        ports:
-          http:
-            port: *port
+    gluetun:
+      image:
+        repository: qmcgaw/gluetun
+        tag: v3.41.0
+      vpn:
+        provider: "protonvpn"
+        type: "openvpn"   # or wireguard
+        serverCountries: "Netherlands,Switzerland"
+        serverCities: ""  # e.g., "Amsterdam,Frankfurt" (optional)
+        serverNames: ""   # e.g., "nl1,nl2" (optional)
+        randomize: "true" # Randomize server selection
+        openvpn:
+          OPENVPN_PROTOCOL: "udp"
+          PROTONVPN_TIER: "2"  # 0 is free, 2 is paid (Plus/Visionary)
+          SERVER_FEATURES: "p2p"  # For torrent support
+      credentials:
+        create: false # set to false if using existing secret
+        existingSecret: "qbittorrent-vpn-auth"
+        usernameKey: "PROTON_USERNAME"
+        passwordKey: "PROTON_PASSWORD"
+
+      # General Gluetun settings as environment variables
+      settings:
+        BLOCK_MALICIOUS: "off"
+        FIREWALL: "on"
+        FIREWALL_OUTBOUND_SUBNETS: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+        DNS_ADDRESS: "1.1.1.1"
+        HEALTH_SERVER_PORT: "8000"
+
+        # Important: Add these settings to make networking work correctly with ingress
+        SERVER_ALLOWLIST: "qbittorrent:8080"  # Allow accessing qBittorrent container
+        FIREWALL_INPUT_PORTS: "8080"          # Allow ingress traffic to port 8080
+        FIREWALL_DEBUG: "on"                  # Enable firewall debugging (temporarily)
+        JOURNALD: "off"                       # Disable journald (not needed for debugging)
+
+        # Optional port forwarding
+        VPN_PORT_FORWARDING: "off"
+
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 300m
+          memory: 256Mi
+      persistence:
+        enabled: false
+        # existingClaim: gluetun-config
+        # storageClass: ""
+        # accessMode: ReadWriteOnce
+        # size: 100Mi
+
+    extraVolumes:
+      - name: qbittorrent-downloads
+        nfs:
+          server: 192.168.1.30
+          path: /mnt/main/movies-library/data/downloads
+          readOnly: false
 
     ingress:
-      qbittorrent:
-        enabled: true
-        className: nginx
-        hosts:
-          - host: torrent.lan.tablar.ovh
-            paths:
-              - path: /
-                pathType: Prefix
-                service:
-                  identifier: app
-                  port: *port
-        tls:
-          - hosts:
-            - torrent.lan.tablar.ovh
-
-    persistence:
-      config:
-        existingClaim: qbittorrent-config
-      downloads:
-        type: nfs
-        server: 192.168.1.30
-        path: /mnt/main/movies-library/data/downloads
-        globalMounts:
-          - path: /data/downloads
-            readOnly: false
-      tmpfs:
-        type: emptyDir
-        globalMounts:
-          - path: /tmp
-            subPath: tmp
+      enabled: true
+      className: nginx
+      hosts:
+        - host: torrent.lan.tablar.ovh
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+          - torrent.lan.tablar.ovh
