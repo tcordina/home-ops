@@ -79,7 +79,6 @@ resource "proxmox_vm_qemu" "k3s-nodes" {
     cores = count.index == 0 ? 4 : 6
   }
   memory           = 6144
-  balloon          = 2048
   boot             = "order=scsi0"        # has to be the same as the OS disk of the template
   clone            = "ubuntu24-cloudinit" # The name of the template
   scsihw           = "virtio-scsi-single"

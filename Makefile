@@ -1,8 +1,8 @@
-.PHONY: tf-plan tf-apply tf-destroy flux-pull flux-push flux-update encrypt-secrets init-cluster
+.PHONY: tf-plan tf-apply tf-destroy git-override encrypt-secrets init-cluster
 
 INFRA_DIR = $(abspath ./infrastructure)
 TF_DIR = $(INFRA_DIR)/terraform
-FLUX_DIR = $(abspath ./flux)
+K8S_DIR = $(abspath ./kubernetes)
 
 
 # --- TERRAFORM --- #
@@ -16,30 +16,8 @@ tf-destroy:
 	cd $(TF_DIR) && terraform destroy -var-file="$(TF_DIR)/secrets.auto.tfvars" -auto-approve
 
 
-# --- FLUX --- #
-flux-pull:
-	@echo "⬇️ Pulling latest changes..."
-	@cd $(FLUX_DIR) && git pull origin main
-
-flux-push:
-	@cd $(FLUX_DIR) && \
-	if git diff --quiet && git diff --staged --quiet; then \
-		echo "✅ No changes to commit"; \
-	else \
-		echo "📝 Committing changes..."; \
-		git add -A; \
-		git commit -m "flux: update configuration [$(shell date '+%Y-%m-%d %H:%M')]"; \
-	fi
-	@echo "⬆️  Pushing to remote..."
-	@cd $(FLUX_DIR) && git push origin main
-	@echo "🔄 Reconciling Flux..."
-	@flux reconcile source git flux-system
-
-flux-update: flux-pull flux-push
-	@echo "✨ Flux updated successfully!"
-
-flux-override:
-	@cd $(FLUX_DIR) && \
+# --- GIT --- #
+git-override:
 	if git diff --quiet && git diff --staged --quiet; then \
 		echo "✅ No changes to commit"; \
 	else \
@@ -48,19 +26,19 @@ flux-override:
 		git commit --amend --no-edit; \
 	fi
 	@echo "⬆️  Pushing to remote..."
-	@cd $(FLUX_DIR) && git push origin main --force
+	git push origin main --force
 	@echo "🔄 Reconciling Flux..."
 	@flux reconcile source git flux-system
 
 
 # --- SOPS --- #
 encrypt-secret:
-	sops --encrypt --output "$(ns)/secret.secrets.yaml" --config $(FLUX_DIR)/.sops.yaml "$(ns)/secret.yaml";
+	sops --encrypt --output "$(ns)/secret.secrets.yaml" --config $(K8S_DIR)/.sops.yaml "$(ns)/secret.yaml";
 
 encrypt-all:
-	@find $(FLUX_DIR) -name "secret.yaml" -type f | while read file; do \
+	@find $(K8S_DIR) -name "secret.yaml" -type f | while read file; do \
 		dir=$$(dirname "$$file"); \
-		sops --encrypt --output "$$dir/secret.secrets.yaml" --config $(FLUX_DIR)/.sops.yaml "$$file"; \
+		sops --encrypt --output "$$dir/secret.secrets.yaml" --config $(K8S_DIR)/.sops.yaml "$$file"; \
 		echo "✅ Encrypted $$file -> $$dir/secret.secrets.yaml"; \
 	done
 
