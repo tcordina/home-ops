@@ -37,4 +37,4 @@ spec:
       replicaCount: 1
 
       extraArgs:
-        default-ssl-certificate: "default/wildcard-tablar-ovh-tls"
+        default-ssl-certificate: "cert-manager/wildcard-tablar-ovh-tls"

@@ -16,11 +16,10 @@ spec:
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
-    name: flux-system 
+    name: flux-system
     namespace: flux-system
   timeout: 15m
   wait: false
-  targetNamespace: default
   decryption:
     provider: sops
     secretRef:

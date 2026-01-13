@@ -10,7 +10,6 @@ spec:
   path: ./kubernetes/infrastructure/ingress-nginx/ingress-nginx/app
   prune: true
   wait: true
-  targetNamespace: ingress-nginx
   sourceRef:
     kind: GitRepository
     name: flux-system

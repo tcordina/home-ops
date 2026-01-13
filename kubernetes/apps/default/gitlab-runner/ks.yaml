@@ -20,7 +20,6 @@ spec:
     namespace: flux-system
   timeout: 15m
   wait: false
-  targetNamespace: default
   decryption:
     provider: sops
     secretRef:
