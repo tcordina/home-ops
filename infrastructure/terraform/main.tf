@@ -42,7 +42,7 @@ data "local_file" "cloud-init_worker" {
   filename = "${path.module}/cloud-init/worker.yaml"
 }
 
-resource "null_resource" "cloud-init_upload" {
+resource "terraform_data" "cloud-init_upload" {
   provisioner "local-exec" {
     command = <<-EOT
       scp ${path.module}/cloud-init/master.yaml root@${var.pve_ip}:/var/lib/vz/snippets/cloud-init-master.yaml
@@ -55,7 +55,7 @@ resource "null_resource" "cloud-init_upload" {
     EOT
   }
 
-  triggers = {
+  triggers_replace = {
     cloud-init_master_hash       = md5(data.local_file.cloud-init_master.content)
     cloud-init_controlplane-hash = md5(data.local_file.cloud-init_controlplane.content)
     cloud-init_worker_hash       = md5(data.local_file.cloud-init_worker.content)
@@ -98,7 +98,7 @@ resource "proxmox_vm_qemu" "k3s-nodes" {
     ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH1HxNNmPvsZQFSuU8EuTn/cFwL9Jh1CUZiRvNbbP/gG other-nodes
   EOT
 
-  depends_on = [proxmox_pool.k3s-pool, null_resource.cloud-init_upload]
+  depends_on = [proxmox_pool.k3s-pool, terraform_data.cloud-init_upload]
 
   # Most cloud-init images require a serial device for their display
   serial {
@@ -139,4 +139,68 @@ resource "proxmox_vm_qemu" "k3s-nodes" {
   #   bridge = "vmbr10"
   #   model  = "virtio"
   # }
+}
+
+resource "proxmox_lxc" "haproxy" {
+  vmid            = 400
+  hostname        = "ha-proxy"
+  target_node     = "pve"
+  ostemplate      = "local:vztmpl/ubuntu-24.04-standard_24.04-2_amd64.tar.zst"
+  ssh_public_keys = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOrNZ7JA97YCtp8zNmrF0t3XwhgOi3eytHdA057yIhRX thibaud@M1"
+  pool            = "k3s-cluster"
+  unprivileged    = true
+  onboot          = true
+  start           = true
+
+  cores  = 1
+  memory = 512
+  swap   = 0
+
+  rootfs {
+    storage = "local-lvm"
+    size    = "2G"
+  }
+
+  network {
+    name   = "eth0"
+    bridge = "vmbr0"
+    ip     = "192.168.1.100/24"
+    gw     = "192.168.1.1"
+  }
+
+  features {
+    nesting = true
+  }
+}
+
+resource "terraform_data" "haproxy_config" {
+  depends_on = [proxmox_lxc.haproxy]
+
+  provisioner "file" {
+    source      = "./cloud-init/haproxy.cfg"
+    destination = "/tmp/haproxy.cfg"
+
+    connection {
+      host        = "192.168.1.100"
+      type        = "ssh"
+      user        = "root"
+      private_key = file("~/.ssh/id_ed25519")
+    }
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "apt-get -qq update -y",
+      "apt-get -qq install haproxy -y",
+      "mv /tmp/haproxy.cfg /etc/haproxy/haproxy.cfg",
+      "systemctl restart haproxy"
+    ]
+
+    connection {
+      host        = "192.168.1.100"
+      type        = "ssh"
+      user        = "root"
+      private_key = file("~/.ssh/id_ed25519")
+    }
+  }
 }
