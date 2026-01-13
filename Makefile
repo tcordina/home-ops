@@ -45,4 +45,4 @@ encrypt-all:
 
 # --- INIT --- #
 init-cluster:
-	@cd $(INFRA_DIR)/bootstrap && bash bootstrap.sh
+	@cd $(K8S_DIR)/.bootstrap && bash bootstrap.sh

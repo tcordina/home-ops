@@ -2,7 +2,7 @@
 
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-source $DIR/../.env
+source $DIR/.env
 
 
 # --- CONFIGURE KUBECTL --- #
