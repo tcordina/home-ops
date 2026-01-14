@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: discord-bot
-          image: registry.gitlab.com/tcordina/discord-bot:latest@sha256:e3dc26a93d87cfc7906deab6a9b9716a83a77a85e9138b69a6d1d3f6d6e9db27 # {"$imagepolicy": "default:discord-bot"}
+          image: registry.gitlab.com/tcordina/discord-bot:latest@sha256:5d4a21e99eada702d3c4c6f0c32e231d876cd76c73da0049d183cd9af5a3057c # {"$imagepolicy": "default:discord-bot"}
           imagePullPolicy: IfNotPresent
           env:
             - name: LOG_LEVEL
