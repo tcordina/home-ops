@@ -1,0 +1,48 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: immich-server
+spec:
+  image: ghcr.io/immich-app/immich-server
+  interval: 5m
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: immich-server
+spec:
+  imageRepositoryRef:
+    name: immich-server
+  filterTags:
+    pattern: '^v(?P<semver>[0-9]*\.[0-9]*\.[0-9]*)$'
+    extract: '$semver'
+  policy:
+    semver:
+      range: '>=2.0.0 <3.0.0'
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageUpdateAutomation
+metadata:
+  name: immich-server
+spec:
+  interval: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        email: fluxcdbot@users.noreply.gitlab.com
+        name: fluxcdbot
+      messageTemplate: |
+        [multimedia/immich-server] image update: {{range .Changed.Changes}}{{print .OldValue}} -> {{println .NewValue}}{{end}}
+    push:
+      branch: main
+  update:
+    path: ./
+    strategy: Setters

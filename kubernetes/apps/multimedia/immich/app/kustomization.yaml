@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - ./pvc.yaml
   - ./deployment.yaml
-  - ./image-policy.yaml
+  - ./image-update.yaml
