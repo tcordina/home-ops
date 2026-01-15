@@ -34,7 +34,33 @@ spec:
         serviceMonitor:
           enabled: false
 
-      replicaCount: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 90Mi
+        limits: {}
 
+      replicaCount: 3
+
+      # avoid scheduling more than 1 pod on the same node
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - '{{ include "ingress-nginx.name" . }}'
+              - key: app.kubernetes.io/instance
+                operator: In
+                values:
+                - '{{ .Release.Name }}'
+              - key: app.kubernetes.io/component
+                operator: In
+                values:
+                - controller
+      
       extraArgs:
         default-ssl-certificate: "cert-manager/wildcard-tablar-ovh-tls"
