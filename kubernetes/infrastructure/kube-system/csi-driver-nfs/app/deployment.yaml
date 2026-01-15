@@ -21,7 +21,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: csi-driver-nfs
-      interval: 12h
   values:
     controller:
       runOnMaster: false

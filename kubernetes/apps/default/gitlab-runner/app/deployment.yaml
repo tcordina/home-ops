@@ -4,7 +4,7 @@ kind: HelmRepository
 metadata:
   name: gitlab-runner
 spec:
-  interval: 1h
+  interval: 12h
   url: https://charts.gitlab.io
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -12,7 +12,8 @@ kind: HelmRelease
 metadata:
   name: gitlab-runner
 spec:
-  interval: 30m
+  interval: 1h
+  timeout: 1h
   chart:
     spec:
       chart: gitlab-runner
@@ -20,14 +21,19 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: gitlab-runner
-      interval: 12h
   valuesFrom:
   - kind: Secret
     name: gitlab-runner-secret
     valuesKey: runner-registration-token
     targetPath: runnerRegistrationToken
   values:
+    image:
+      registry: registry.gitlab.com
+      image: gitlab-org/gitlab-runner
+      tag: alpine-v{{.Chart.AppVersion}}
+
     gitlabUrl: https://gitlab.com/
+
     runners:
       tags: "docker"
       config: |

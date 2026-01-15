@@ -13,6 +13,7 @@ metadata:
   name: &app nextcloud
 spec:
   interval: 1h
+  timeout: 1h
   chart:
     spec:
       chart: nextcloud
@@ -20,7 +21,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: *app
-      interval: 12h
   values:
     image:
       tag: stable-fpm-alpine

@@ -21,6 +21,7 @@ spec:
     kind: OCIRepository
     name: radarr
   interval: 1h
+  timeout: 1h
   values:
     controllers:
       radarr:

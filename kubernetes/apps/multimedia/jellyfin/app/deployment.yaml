@@ -14,13 +14,12 @@ spec:
   interval: 1h
   timeout: 1h
   chart:
-      spec:
-        chart: jellyfin
-        version: '*'
-        sourceRef:
-          kind: HelmRepository
-          name: *app
-        interval: 12h
+    spec:
+      chart: jellyfin
+      version: '2.x'
+      sourceRef:
+        kind: HelmRepository
+        name: *app
 
   postRenderers:
     - kustomize:

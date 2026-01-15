@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 1h
   retryInterval: 2m
-  timeout: 5m
+  timeout: 1h
   dependsOn:
     - name: infrastructure
   sourceRef:
