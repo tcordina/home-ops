@@ -5,6 +5,5 @@ replacements:
 resources:
   - ./namespace.yaml
   - ./jellyfin/ks.yaml
-#  - ./nextcloud/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./sonarr/ks.yaml

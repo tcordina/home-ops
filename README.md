@@ -1,8 +1,7 @@
 # Todo list
-- add jellyseerr & prowlarr
-- add [renovate](https://docs.renovatebot.com) config 
+- add jellyseerr, prowlarr & copyparty
+- add [renovate](https://docs.renovatebot.com) config
 - migrate everything to oci://ghcr.io/bjw-s-labs/helm/app-template helm template (https://kubesearch.dev)
-- fix nextcloud instance probes failing
 - setup alerts
 
 ---
@@ -47,8 +46,7 @@
     - sonarr
     - radarr
     - qbittorrent + gluetun
-  - immich
-  - nextcloud
 - misc :
+  - immich
   - discord bot
   - gitlab ci runner
