@@ -20,10 +20,8 @@ spec:
             # Store data in a subdir. Using a mount point directly as the data directory crashes the container
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
-            - name: POSTGRES_DB
-              value: immich
           envFrom:
-            # sets POSTGRES_USER and POSTGRES_PASSWORD
+            # sets POSTGRES_USER, POSTGRES_PASSWORD and POSTGRES_DB
             - secretRef:
                 name: immich-postgres-auth
           args:

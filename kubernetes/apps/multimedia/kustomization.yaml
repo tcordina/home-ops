@@ -4,7 +4,6 @@ replacements:
   - path: ../../components/replacements/ks.yaml
 resources:
   - ./namespace.yaml
-  - ./immich/ks.yaml
   - ./jellyfin/ks.yaml
 #  - ./nextcloud/ks.yaml
   - ./qbittorrent/ks.yaml

@@ -40,7 +40,7 @@ spec:
         email: fluxcdbot@users.noreply.gitlab.com
         name: fluxcdbot
       messageTemplate: |
-        [multimedia/immich-server] image update: {{range .Changed.Changes}}{{print .OldValue}} -> {{println .NewValue}}{{end}}
+        [default/immich-server] image update: {{range .Changed.Changes}}{{print .OldValue}} -> {{println .NewValue}}{{end}}
     push:
       branch: main
   update:

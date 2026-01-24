@@ -6,3 +6,4 @@ resources:
   - ./namespace.yaml
   - ./discord-bot/ks.yaml
   - ./gitlab-runner/ks.yaml
+  - ./immich/ks.yaml
