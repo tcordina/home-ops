@@ -5,5 +5,7 @@ replacements:
 resources:
   - ./namespace.yaml
   - ./jellyfin/ks.yaml
+  - ./prowlarr/ks.yaml
   - ./qbittorrent/ks.yaml
+  - ./radarr/ks.yaml
   - ./sonarr/ks.yaml
