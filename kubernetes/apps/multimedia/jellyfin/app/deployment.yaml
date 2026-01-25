@@ -66,13 +66,13 @@ spec:
       enabled: true
       className: nginx
       hosts:
-        - host: jellyfin.lan.tablar.ovh
+        - host: cinema.lan.tablar.ovh
           paths:
             - path: /
               pathType: ImplementationSpecific
       tls:
         - hosts:
-           - jellyfin.lan.tablar.ovh
+           - cinema.lan.tablar.ovh
     
     # jellyfin:
     #   env:
@@ -100,13 +100,13 @@ spec:
         enabled: true
         existingClaim: jellyfin-media
 
-    resources: {}
-      # limits:
-      #   cpu: 100m
-      #   memory: 128Mi
-      # requests:
-      #   cpu: 100m
-      #   memory: 128Mi
+    resources:
+      requests:
+        cpu: 10m
+        memory: 256Mi
+      limits:
+        cpu: 200m
+        memory: 1024Mi
 
     volumes:
       - name: movies-library
