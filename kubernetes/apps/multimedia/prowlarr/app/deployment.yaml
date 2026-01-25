@@ -53,6 +53,9 @@ spec:
               PROWLARR__SERVER__PORT: &port 9696
               PROWLARR__UPDATE__BRANCH: develop
               TZ: Europe/Paris
+            envFrom:
+              - secretRef:
+                  name: prowlarr-secret
             probes:
               liveness: &probes
                 enabled: true
