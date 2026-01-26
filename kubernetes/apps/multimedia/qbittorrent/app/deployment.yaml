@@ -34,9 +34,9 @@ spec:
       - name: TORRENTING_PORT
         value: &torrentPort 50349
       - name: PUID
-        value: "0"
+        value: "1000"
       - name: PGID
-        value: "0"
+        value: "1000"
       resources:
         requests:
           cpu: 200m
