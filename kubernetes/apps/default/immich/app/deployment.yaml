@@ -4,7 +4,7 @@ kind: OCIRepository
 metadata:
   name: immich
 spec:
-  interval: 1h
+  interval: 12h
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
@@ -18,6 +18,7 @@ metadata:
   name: immich
 spec:
   interval: 1h
+  timeout: 1h
   chartRef:
     kind: OCIRepository
     name: immich
