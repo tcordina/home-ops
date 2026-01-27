@@ -19,6 +19,13 @@ scp ubuntu@$MASTER_IP:/etc/rancher/k3s/k3s.yaml ~/.kube/config
 sed -i "s/127\.0\.0\.1/$LOADBALANCER_IP/g" ~/.kube/config
 
 
+# --- CONFIGURE EXTERNAL SECRETS --- #
+echo -e "\nConfiguring external secrets..."
+
+kubectl create namespace external-secrets
+kubectl create secret generic bitwarden-access-token --from-literal=token=$BW_TOKEN --namespace=external-secrets
+
+
 # --- BOOTSTRAP FLUXCD --- #
 echo -e "\nBootstrapping Flux..."
 
