@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - deployment.yaml
   - image-update.yaml
-  - secret.secrets.yaml
+  - external-secret.yaml
