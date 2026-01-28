@@ -5,4 +5,4 @@ replacements:
 resources:
   - ./namespace.yaml
   - ./loki/ks.yaml
-  - ./prometheus-stack/ks.yaml
+  - ./kube-prometheus-stack/ks.yaml

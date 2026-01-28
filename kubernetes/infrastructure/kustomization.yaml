@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - ./cert-manager
   - ./external-secrets
-#  - ./flux-system
+  - ./flux-system
   - ./ingress-nginx
   - ./kube-system
   - ./monitoring

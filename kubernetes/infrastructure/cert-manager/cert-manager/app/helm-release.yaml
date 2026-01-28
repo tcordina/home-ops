@@ -6,13 +6,9 @@ metadata:
 spec:
   interval: 1h
   timeout: 1h
-  chart:
-    spec:
-      chart: cert-manager
-      version: '1.19.x'
-      sourceRef:
-        kind: HelmRepository
-        name: cert-manager
+  chartRef:
+    kind: OCIRepository
+    name: cert-manager
   values:
     crds:
       enabled: true

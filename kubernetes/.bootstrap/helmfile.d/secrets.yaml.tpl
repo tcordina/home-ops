@@ -1,0 +1,1 @@
+{{ readFile (print "../../infrastructure/flux-system/flux-instance/external-secret.yaml") }}

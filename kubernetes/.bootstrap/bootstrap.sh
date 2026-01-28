@@ -19,28 +19,15 @@ scp ubuntu@$MASTER_IP:/etc/rancher/k3s/k3s.yaml ~/.kube/config
 sed -i "s/127\.0\.0\.1/$LOADBALANCER_IP/g" ~/.kube/config
 
 
-# --- CONFIGURE EXTERNAL SECRETS --- #
-echo -e "\nConfiguring external secrets..."
-
-kubectl create namespace external-secrets
-kubectl create secret generic bitwarden-access-token --from-literal=token=$BW_TOKEN --namespace=external-secrets
-
-
-# --- BOOTSTRAP FLUXCD --- #
-echo -e "\nBootstrapping Flux..."
+# --- BOOTSTRAP CLUSTER --- #
+echo -e "\nBootstrapping cluster..."
 
 kubectl create namespace flux-system
 
 # key generated with `$ age-keygen -o ./infrastructure/bootstrap/age.agekey`
 kubectl create secret generic sops-age --from-file=age.agekey=$DIR/age.agekey --namespace=flux-system
+kubectl create secret generic bitwarden-access-token --from-literal=token=$BW_TOKEN --namespace=external-secrets
 
-export GITLAB_TOKEN=$GITLAB_TOKEN
-flux bootstrap gitlab \
-    --components-extra=image-reflector-controller,image-automation-controller \
-    --token-auth \
-    --owner=tcordina \
-    --repository=homelab-cluster \
-    --branch=main \
-    --path=kubernetes/clusters/main \
-    --author-email fluxcdbot@users.noreply.gitlab.com \
-    --personal
+helmfile apply --file $DIR/helmfile.d/crds.yaml --skip-diff-on-install --suppress-diff
+kubectl apply -f $DIR/../infrastructure/flux-system/flux-instance/app/external-secret.yaml
+helmfile apply --file $DIR/helmfile.d/apps.yaml --skip-diff-on-install --suppress-diff

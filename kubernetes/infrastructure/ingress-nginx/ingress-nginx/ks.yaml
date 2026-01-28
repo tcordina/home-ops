@@ -4,8 +4,6 @@ metadata:
   name: ingress-nginx
   namespace: flux-system
 spec:
-  dependsOn:
-  - name: prometheus-stack
   interval: 5m
   path: ./kubernetes/infrastructure/ingress-nginx/ingress-nginx/app
   prune: true
