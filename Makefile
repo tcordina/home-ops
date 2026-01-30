@@ -1,4 +1,4 @@
-.PHONY: tf-plan tf-apply tf-destroy git-override encrypt-secrets init-cluster
+.PHONY: tf-plan tf-apply tf-destroy git-override encrypt-secret encrypt-all bootstrap-kubeconfig bootstrap-cluster bootstrap
 
 INFRA_DIR = $(abspath ./infrastructure)
 TF_DIR = $(INFRA_DIR)/terraform
@@ -43,6 +43,12 @@ encrypt-all:
 	done
 
 
-# --- INIT --- #
-init-cluster:
+# --- KUBERNETES BOOTSTRAP --- #
+bootstrap-kubeconfig:
+	@cd $(K8S_DIR)/.bootstrap && bash grab-kubeconfig.sh
+
+bootstrap-cluster:
 	@cd $(K8S_DIR)/.bootstrap && bash bootstrap.sh
+
+bootstrap:
+	bootstrap-kubeconfig bootstrap-cluster

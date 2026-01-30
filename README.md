@@ -1,6 +1,8 @@
 # Todo list
-- add jellyseerr, prowlarr & copyparty
+- add jellyseerr
 - add [renovate](https://docs.renovatebot.com) config
+- add crunchy postgres operator and migrate PG instances
+- setup postgres for *arr services
 - migrate everything to oci://ghcr.io/bjw-s-labs/helm/app-template helm template (https://kubesearch.dev)
 - setup alerts
 
