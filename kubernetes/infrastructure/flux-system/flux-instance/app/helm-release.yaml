@@ -29,8 +29,6 @@ spec:
         - kustomize-controller
         - helm-controller
         - notification-controller
-        - image-reflector-controller
-        - image-automation-controller
       sync:
         kind: GitRepository
         url: https://gitlab.com/tcordina/homelab-cluster.git
