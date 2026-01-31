@@ -1,12 +1,99 @@
+
+
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
   ],
   "timezone": "Europe/Paris",
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "🤖 Renovate Dashboard",
+  "suppressNotifications": ["prEditedNotification"],
+  "rebaseWhen": "conflicted",
+  "semanticCommits": "enabled",
+  "commitMessagePrefix": "chore(deps):",
+  "commitMessageAction": "update",
+  "commitMessageTopic": "{{depName}}",
+  "commitMessageExtra": "to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isMajor}}{{prettyNewMajor}}{{else}}{{#if isSingleVersion}}{{prettyNewVersion}}{{else}}{{#if newValue}}{{{newValue}}}{{else}}{{{newDigestShort}}}{{/if}}{{/if}}{{/if}}{{/if}}",
+  "labels": ["dependencies", "renovate"],
+  "assigneesFromCodeOwners": true,
+  
+  "flux": {
+    "managerFilePatterns": ["/^kubernetes/.+\\.yaml(?:\\.j2)?$/"]
+  },
+  "helm-values": {
+    "managerFilePatterns": ["/^kubernetes/.+\\.yaml(?:\\.j2)?$/"]
+  },
+  "kubernetes": {
+    "managerFilePatterns": ["/^kubernetes/.+\\.yaml(?:\\.j2)?$/"]
+  },
+  "terraform": {
+    "managerFilePatterns": ["/infrastructure/terraform/.+\\.tf$"]
+  },
+  
+  "packageRules": [
+    {
+      "description": "Auto-merge minor and patch updates",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Major updates require manual review",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "addLabels": ["major-update", "requires-review"]
+    },
+    {
+      "description": "Terraform providers and modules",
+      "matchDatasources": ["terraform-provider", "terraform-module"],
+      "groupName": "Terraform",
+      "commitMessageTopic": "Terraform {{depName}}"
+    },
+    {
+      "description": "Flux components",
+      "matchDatasources": ["docker", "helm"],
+      "matchPackagePatterns": [
+        "^fluxcd/",
+        "^ghcr.io/fluxcd/"
+      ],
+      "groupName": "Flux",
+      "commitMessageTopic": "Flux {{depName}}",
+      "addLabels": ["flux"]
+    },
+    {
+      "description": "Kubernetes manifests",
+      "matchDatasources": ["docker", "helm"],
+      "groupName": "Kubernetes",
+      "commitMessageTopic": "Kubernetes {{depName}}",
+      "addLabels": ["kubernetes"]
+    },
+    {
+      "description": "Bootstrap helmfiles",
+      "matchDatasources": ["helm"],
+      "managerFilePatterns": [
+        "/(^|/)helmfile\\.d/.+\\.yaml(?:\\.gotmpl)?$/"
+      ],
+      "groupName": "Kubernetes",
+      "commitMessageTopic": "Bootstrap {{depName}}",
+      "addLabels": ["kubernetes"]
+    },
+    {
+      "description": "Disable updates for unused apps",
+      "matchFileNames": [
+        "kubernetes/apps/unused/**"
+      ],
+      "enabled": false
+    }
+  ],
+  
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security"],
+    "automerge": false
+  },
+  
   "prConcurrentLimit": 10,
   "prHourlyLimit": 0,
-  "semanticCommits": "enabled",
-  "dependencyDashboard": true,
-  "labels": ["dependencies"]
+  "branchConcurrentLimit": 10
 }

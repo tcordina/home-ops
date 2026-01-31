@@ -25,7 +25,7 @@ spec:
     image:
       registry: registry.gitlab.com
       image: gitlab-org/gitlab-runner
-      tag: alpine-v{{.Chart.AppVersion}}
+      tag: alpine-v18.8.0
 
     gitlabUrl: https://gitlab.com/
 
