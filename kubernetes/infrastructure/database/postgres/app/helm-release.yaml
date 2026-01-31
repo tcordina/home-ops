@@ -1,0 +1,32 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: crunchydata-postgres-operator
+  namespace: database
+spec:
+  interval: 12h
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 6.0.0
+  url: oci://registry.developers.crunchydata.com/crunchydata/pgo
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app crunchydata-postgres-operator
+  namespace: database
+spec:
+  interval: 1h
+  timeout: 1h
+  chartRef:
+    kind: OCIRepository
+    name: crunchydata-postgres-operator
+  values:
+    singleNamespace: false
+    monitoring: true
+    install:
+      clusterLabels:
+        app.kubernetes.io/name: *app

@@ -65,7 +65,7 @@
       "description": "Kubernetes manifests",
       "matchDatasources": ["docker", "helm"],
       "groupName": "Kubernetes",
-      "commitMessageTopic": "Kubernetes {{depName}}",
+      "commitMessageTopic": "Kubernetes manifests {{depName}}",
       "addLabels": ["kubernetes"]
     },
     {
@@ -75,7 +75,7 @@
         "/(^|/)helmfile\\.d/.+\\.yaml(?:\\.gotmpl)?$/"
       ],
       "groupName": "Kubernetes",
-      "commitMessageTopic": "Bootstrap {{depName}}",
+      "commitMessageTopic": "Bootstrap helmfiles {{depName}}",
       "addLabels": ["kubernetes"]
     },
     {
