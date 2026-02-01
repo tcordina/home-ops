@@ -19,13 +19,13 @@
   "assigneesFromCodeOwners": true,
   
   "flux": {
-    "managerFilePatterns": ["/^kubernetes/.+\\.yaml(?:\\.j2)?$/"]
+    "managerFilePatterns": ["/^kubernetes/.+\\.yaml?$/"]
   },
   "helm-values": {
-    "managerFilePatterns": ["/^kubernetes/.+\\.yaml(?:\\.j2)?$/"]
+    "managerFilePatterns": ["/^kubernetes/.+\\.yaml$/"]
   },
   "kubernetes": {
-    "managerFilePatterns": ["/^kubernetes/.+\\.yaml(?:\\.j2)?$/"]
+    "managerFilePatterns": ["/^kubernetes/.+\\.yaml$/"]
   },
   "terraform": {
     "managerFilePatterns": ["/infrastructure/terraform/.+\\.tf$"]
@@ -71,7 +71,7 @@
     {
       "description": "Bootstrap helmfiles",
       "matchDatasources": ["helm"],
-      "managerFilePatterns": [
+      "matchFileNames": [
         "/(^|/)helmfile\\.d/.+\\.yaml(?:\\.gotmpl)?$/"
       ],
       "groupName": "Kubernetes",

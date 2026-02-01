@@ -1,0 +1,11 @@
+# Note: to disable the gitleaks pre-commit hook you can prepend SKIP=gitleaks to the commit command and it will skip running gitleaks
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.0
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/renovatebot/pre-commit-hooks
+    rev: 43.0.6
+    hooks:
+      - id: renovate-config-validator
