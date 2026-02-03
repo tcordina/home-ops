@@ -4,7 +4,6 @@ replacements:
   - path: ../../components/replacements/ks.yaml
 resources:
   - ./namespace.yaml
-  - ./.resources/ks.yaml
   - ./discord-bot/ks.yaml
   - ./gitlab-runner/ks.yaml
   - ./immich/ks.yaml
