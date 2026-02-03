@@ -1,5 +1,28 @@
 # Note: to disable the gitleaks pre-commit hook you can prepend SKIP=gitleaks to the commit command and it will skip running gitleaks
 repos:
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.38.0
+    hooks:
+      - id: yamllint
+        name: YAML Lint
+        entry: yamllint -c ./.yamllint.yaml
+        args: [./kubernetes]
+
+  - repo: https://github.com/gabe565/pre-commit-fluxcd
+    rev: "v0.5.1"
+    hooks:
+      - id: check-charts-pinned
+      - id: check-charts-support-renovate
+      - id: check-secrets-encrypted
+
+  - repo: local
+    hooks:
+      - id: kustomize-build-check
+        name: Validate Kustomize builds
+        entry: bash -c 'command -v kustomize >/dev/null 2>&1 || { echo >&2 "kustomize command not found. Please install it first."; exit 1; }; find apps/[CLUSTERNAME] cronjobs/[CLUSTERNAME] infrastructure/[CLUSTERNAME] -type f -name kustomization.yaml -exec dirname {} \; | while read dir; do echo "Testing $dir"; kustomize build "$dir" > /dev/null || exit 1; done'
+        language: system
+        pass_filenames: false
+
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.30.0
     hooks:

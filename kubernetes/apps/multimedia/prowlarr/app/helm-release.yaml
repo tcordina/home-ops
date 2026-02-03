@@ -101,7 +101,7 @@ spec:
                   port: *port
         tls:
           - hosts:
-            - prowlarr.lan.tablar.ovh
+              - prowlarr.lan.tablar.ovh
     persistence:
       config:
         existingClaim: prowlarr-config

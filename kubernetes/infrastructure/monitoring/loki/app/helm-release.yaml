@@ -31,26 +31,26 @@ spec:
         enabled: true
         storageClass: local-path
       initContainers:
-      - name: fix-permissions
-        image: busybox:latest
-        securityContext:
-          privileged: true
-          runAsGroup: 0
-          runAsNonRoot: false
-          runAsUser: 0
-        command:
-        - sh
-        - -c
-        - >-
-          id;
-          ls -la /data/;
-          chgrp 10001 /data /data/lost+found;
-          chmod g+rwx /data /data/lost+found;
-          chmod g+s /data /data/lost+found;
-          ls -la /data/
-        volumeMounts:
-        - mountPath: /data
-          name: storage
+        - name: fix-permissions
+          image: busybox:latest
+          securityContext:
+            privileged: true
+            runAsGroup: 0
+            runAsNonRoot: false
+            runAsUser: 0
+          command:
+            - sh
+            - -c
+            - >-
+              id;
+              ls -la /data/;
+              chgrp 10001 /data /data/lost+found;
+              chmod g+rwx /data /data/lost+found;
+              chmod g+s /data /data/lost+found;
+              ls -la /data/
+          volumeMounts:
+            - mountPath: /data
+              name: storage
 
     # Component replicas (0 when using SingleBinary)
     write:
@@ -71,9 +71,9 @@ spec:
 
     loki:
       image:
-         registry: docker.io
-         repository: grafana/loki
-         tag: 3.6.4
+        registry: docker.io
+        repository: grafana/loki
+        tag: 3.6.4
       auth_enabled: false
       commonConfig:
         replication_factor: 1
@@ -93,7 +93,7 @@ spec:
         hosts:
           - host: loki-gateway.cluster.local
             paths:
-              - path : /
+              - path: /
                 pathType: Prefix
         tls: {}
 ---

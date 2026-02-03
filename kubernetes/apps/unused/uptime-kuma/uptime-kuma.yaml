@@ -24,7 +24,7 @@ spec:
   chart:
     spec:
       chart: uptime-kuma
-      version: '2.x'
+      version: "2.x"
       sourceRef:
         kind: HelmRepository
         name: uptime-kuma
@@ -47,8 +47,8 @@ spec:
               pathType: ImplementationSpecific
       tls:
         - hosts:
-          - uptime.lan.tablar.ovh
-    
+            - uptime.lan.tablar.ovh
+
     volume:
       enabled: true
       existingClaim: "uptime-kuma-database"

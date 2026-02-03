@@ -17,7 +17,7 @@ spec:
   chart:
     spec:
       chart: pihole
-      version: '2.x'
+      version: "2.x"
       sourceRef:
         kind: HelmRepository
         name: pihole
@@ -47,8 +47,8 @@ spec:
       enabled: true
       policy: "None"
       nameservers:
-      - 127.0.0.1
-      - 9.9.9.9
+        - 127.0.0.1
+        - 9.9.9.9
 
     ingress:
       enabled: true

@@ -1,5 +1,5 @@
 ---
-# Certificate for Bitwarden SDK server 
+# Certificate for Bitwarden SDK server
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -23,7 +23,7 @@ spec:
     kind: ClusterIssuer
     group: cert-manager.io
 ---
-# Client certificate for Bitwarden Cluster Secret Store 
+# Client certificate for Bitwarden Cluster Secret Store
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:

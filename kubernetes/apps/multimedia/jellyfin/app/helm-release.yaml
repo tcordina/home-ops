@@ -72,8 +72,8 @@ spec:
               pathType: ImplementationSpecific
       tls:
         - hosts:
-           - cinema.lan.tablar.ovh
-    
+            - cinema.lan.tablar.ovh
+
     # jellyfin:
     #   env:
     #     - name: POSTGRES_HOST

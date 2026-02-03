@@ -92,7 +92,7 @@ spec:
                   port: *port
         tls:
           - hosts:
-            - sonarr.lan.tablar.ovh
+              - sonarr.lan.tablar.ovh
 
     persistence:
       config:

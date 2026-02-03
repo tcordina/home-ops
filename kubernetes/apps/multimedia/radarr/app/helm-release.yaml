@@ -87,7 +87,7 @@ spec:
                   port: *port
         tls:
           - hosts:
-            - radarr.lan.tablar.ovh
+              - radarr.lan.tablar.ovh
 
     persistence:
       config:

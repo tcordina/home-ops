@@ -38,21 +38,21 @@ spec:
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-          - topologyKey: kubernetes.io/hostname
-            labelSelector:
-              matchExpressions:
-              - key: app.kubernetes.io/name
-                operator: In
-                values:
-                - '{{ include "ingress-nginx.name" . }}'
-              - key: app.kubernetes.io/instance
-                operator: In
-                values:
-                - '{{ .Release.Name }}'
-              - key: app.kubernetes.io/component
-                operator: In
-                values:
-                - controller
-      
+            - topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - '{{ include "ingress-nginx.name" . }}'
+                  - key: app.kubernetes.io/instance
+                    operator: In
+                    values:
+                      - "{{ .Release.Name }}"
+                  - key: app.kubernetes.io/component
+                    operator: In
+                    values:
+                      - controller
+
       extraArgs:
         default-ssl-certificate: "cert-manager/wildcard-tablar-ovh-tls"

@@ -31,7 +31,7 @@ spec:
 
     runners:
       tags: "docker, renovate"
-      secret: gitlab-runner-secret   
+      secret: gitlab-runner-secret
       config: |
         [[runners]]
           [runners.kubernetes]
@@ -61,7 +61,7 @@ spec:
             [[runners.kubernetes.volumes.pvc]]
               name = "gitlab-runner-cache"
               mount_path = "/cache"
-    
+
     resources:
       limits:
         cpu: 200m
@@ -71,7 +71,7 @@ spec:
         cpu: 100m
         memory: 128Mi
         ephemeral-storage: 256Mi
-    
+
     replicas: 1
     concurrent: 3
 
@@ -83,16 +83,16 @@ spec:
         - resources: ["namespaces"]
           verbs: ["create", "delete"]
         - resources: ["pods"]
-          verbs: ["list","watch","create","delete","get"]
+          verbs: ["list", "watch", "create", "delete", "get"]
         - apiGroups: [""]
-          resources: ["pods/attach","pods/exec"]
-          verbs: ["get","create","patch","delete"]
+          resources: ["pods/attach", "pods/exec"]
+          verbs: ["get", "create", "patch", "delete"]
         - apiGroups: [""]
           resources: ["pods/log"]
-          verbs: ["get","list"]
+          verbs: ["get", "list"]
         - resources: ["secrets"]
-          verbs: ["create","delete","get","update"]
+          verbs: ["create", "delete", "get", "update"]
         - resources: ["serviceaccounts"]
           verbs: ["get"]
         - resources: ["services"]
-          verbs: ["create","get"]
+          verbs: ["create", "get"]

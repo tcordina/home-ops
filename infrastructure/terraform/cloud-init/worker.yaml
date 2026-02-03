@@ -1,4 +1,4 @@
-#cloud-config
+# cloud-config
 package_update: true
 package_upgrade: false
 packages:
@@ -28,11 +28,11 @@ write_files:
 
 runcmd:
   - systemctl start qemu-guest-agent
-  - # wait for the master node to be ready by trying to connect to it
+  -  # wait for the master node to be ready by trying to connect to it
   - until [ "$(curl -ks -o /dev/null -w "%{http_code}" https://10.0.1.1:6443)" -eq 401 ]; do sleep 5; done
-  - # copy the token from the master node
+  -  # copy the token from the master node
   - REMOTE_TOKEN=$(ssh -o StrictHostKeyChecking=accept-new ubuntu@10.0.1.1 sudo cat /var/lib/rancher/k3s/server/node-token)
-  - # Install k3s worker
+  -  # Install k3s worker
   - NODE_IP=$(ip -4 addr show | grep -oP 'inet \K10\.0\.1.\d+')
   - NODE_EXT_IP=$(ip -4 addr show | grep -oP 'inet \K192\.168\.1.\d+')
   - curl -sfL https://get.k3s.io | K3S_URL=https://10.0.1.1:6443 K3S_TOKEN=$REMOTE_TOKEN sh -s - agent --node-ip $NODE_IP --node-external-ip $NODE_EXT_IP # --node-label "storage=longhorn"
