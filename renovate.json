@@ -1,87 +1,134 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": [
+    "config:recommended"
+  ],
   "timezone": "Europe/Paris",
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "🤖 Renovate Dashboard",
-  "suppressNotifications": ["prEditedNotification"],
+  "suppressNotifications": [
+    "prEditedNotification"
+  ],
   "rebaseWhen": "conflicted",
   "semanticCommits": "enabled",
   "commitMessagePrefix": "chore(deps):",
   "commitMessageAction": "update",
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isMajor}}{{prettyNewMajor}}{{else}}{{#if isSingleVersion}}{{prettyNewVersion}}{{else}}{{#if newValue}}{{{newValue}}}{{else}}{{{newDigestShort}}}{{/if}}{{/if}}{{/if}}{{/if}}",
-  "labels": ["dependencies", "renovate"],
+  "labels": [
+    "dependencies",
+    "renovate"
+  ],
   "assigneesFromCodeOwners": true,
-
   "flux": {
-    "managerFilePatterns": ["/^kubernetes/.+\\.yaml?$/"]
+    "managerFilePatterns": [
+      "/^kubernetes/.+\\.yaml?$/"
+    ]
   },
   "helm-values": {
-    "managerFilePatterns": ["/^kubernetes/.+\\.yaml$/"]
+    "managerFilePatterns": [
+      "/^kubernetes/.+\\.yaml$/"
+    ]
   },
   "kubernetes": {
-    "managerFilePatterns": ["/^kubernetes/.+\\.yaml$/"]
+    "managerFilePatterns": [
+      "/^kubernetes/.+\\.yaml$/"
+    ]
   },
   "terraform": {
-    "managerFilePatterns": ["/infrastructure/terraform/.+\\.tf$"]
+    "managerFilePatterns": [
+      "/infrastructure/terraform/.+\\.tf$"
+    ]
   },
-
   "packageRules": [
     {
       "description": "Auto-merge minor and patch updates",
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest"
+      ],
       "automerge": true,
       "automergeType": "pr"
     },
     {
       "description": "Major updates require manual review",
-      "matchUpdateTypes": ["major"],
+      "matchUpdateTypes": [
+        "major"
+      ],
       "automerge": false,
-      "addLabels": ["major-update", "requires-review"]
+      "addLabels": [
+        "major-update",
+        "requires-review"
+      ]
     },
     {
       "description": "Terraform providers and modules",
-      "matchDatasources": ["terraform-provider", "terraform-module"],
+      "matchDatasources": [
+        "terraform-provider",
+        "terraform-module"
+      ],
       "groupName": "Terraform",
       "commitMessageTopic": "Terraform {{depName}}"
     },
     {
       "description": "Flux components",
-      "matchDatasources": ["docker", "helm"],
-      "matchPackagePatterns": ["^fluxcd/", "^ghcr.io/fluxcd/"],
+      "matchDatasources": [
+        "docker",
+        "helm"
+      ],
       "groupName": "Flux",
       "commitMessageTopic": "Flux {{depName}}",
-      "addLabels": ["flux"]
+      "addLabels": [
+        "flux"
+      ],
+      "matchPackageNames": [
+        "/^fluxcd//",
+        "/^ghcr.io/fluxcd//"
+      ]
     },
     {
       "description": "Kubernetes manifests",
-      "matchDatasources": ["docker", "helm"],
+      "matchDatasources": [
+        "docker",
+        "helm"
+      ],
       "groupName": "Kubernetes",
       "commitMessageTopic": "Kubernetes manifests {{depName}}",
-      "addLabels": ["kubernetes"]
+      "addLabels": [
+        "kubernetes"
+      ]
     },
     {
       "description": "Bootstrap helmfiles",
-      "matchDatasources": ["helm"],
-      "matchFileNames": ["/(^|/)helmfile\\.d/.+\\.yaml(?:\\.gotmpl)?$/"],
+      "matchDatasources": [
+        "helm"
+      ],
+      "matchFileNames": [
+        "/(^|/)helmfile\\.d/.+\\.yaml(?:\\.gotmpl)?$/"
+      ],
       "groupName": "Kubernetes",
       "commitMessageTopic": "Bootstrap helmfiles {{depName}}",
-      "addLabels": ["kubernetes"]
+      "addLabels": [
+        "kubernetes"
+      ]
     },
     {
       "description": "Disable updates for unused apps",
-      "matchFileNames": ["kubernetes/apps/unused/**"],
+      "matchFileNames": [
+        "kubernetes/apps/unused/**"
+      ],
       "enabled": false
     }
   ],
-
   "vulnerabilityAlerts": {
     "enabled": true,
-    "labels": ["security"],
+    "labels": [
+      "security"
+    ],
     "automerge": false
   },
-
   "prConcurrentLimit": 10,
   "prHourlyLimit": 0,
   "branchConcurrentLimit": 10
