@@ -30,7 +30,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v2.5.2 # {"$imagepolicy": "multimedia:immich-server:tag"}
+              tag: v2.5.3 # {"$imagepolicy": "multimedia:immich-server:tag"}
             env:
               TZ: "Europe/Paris"
               IMMICH_MEDIA_LOCATION: &media-location /data
@@ -89,7 +89,7 @@ spec:
           app:
             image:
               repository: ghcr.io/valkey-io/valkey
-              tag: 9.0.1
+              tag: 9.0.2
             probes:
               liveness:
                 enabled: true
