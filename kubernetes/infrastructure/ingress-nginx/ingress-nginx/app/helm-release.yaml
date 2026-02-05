@@ -17,6 +17,9 @@ spec:
     controller:
       service:
         type: LoadBalancer
+      config:
+        annotations-risk-level: Critical
+      allowSnippetAnnotations: true
 
       publishService:
         enabled: true
