@@ -32,6 +32,41 @@ spec:
             runAsGroup: 1000
             runAsNonRoot: true
             runAsUser: 1000
+        initContainers:
+          init-config:
+            image:
+              repository: busybox
+              tag: latest
+            command:
+              - sh
+              - -c
+              - |
+                cp /template/config.xml.template /config/config.xml
+                sed -i "s/@POSTGRES_USER@/$POSTGRES_USER/g" /config/config.xml
+                sed -i "s/@POSTGRES_PASSWORD@/$POSTGRES_PASSWORD/g" /config/config.xml
+                sed -i "s/@POSTGRES_HOST@/$POSTGRES_HOST/g" /config/config.xml
+                sed -i "s/@POSTGRES_PORT@/$POSTGRES_PORT/g" /config/config.xml
+            env:
+              - name: POSTGRES_HOST
+                valueFrom:
+                  secretKeyRef:
+                    name: sonarr-pguser-sonarr
+                    key: host
+              - name: POSTGRES_PORT
+                valueFrom:
+                  secretKeyRef:
+                    name: sonarr-pguser-sonarr
+                    key: port
+              - name: POSTGRES_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: sonarr-pguser-sonarr
+                    key: user
+              - name: POSTGRES_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: sonarr-pguser-sonarr
+                    key: password
         containers:
           app:
             image:
@@ -95,8 +130,26 @@ spec:
               - sonarr.lan.tablar.ovh
 
     persistence:
-      config:
-        existingClaim: sonarr-config
+      # persistence for /config directory
+      # config:
+      #   type: persistentVolumeClaim
+      #   existingClaim: sonarr-config
+      #   globalMounts:
+      #     - path: /config
+
+      # mounts used to inject postgres env variables inside /config/config.xml
+      config-file:
+        type: emptyDir
+        globalMounts:
+          - path: /config
+      template:
+        type: configMap
+        name: sonarr-config-template
+        advancedMounts:
+          sonarr:
+            init-config:
+              - path: /template
+                readOnly: true
       media:
         type: nfs
         server: 192.168.1.30

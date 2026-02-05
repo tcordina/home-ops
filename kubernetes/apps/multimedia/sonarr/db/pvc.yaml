@@ -1,12 +1,11 @@
----
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: sonarr-config
+  name: sonarr-postgres
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: local-path
+  storageClassName: nfs-csi
   resources:
     requests:
-      storage: 1Gi
+      storage: 2Gi

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarr-config-template
+data:
+  config.xml.template: |
+    <Config>
+      <BindAddress>*</BindAddress>
+      <SslPort>9898</SslPort>
+      <EnableSsl>False</EnableSsl>
+      <LaunchBrowser>True</LaunchBrowser>
+      <SslCertPath></SslCertPath>
+      <SslCertPassword></SslCertPassword>
+      <UrlBase></UrlBase>
+      <UpdateMechanism>Docker</UpdateMechanism>
+      <Branch>main</Branch>
+      <PostgresUser>@POSTGRES_USER@</PostgresUser>
+      <PostgresPassword>@POSTGRES_PASSWORD@</PostgresPassword>
+      <PostgresPort>@POSTGRES_PORT@</PostgresPort>
+      <PostgresHost>@POSTGRES_HOST@</PostgresHost>
+      <PostgresMainDb>sonarr-main</PostgresMainDb>
+      <PostgresLogDb>sonarr-log</PostgresLogDb>
+    </Config>
