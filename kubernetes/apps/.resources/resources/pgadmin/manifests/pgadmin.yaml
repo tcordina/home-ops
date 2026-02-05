@@ -1,0 +1,23 @@
+apiVersion: postgres-operator.crunchydata.com/v1beta1
+kind: PGAdmin
+metadata:
+  name: pgadmin
+spec:
+  users:
+    - username: lan@tablar.ovh
+      role: Administrator
+      passwordRef:
+        name: default-auth-app
+        key: password
+  dataVolumeClaimSpec:
+    accessModes:
+      - "ReadWriteOnce"
+    resources:
+      requests:
+        storage: 1Gi
+  serverGroups:
+    - name: selector-discovery
+      postgresClusterSelector:
+        matchLabels:
+          app.kubernetes.io/part-of: apps
+  serviceName: "pgadmin-service"
