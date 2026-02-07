@@ -16,7 +16,7 @@ spec:
   chart:
     spec:
       chart: loki
-      version: 6.51.0
+      version: 6.52.0
       sourceRef:
         kind: HelmRepository
         name: grafana
@@ -73,7 +73,7 @@ spec:
       image:
         registry: docker.io
         repository: grafana/loki
-        tag: 3.6.4
+        tag: 3.6.5
       auth_enabled: false
       commonConfig:
         replication_factor: 1
@@ -116,7 +116,7 @@ spec:
     image:
       registry: docker.io
       repository: grafana/promtail
-      tag: 3.6.4
+      tag: 3.6.5
     config:
       clients:
         - url: http://loki:3100/loki/api/v1/push
