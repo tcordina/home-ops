@@ -13,7 +13,7 @@
   "semanticCommits": "enabled",
   "commitMessagePrefix": "chore(deps):",
   "commitMessageAction": "update",
-  "commitMessageTopic": "{{depName}}",
+  // "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isMajor}}{{prettyNewMajor}}{{else}}{{#if isSingleVersion}}{{prettyNewVersion}}{{else}}{{#if newValue}}{{{newValue}}}{{else}}{{{newDigestShort}}}{{/if}}{{/if}}{{/if}}{{/if}}",
   "labels": [
     "dependencies",
@@ -50,7 +50,9 @@
         "digest"
       ],
       "automerge": true,
-      "automergeType": "pr"
+      "automergeType": "pr",
+      "automergeStrategy": "squash",
+      "ignoreTests": true
     },
     {
       "description": "Major updates require manual review",
@@ -113,6 +115,13 @@
       "addLabels": [
         "kubernetes"
       ]
+    },
+    {
+      "description": "Linuxserver qBittorrent - filter outdated versions",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["linuxserver/qbittorrent"],
+      "rangeStrategy": "bump",
+      "allowedVersions": "!/^(18|20)\\./"
     },
     {
       "description": "Disable updates for unused apps",
