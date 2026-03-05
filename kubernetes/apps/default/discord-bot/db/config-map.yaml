@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: discord-bot-postgres-init
+data:
+  init.sql: |
+    BEGIN;
+    ALTER DATABASE "discord-bot" OWNER TO "discord-bot";
+    COMMIT;
+    \connect "discord-bot"
+    CREATE EXTENSION IF NOT EXISTS timescaledb;

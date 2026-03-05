@@ -1,7 +1,7 @@
 <div align="center">
 <h1>Homelab</h1>
 
-Personal Kubernetes homelab running with K3s on a 2 nodes Proxmox cluster. All infrastructure and application configuration is managed as code and reconciled via GitOps.
+Personal homelab running on a 2 nodes Proxmox cluster. Infrastructure and application configuration is managed as code and reconciled via GitOps.
 
 Heavily inspired by the manifests shared on [kubesearch.dev](https://kubesearch.dev/)
 </div>
@@ -14,8 +14,8 @@ Heavily inspired by the manifests shared on [kubesearch.dev](https://kubesearch.
 
 | Host | CPU | RAM | Storage |
 |---|---|---|---|
-| Acemagic Vista Mini V1 | Intel 4C | 16 GB DDR4 | 512 GB SSD
-| Spare parts custom build | AMD 8C / 16T | 16 GB DDR4 | 512 GB SSD + 2 TB HDD
+| Acemagic Vista Mini V1 | Intel 4C | 16 GB DDR4 | 512 GB SSD |
+| Spare parts custom build | AMD 8C / 16T | 16 GB DDR4 | 512 GB SSD + 2 TB HDD |
 
 ### Virtual machines & LXC
 
@@ -45,19 +45,19 @@ Heavily inspired by the manifests shared on [kubesearch.dev](https://kubesearch.
 | Tool | Purpose |
 |---|---|
 | [Flux CD](https://fluxcd.io/) | GitOps operator - reconciles cluster state from this repo |
+| [SOPS + Age](https://github.com/getsops/sops) | Encrypted secrets at rest in Git |
 | [Helm](https://helm.sh/) | Application packaging |
 | [Terraform](https://www.terraform.io/) | Proxmox VM / LXC provisioning |
 | [cloud-init](https://cloud-init.io/) | Server configuration |
 | [Renovate](https://docs.renovatebot.com/) | Automated dependency updates |
 
-### Kubernetes infrastructure
+### Kubernetes cluster infrastructure
 
 | Component | Purpose |
 |---|---|
 | [ingress-nginx](https://kubernetes.github.io/ingress-nginx/) | Ingress controller |
 | [cert-manager](https://cert-manager.io/) | TLS certificates via Let's Encrypt |
 | [external-secrets](https://external-secrets.io/) | Load secrets from Bitwarden |
-| [SOPS + Age](https://github.com/getsops/sops) | Encrypted secrets at rest in Git |
 | [CSI Driver NFS](https://github.com/kubernetes-csi/csi-driver-nfs) | NFS persistent volumes backed by TrueNAS |
 | [Crunchy Data PGO](https://access.crunchydata.com/documentation/postgres-operator/) | PostgreSQL operator |
 
@@ -86,7 +86,7 @@ Heavily inspired by the manifests shared on [kubesearch.dev](https://kubesearch.
 
 I only have 2 physical machines, but wanted to learn how to operate a multi-node highly available cluster. Running 3 K3s server nodes lets me explore distributing ingress traffic across nodes, with HAProxy fronting the cluster and load balancing across 3 ingress-nginx pods.
 
-That said, this setup is **not truly highly available**. According to etcd's documentation, the [failure tolerance is 1 with 3 nodes](https://etcd.io/docs/v3.5/faq/#what-is-failure-tolerance). But since `master-node-2` and `master-node-3` both run on the same physical host, a single hardware failure takes out 2 etcd members at once, marking the cluster as failed and making it read-only until nodes come back up.
+That said, this setup is **not truly highly available**. According to etcd's documentation, [with 3 nodes, the failure tolerance is 1 ](https://etcd.io/docs/v3.5/faq/#what-is-failure-tolerance). But since `master-node-2` and `master-node-3` both run on the same physical host, a single hardware failure takes out 2 etcd members at once, marking the cluster as failed and making it read-only until nodes come back up.
 
 ---
 
@@ -96,15 +96,15 @@ That said, this setup is **not truly highly available**. According to etcd's doc
 .
 ├── infrastructure/
 │   ├── terraform/          # Proxmox VM definitions
-│   └── proxmox/            # Proxmox host config
+│   └── proxmox/            # Proxmox .conf files for VMs not provisioned via Terraform
 └── kubernetes/
-    ├── .bootstrap/         # Cluster bootstrap (helmfile, age key)
+    ├── .bootstrap/         # Cluster bootstrap
     ├── clusters/           # Flux entry point
     ├── components/         # Reusable Kustomize components
     ├── apps/               # Application manifests
     │   ├── default/
     │   └── multimedia/
-    └── infrastructure/     # Core cluster infrastructure
+    └── infrastructure/     # Kubernetes infrastructure manifests
         ├── cert-manager/
         ├── external-secrets/
         ├── flux-system/

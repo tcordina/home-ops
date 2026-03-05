@@ -34,17 +34,44 @@ spec:
             runAsUser: 1000
         containers:
           app:
-            image:
+            image: &image
               repository: registry.gitlab.com/tcordina/discord-bot
               tag: latest
-              digest: sha256:5d4a21e99eada702d3c4c6f0c32e231d876cd76c73da0049d183cd9af5a3057c # {"$imagepolicy": "default:discord-bot:digest"}
+              digest: sha256:f683d29df6bd789c15dcecab25ab52970e0b1c720502d27f5f5c7e663a935871 # {"$imagepolicy": "default:discord-bot:digest"}
               pullPolicy: IfNotPresent
-            env:
+            env: &env
               - name: LOG_LEVEL
                 value: "INFO"
+              - name: POSTGRES_HOST
+                valueFrom:
+                  secretKeyRef:
+                    name: discord-bot-pguser-discord-bot
+                    key: host
+              - name: POSTGRES_PORT
+                valueFrom:
+                  secretKeyRef:
+                    name: discord-bot-pguser-discord-bot
+                    key: port
+              - name: POSTGRES_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: discord-bot-pguser-discord-bot
+                    key: user
+              - name: POSTGRES_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: discord-bot-pguser-discord-bot
+                    key: password
+              - name: POSTGRES_DB
+                valueFrom:
+                  secretKeyRef:
+                    name: discord-bot-pguser-discord-bot
+                    key: dbname
             envFrom:
               - secretRef:
                   name: discord-bot-secrets
+              - secretRef:
+                  name: default-auth-backblaze
             resources:
               requests:
                 memory: "96Mi"
@@ -52,7 +79,16 @@ spec:
               limits:
                 memory: "128Mi"
                 cpu: "100m"
-            securityContext:
+            securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: {drop: ["ALL"]}
+        initContainers:
+          migrations:
+            image: *image
+            command: ["python", "-m", "alembic", "upgrade", "head"]
+            env: *env
+            envFrom:
+              - secretRef:
+                  name: discord-bot-secrets
+            securityContext: *securityContext
