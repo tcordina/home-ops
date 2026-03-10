@@ -36,6 +36,11 @@ spec:
         limits: {}
 
       replicaCount: 3
+      updateStrategy:
+        rollingUpdate:
+          maxSurge: 0
+          maxUnavailable: 1
+        type: RollingUpdate
 
       # avoid scheduling more than 1 pod on the same node
       affinity:
