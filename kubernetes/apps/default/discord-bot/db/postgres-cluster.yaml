@@ -8,6 +8,7 @@ metadata:
   labels:
     app.kubernetes.io/part-of: apps
 spec:
+  image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi9-18.1-2550
   postgresVersion: 18
   databaseInitSQL:
     name: discord-bot-postgres-init
