@@ -1,0 +1,76 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: longhorn
+  namespace: longhorn-system
+spec:
+  interval: 12h
+  url: https://charts.longhorn.io
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: longhorn
+spec:
+  interval: 1h
+  timeout: 1h
+  chart:
+    spec:
+      chart: longhorn
+      version: 1.11.0
+      sourceRef:
+        kind: HelmRepository
+        name: longhorn
+        namespace: longhorn-system
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  values:
+    persistence:
+      defaultClass: true
+      defaultClassReplicaCount: 3
+      reclaimPolicy: Delete
+      recurringJobSelector:
+        enable: false
+      unmapMarkSnapChainRemoved: enabled
+      dataEngine: v1
+
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      host: longhorn.lan.tablar.ovh
+      tls: true
+
+    longhornUI:
+      replicas: 1
+
+    defaultSettings:
+      defaultDataPath: /var/mnt/longhorn
+      storageReservedPercentageForDefaultDisk: "0"
+      storageOverProvisioningPercentage: "100"
+      storageMinimalAvailablePercentage: "10"
+      defaultLonghornStaticStorageClass: longhorn-backup
+      restoreVolumeRecurringJobs: true
+      nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+      autoCleanupSystemGeneratedSnapshot: true
+      autoCleanupRecurringJobBackupSnapshot: true
+      concurrentAutomaticEngineUpgradePerNodeLimit: "1"
+      orphanResourceAutoDeletion: replica-data
+      snapshotDataIntegrity: enabled
+      snapshotDataIntegrityImmediateCheckAfterSnapshotCreation: "disabled"
+      snapshotDataIntegrityCronjob: "0 4 * * *"
+      fastReplicaRebuildEnabled: enabled
+      unmapMarkSnapChainRemoved: enabled
+      v1DataEngine: true
+      v2DataEngine: false
+      allowCollectingLonghornUsageMetrics: false
+      freezeFilesystemForSnapshot: enabled
+      autoCleanupSnapshotWhenDeleteBackup: true
+      autoCleanupSnapshotAfterOnDemandBackupCompleted: true
+      rwxVolumeFastFailover: true
+
+    defaultBackupStore:
+      backupTarget: s3://k8s-volumes-tablar-ovh@eu-central-003/
+      backupTargetCredentialSecret: backblaze-auth-secrets

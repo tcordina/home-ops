@@ -7,4 +7,5 @@ resources:
   - ./flux-system
   - ./ingress-nginx
   - ./kube-system
+  - ./longhorn-system
   - ./monitoring
