@@ -85,8 +85,8 @@ spec:
                   {{ range .Alerts }}
                   {{ if eq .Status "firing" }}🔴{{ else }}✅{{ end }} <b>{{ .Status | toUpper }} - {{ .Labels.alertname }}</b>
                   ID: <code>{{ .Fingerprint }}</code>
-                  Namespace: {{ .Labels.namespace }}
                   Severity: <b>{{ .Labels.severity | toUpper }}</b>
+                  Namespace: {{ .Labels.namespace }}
                   {{ .Annotations.description }}
                   {{ end }}
 

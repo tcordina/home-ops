@@ -80,6 +80,7 @@ Heavily inspired by the manifests shared on [kubesearch.dev](https://kubesearch.
 | Component | Purpose |
 |---|---|
 | [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) | Prometheus + Grafana + Alertmanager |
+| [Telegram bot webhook](https://core.telegram.org/bots/api#making-requests-when-getting-updates) | Receive alerts |
 | [Loki](https://grafana.com/oss/loki/) | Log aggregation |
 
 ### Why do 2 control plane nodes run on the same machine?
