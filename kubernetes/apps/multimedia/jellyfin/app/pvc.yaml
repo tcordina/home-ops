@@ -3,19 +3,20 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: jellyfin-config
+  namespace: multimedia
 spec:
   accessModes:
     - ReadWriteOnce
-  # accessing the sqlite db through nfs causes concurrency access errors. *postgres implementation waiting room*
-  storageClassName: local-path
+  storageClassName: longhorn-local
   resources:
     requests:
-      storage: 1Gi
+      storage: 3Gi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: jellyfin-media
+  namespace: multimedia
 spec:
   accessModes:
     - ReadWriteOnce
