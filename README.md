@@ -73,7 +73,7 @@ Heavily inspired by the manifests shared on [kubesearch.dev](https://kubesearch.
 | [Sonarr](https://sonarr.tv/) | TV show automation / management |
 | [Radarr](https://radarr.video/) | Movie automation / management |
 | [Prowlarr](https://prowlarr.com/) | Indexer manager |
-| [qBittorrent](https://www.qbittorrent.org/) | Torrent client (behind ProtonVPN via Gluetun) |
+| [qBittorrent](https://www.qbittorrent.org/) | Torrent client (behind a VPN via [Gluetun](https://github.com/qdm12/gluetun)) |
 
 ### Observability
 
@@ -103,13 +103,5 @@ That said, this setup is **not truly highly available**. According to etcd's doc
     ├── clusters/           # Flux entry point
     ├── components/         # Reusable Kustomize components
     ├── apps/               # Application manifests
-    │   ├── default/
-    │   └── multimedia/
     └── infrastructure/     # Kubernetes infrastructure manifests
-        ├── cert-manager/
-        ├── external-secrets/
-        ├── flux-system/
-        ├── ingress-nginx/
-        ├── kube-system/
-        └── monitoring/
 ```
