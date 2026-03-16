@@ -1,0 +1,21 @@
+---
+apiVersion: longhorn.io/v1beta2
+kind: BackupTarget
+metadata:
+  name: default
+  namespace: longhorn-system
+spec:
+  backupTargetURL: nfs://192.168.1.30:/mnt/main/k8s-volumes
+  credentialSecret: ""
+  pollInterval: "10m"
+## Thanks to a whopping 80KB/s upload speed, uploading to S3 is compromised for now (i'm not mad)
+# ---
+# apiVersion: longhorn.io/v1beta2
+# kind: BackupTarget
+# metadata:
+#   name: backblaze-b2
+#   namespace: longhorn-system
+# spec:
+#   backupTargetURL: s3://k8s-volumes-tablar-ovh@eu-central-003/
+#   credentialSecret: backblaze-auth-secrets
+#   pollInterval: "10m"

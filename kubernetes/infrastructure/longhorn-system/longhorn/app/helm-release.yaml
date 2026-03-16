@@ -44,6 +44,10 @@ spec:
     longhornUI:
       replicas: 1
 
+    metrics:
+      serviceMonitor:
+        enabled: true
+
     defaultSettings:
       defaultDataPath: /var/mnt/longhorn
       storageReservedPercentageForDefaultDisk: "0"
@@ -68,7 +72,3 @@ spec:
       autoCleanupSnapshotWhenDeleteBackup: true
       autoCleanupSnapshotAfterOnDemandBackupCompleted: true
       rwxVolumeFastFailover: true
-
-    defaultBackupStore:
-      backupTarget: s3://k8s-volumes-tablar-ovh@eu-central-003/
-      backupTargetCredentialSecret: backblaze-auth-secrets
