@@ -27,7 +27,7 @@ spec:
         kind: HelmRepository
         name: longhorn
         namespace: longhorn-system
-      version: 1.11.0
+      version: 1.11.1
   interval: 1m0s
   values:
     defaultBackupStore:
