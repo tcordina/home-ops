@@ -1,0 +1,21 @@
+# https://longhorn.io/docs/1.11.0/monitoring/metrics/#backup
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: longhorn
+    role: alert-rules
+  name: longhorn.rules-backups
+  namespace: monitoring
+spec:
+  groups:
+    - name: longhorn.rules
+      rules:
+        - alert: LonghornBackupFailed
+          expr: longhorn_backup_state >= 4 # 4 = Error | 5 = Unknown
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Longhorn backup failed"
+            description: "Backup {{ $labels.backup }} for volume {{ $labels.volume }} has failed during job {{ $labels.recurring_job }}"
