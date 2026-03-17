@@ -121,7 +121,7 @@
       "matchDatasources": ["docker"],
       "matchPackageNames": ["linuxserver/qbittorrent"],
       "rangeStrategy": "bump",
-      "allowedVersions": "!/^(18|20)\\./"
+      "allowedVersions": "!/^(14|18|20)\\./"
     },
     {
       "description": "Disable updates for unused apps",
