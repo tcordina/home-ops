@@ -64,11 +64,11 @@ spec:
 
     resources:
       limits:
-        cpu: 200m
+        cpu: 1000m
         memory: 256Mi
         ephemeral-storage: 512Mi
       requests:
-        cpu: 100m
+        cpu: 200m
         memory: 128Mi
         ephemeral-storage: 256Mi
 
