@@ -5,7 +5,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany # Allow sharing between pods
-  storageClassName: nfs-csi
+  storageClassName: local-path
   resources:
     requests:
       storage: 10Gi
