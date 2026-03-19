@@ -37,27 +37,27 @@ spec:
           [runners.kubernetes]
             namespace = "{{.Release.Namespace}}"
             image = "ubuntu:24.04"
-            
+
             # needed for docker in docker
             privileged = true
-            
+
             cpu_request = "500m"
             cpu_limit = "2"
             memory_request = "512Mi"
             memory_limit = "2Gi"
-            
+
             helper_image = "gitlab/gitlab-runner-helper:x86_64-latest"
 
             [[runners.kubernetes.services]]
               name = "docker:29-dind"
               alias = "docker"
               command = ["--tls=false"]
-            
+
             [[runners.kubernetes.volumes.empty_dir]]
               name = "docker-certs"
               mount_path = "/certs/client"
               medium = "Memory"
-            
+
             [[runners.kubernetes.volumes.pvc]]
               name = "gitlab-runner-cache"
               mount_path = "/cache"

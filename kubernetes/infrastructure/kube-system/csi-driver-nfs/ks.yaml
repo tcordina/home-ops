@@ -12,7 +12,3 @@ spec:
     kind: GitRepository
     name: flux-system
   targetNamespace: kube-system
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
