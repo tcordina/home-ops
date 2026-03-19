@@ -4,7 +4,6 @@ apiVersion: postgres-operator.crunchydata.com/v1
 kind: PostgresCluster
 metadata:
   name: &name discord-bot
-  namespace: default
   labels:
     app.kubernetes.io/part-of: apps
 spec:
@@ -25,7 +24,7 @@ spec:
           app.kubernetes.io/name: *name
       replicas: 1
       dataVolumeClaimSpec:
-        storageClassName: local-path
+        storageClassName: longhorn-backup
         accessModes:
           - "ReadWriteOnce"
         resources:

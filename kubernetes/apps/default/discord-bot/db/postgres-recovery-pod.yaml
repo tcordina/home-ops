@@ -1,0 +1,89 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: discord-bot-old-data
+  namespace: default
+spec:
+  volumeName: pvc-13f27f94-196c-49d2-b8b9-9123f25ec5e4
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: postgres-recovery
+  namespace: default
+spec:
+  securityContext:
+    runAsUser: 26 # postgres uid inside CrunchyData images
+    fsGroup: 26
+  initContainers:
+    - name: fix-permissions
+      image: busybox
+      command:
+        - sh
+        - -c
+        - |
+          chmod 0750 /pgdata/pg18
+          echo "host all all 0.0.0.0/0 trust" > /pgdata/pg_hba_recovery.conf
+          echo "host all all ::1/128 trust" >> /pgdata/pg_hba_recovery.conf
+          echo "local all all trust" >> /pgdata/pg_hba_recovery.conf
+      securityContext:
+        runAsUser: 0
+      volumeMounts:
+        - name: data
+          mountPath: /pgdata
+  containers:
+    - name: postgres
+      image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi9-18.1-2550
+      command:
+        - postgres
+        - -D
+        - /pgdata/pg18
+        - -p
+        - "5432"
+        - -k
+        - /tmp
+        - -c
+        - ssl=off
+        - -c
+        - hba_file=/pgdata/pg_hba_recovery.conf
+      env:
+        - name: PGDATA
+          value: /pgdata/pg18
+      ports:
+        - containerPort: 5432
+      volumeMounts:
+        - name: data
+          mountPath: /pgdata
+      resources: {}
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: discord-bot-old-data
+  restartPolicy: Never
+
+# kubectl apply -f ./kubernetes/apps/default/discord-bot/postgres-recovery-pod.yaml
+
+# kubectl port-forward -n default postgres-recovery 5432:5432
+
+# psql -h localhost -p 5432 -U discord-bot -d discord-bot -c \
+#   "\COPY (SELECT * FROM voice_events) TO '/tmp/voice_events.csv' WITH CSV HEADER"
+
+# psql -h localhost -p 5432 -U discord-bot -d discord-bot -c \
+#   "\COPY (SELECT * FROM game_events) TO '/tmp/game_events.csv' WITH CSV HEADER"
+
+# interrupt postgres-recovery port-forwarding
+
+# kubectl port-forward -n default discord-bot-postgres-xxxx-x 5432:5432
+
+# psql -h localhost -p 5432 -U discord-bot -d discord-bot -c \
+#   "\COPY voice_events FROM '/tmp/voice_events.csv' WITH CSV HEADER"
+
+# psql -h localhost -p 5432 -U discord-bot -d discord-bot -c \
+#   "\COPY game_events FROM '/tmp/game_events.csv' WITH CSV HEADER"
