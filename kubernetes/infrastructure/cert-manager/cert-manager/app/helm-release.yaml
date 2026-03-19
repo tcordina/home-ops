@@ -5,10 +5,18 @@ metadata:
   name: cert-manager
 spec:
   interval: 1h
-  timeout: 1h
+  timeout: 10m
   chartRef:
     kind: OCIRepository
     name: cert-manager
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
   values:
     crds:
       enabled: true

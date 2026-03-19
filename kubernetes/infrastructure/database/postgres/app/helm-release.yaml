@@ -20,10 +20,19 @@ metadata:
   namespace: database
 spec:
   interval: 1h
-  timeout: 1h
+  timeout: 10m
   chartRef:
     kind: OCIRepository
     name: crunchydata-postgres-operator
+  install:
+    crds: CreateReplace
+    remediation:
+      retries: -1
+  upgrade:
+    crds: CreateReplace
+    cleanupOnFail: true
+    remediation:
+      retries: 3
   values:
     singleNamespace: false
     monitoring: true

@@ -13,7 +13,7 @@ metadata:
   name: longhorn
 spec:
   interval: 1h
-  timeout: 1h
+  timeout: 10m
   chart:
     spec:
       chart: longhorn
@@ -22,9 +22,13 @@ spec:
         kind: HelmRepository
         name: longhorn
   install:
-    crds: CreateReplace
+    remediation:
+      retries: -1
   upgrade:
-    crds: CreateReplace
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
   values:
     persistence:
       defaultClass: true
