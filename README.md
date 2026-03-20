@@ -21,11 +21,15 @@ Heavily inspired by the manifests shared on [kubesearch.dev](https://kubesearch.
 
 | Guest | Type | Host | Role |
 |---|---|---|---|
-| HAProxy | LXC | acemagic | Load balancer across k8s nodes |
-| master-node-1 | VM | acemagic | Kubernetes control plane |
-| master-node-2 | VM | custom build | Kubernetes control plane |
-| master-node-3 | VM | custom build | Kubernetes control plane |
+| haproxy-1 | LXC | acemagic | Load balancer + VRRP master (haproxy + keepalived) |
+| haproxy-2 | LXC | custom build | Load balancer + VRRP backup (haproxy + keepalived) |
+| master-node-1 | VM | acemagic | Kubernetes node |
+| master-node-2 | VM | custom build | Kubernetes node |
+| master-node-3 | VM | custom build | Kubernetes node |
 | TrueNAS | VM | custom build | NFS storage server |
+
+_All 3 Kubernetes nodes act as both control plane and worker nodes. Running multiple control planes avoids the single point of failure of a dedicated control plane, and allows workloads to be rescheduled on the remaining nodes if one goes down. See the [note below](#why-do-2-control-plane-nodes-run-on-the-same-machine) for the limitations of this setup._
+
 
 ---
 
@@ -39,6 +43,8 @@ Heavily inspired by the manifests shared on [kubesearch.dev](https://kubesearch.
 | [TrueNAS](https://www.truenas.com/truenas-community-edition/) | Provide network attached storage |
 | [Ubuntu server](https://documentation.ubuntu.com/server/explanation/clouds/find-cloud-images/) | Host Kubernetes nodes |
 | [K3s](https://k3s.io/) | Easy to deploy Kubernetes distribution |
+| [HAProxy](https://www.haproxy.org/) | Load balancer distributing traffic across Kubernetes nodes |
+| [Keepalived](https://www.keepalived.org/) | VRRP-based virtual IP failover between the two HAProxy instances |
 
 ### GitOps & Infrastructure as Code
 
