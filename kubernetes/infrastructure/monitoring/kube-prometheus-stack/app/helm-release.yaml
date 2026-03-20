@@ -60,9 +60,9 @@ spec:
             - match:
                 alertname: KubeSchedulerDown
               receiver: 'null'
-            - match:
-                alertname: KubeEtcdDown
-              receiver: 'null'
+            # - match:
+            #     alertname: KubeEtcdDown
+            #   receiver: 'null'
             - match:
                 alertname: KubeProxyDown
               receiver: 'null'
@@ -104,6 +104,20 @@ spec:
               - alertmanager.lan.tablar.ovh
 
 
+    kubeEtcd:
+      enabled: true
+      endpoints:
+        - 192.168.1.101
+        - 192.168.1.102
+        - 192.168.1.103
+      service:
+        enabled: true
+        port: 2381
+        targetPort: 2381
+      serviceMonitor:
+        scheme: http
+
+
     prometheus:
       ingress:
         enabled: true
@@ -120,8 +134,7 @@ spec:
         scrapeConfigSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false
         externalPrefixNilUsesHelmValues: false
-        scrapeInterval: 5m
-        evaluationInterval: 5m
+        scrapeInterval: 30s
         retention: 2d
         retentionSize: "9GiB"
         storageSpec:
