@@ -62,23 +62,52 @@ resource "terraform_data" "cloud-init_upload" {
   }
 }
 
+locals {
+  k3s_nodes = {
+    "master-node-1" = {
+      vmid        = 201
+      target_node = "pve"
+      cores       = 4
+      memory      = 12288
+      ip          = "192.168.1.101"
+      cloud_init  = "master"
+    }
+    "master-node-2" = {
+      vmid        = 202
+      target_node = "pve2"
+      cores       = 6
+      memory      = 6144
+      ip          = "192.168.1.102"
+      cloud_init  = "controlplane"
+    }
+    "master-node-3" = {
+      vmid        = 203
+      target_node = "pve2"
+      cores       = 6
+      memory      = 6144
+      ip          = "192.168.1.103"
+      cloud_init  = "controlplane"
+    }
+  }
+}
+
 resource "proxmox_pool" "k3s-pool" {
   poolid  = "k3s-cluster"
   comment = ""
 }
 
 resource "proxmox_vm_qemu" "k3s-nodes" {
-  count = 3
+  for_each = local.k3s_nodes
 
-  vmid        = 201 + count.index
-  name        = "master-node-${count.index + 1}"
-  target_node = count.index == 0 ? "pve" : "pve2"
+  vmid        = each.value.vmid
+  name        = each.key
+  target_node = each.value.target_node
   pool        = "k3s-cluster"
   agent       = 1
   cpu {
-    cores = count.index == 0 ? 4 : 6
+    cores = each.value.cores
   }
-  memory           = count.index == 0 ? 12288 : 6144
+  memory           = each.value.memory
   boot             = "order=scsi0"        # has to be the same as the OS disk of the template
   clone            = "ubuntu24-cloudinit" # The name of the template
   scsihw           = "virtio-scsi-single"
@@ -86,10 +115,10 @@ resource "proxmox_vm_qemu" "k3s-nodes" {
   automatic_reboot = true
 
   # Cloud-Init configuration
-  cicustom   = "vendor=local:snippets/cloud-init-${count.index == 0 ? "master" : "controlplane"}.yaml" # inside /var/lib/vz/snippets/
+  cicustom   = "vendor=local:snippets/cloud-init-${each.value.cloud_init}.yaml" # inside /var/lib/vz/snippets/
   nameserver = "1.1.1.1 1.0.0.1"
-  ipconfig0  = "ip=192.168.1.${100 + count.index + 1}/24,gw=192.168.1.1"
-  # ipconfig1  = "ip=10.0.1.${count.index + 1}/24"
+  ipconfig0  = "ip=${each.value.ip}/24,gw=192.168.1.1"
+  # ipconfig1  = "ip=10.0.1.x/24"
   skip_ipv6  = true
   ciuser     = "ubuntu"
   cipassword = "ubuntu"
