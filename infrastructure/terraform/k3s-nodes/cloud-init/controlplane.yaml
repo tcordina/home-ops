@@ -42,4 +42,5 @@ runcmd:
       --token $REMOTE_TOKEN \
       --disable=traefik \
       --tls-san=192.168.1.100 \
+      --etcd-expose-metrics=true \
       --write-kubeconfig-mode=644
