@@ -36,7 +36,7 @@ spec:
           app:
             image:
               repository: linuxserver/sonarr
-              tag: 4.0.16
+              tag: 4.0.17
             env:
               SONARR__APP__INSTANCENAME: Sonarr
               SONARR__AUTH__METHOD: External
