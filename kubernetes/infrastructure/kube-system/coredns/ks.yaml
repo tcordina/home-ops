@@ -1,0 +1,38 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: coredns-patch
+  namespace: flux-system
+spec:
+  interval: 1h
+  path: ./kubernetes/infrastructure/kube-system/coredns
+  prune: false
+  force: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  patches:
+    - patch: |
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: coredns
+          namespace: kube-system
+        spec:
+          replicas: 3
+          template:
+            spec:
+              affinity:
+                podAntiAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    - labelSelector:
+                        matchExpressions:
+                          - key: k8s-app
+                            operator: In
+                            values:
+                              - kube-dns
+                      topologyKey: kubernetes.io/hostname
+      target:
+        kind: Deployment
+        name: coredns
+        namespace: kube-system
