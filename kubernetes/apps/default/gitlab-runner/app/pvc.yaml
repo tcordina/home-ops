@@ -5,7 +5,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany # Allow sharing between pods
-  storageClassName: local-path
+  storageClassName: longhorn-local
   resources:
     requests:
       storage: 10Gi
