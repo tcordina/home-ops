@@ -10,7 +10,7 @@ spec:
   dependsOn:
     - name: discord-bot-postgres
       namespace: flux-system
-  interval: 1h
+  interval: 5m
   path: ./kubernetes/apps/default/discord-bot/app
   prune: true
   retryInterval: 2m
