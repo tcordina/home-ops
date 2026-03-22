@@ -26,7 +26,7 @@ git-override:
 		git commit --amend --no-edit; \
 	fi
 	@echo "⬆️  Pushing to remote..."
-	git push origin main --force
+	git push origin main --force-with-lease
 	@echo "🔄 Reconciling Flux..."
 	@flux reconcile source git flux-system
 
