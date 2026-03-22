@@ -37,7 +37,7 @@ spec:
             image: &image
               repository: registry.gitlab.com/tcordina/discord-bot
               tag: latest
-              digest: sha256:f683d29df6bd789c15dcecab25ab52970e0b1c720502d27f5f5c7e663a935871 # {"$imagepolicy": "default:discord-bot:digest"}
+              digest: sha256:1c2ddc6bc1360f2edd2c32ab09de2f985f3ef4bf2e04273a18dcdded82038d03
               pullPolicy: IfNotPresent
             env: &env
               - name: LOG_LEVEL
@@ -82,7 +82,7 @@ spec:
             securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
+              capabilities: { drop: ["ALL"] }
         initContainers:
           migrations:
             image: *image
