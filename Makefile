@@ -7,13 +7,13 @@ K8S_DIR = $(abspath ./kubernetes)
 
 # --- TERRAFORM --- #
 tf-plan:
-	cd $(TF_DIR) && terraform plan -var-file="$(TF_DIR)/secrets.auto.tfvars"
+	cd $(TF_DIR)/$(dir) && terraform plan -var-file="$(TF_DIR)/$(dir)/secrets.auto.tfvars"
 
 tf-apply:
-	cd $(TF_DIR) && terraform apply -var-file="$(TF_DIR)/secrets.auto.tfvars" -auto-approve
+	cd $(TF_DIR)/$(dir) && terraform apply -var-file="$(TF_DIR)/$(dir)/secrets.auto.tfvars" -auto-approve
 
 tf-destroy:
-	cd $(TF_DIR) && terraform destroy -var-file="$(TF_DIR)/secrets.auto.tfvars" -auto-approve
+	cd $(TF_DIR)/$(dir) && terraform destroy -var-file="$(TF_DIR)/$(dir)/secrets.auto.tfvars" -auto-approve
 
 
 # --- GIT --- #

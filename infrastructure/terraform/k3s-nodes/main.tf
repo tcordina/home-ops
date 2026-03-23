@@ -4,6 +4,10 @@ terraform {
       source  = "Telmate/proxmox"
       version = "3.0.2-rc07"
     }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.0"
+    }
   }
 }
 
@@ -30,36 +34,48 @@ provider "proxmox" {
   pm_debug            = true
 }
 
-data "local_file" "cloud-init_master" {
-  filename = "${path.module}/cloud-init/master.yaml"
+variable "ssh_private_key" {
+  sensitive = true
+  type      = string
 }
 
-data "local_file" "cloud-init_controlplane" {
-  filename = "${path.module}/cloud-init/controlplane.yaml"
+locals {
+  cloud_init_rendered = {
+    master = templatefile("${path.module}/config/cloud-init.yaml.tpl", {
+      is_master       = true
+      ssh_private_key = ""
+    })
+    controlplane = templatefile("${path.module}/config/cloud-init.yaml.tpl", {
+      is_master       = false
+      ssh_private_key = var.ssh_private_key
+    })
+  }
 }
 
-data "local_file" "cloud-init_worker" {
-  filename = "${path.module}/cloud-init/worker.yaml"
+resource "local_file" "cloud_init_rendered" {
+  for_each        = local.cloud_init_rendered
+  filename        = "${path.module}/config/.rendered/${each.key}.yaml"
+  content         = each.value
+  file_permission = "0600"
 }
 
 resource "terraform_data" "cloud-init_upload" {
   provisioner "local-exec" {
     command = <<-EOT
-      scp ${path.module}/cloud-init/master.yaml root@${var.pve_ip}:/var/lib/vz/snippets/cloud-init-master.yaml
-      scp ${path.module}/cloud-init/controlplane.yaml root@${var.pve_ip}:/var/lib/vz/snippets/cloud-init-controlplane.yaml
-      scp ${path.module}/cloud-init/worker.yaml root@${var.pve_ip}:/var/lib/vz/snippets/cloud-init-worker.yaml
+      scp ${path.module}/config/.rendered/master.yaml root@${var.pve_ip}:/var/lib/vz/snippets/cloud-init-master.yaml
+      scp ${path.module}/config/.rendered/controlplane.yaml root@${var.pve_ip}:/var/lib/vz/snippets/cloud-init-controlplane.yaml
 
-      scp ${path.module}/cloud-init/master.yaml root@${var.pve2_ip}:/var/lib/vz/snippets/cloud-init-master.yaml
-      scp ${path.module}/cloud-init/controlplane.yaml root@${var.pve2_ip}:/var/lib/vz/snippets/cloud-init-controlplane.yaml
-      scp ${path.module}/cloud-init/worker.yaml root@${var.pve2_ip}:/var/lib/vz/snippets/cloud-init-worker.yaml
+      scp ${path.module}/config/.rendered/master.yaml root@${var.pve2_ip}:/var/lib/vz/snippets/cloud-init-master.yaml
+      scp ${path.module}/config/.rendered/controlplane.yaml root@${var.pve2_ip}:/var/lib/vz/snippets/cloud-init-controlplane.yaml
     EOT
   }
 
   triggers_replace = {
-    cloud-init_master_hash       = md5(data.local_file.cloud-init_master.content)
-    cloud-init_controlplane-hash = md5(data.local_file.cloud-init_controlplane.content)
-    cloud-init_worker_hash       = md5(data.local_file.cloud-init_worker.content)
+    master       = md5(local.cloud_init_rendered["master"])
+    controlplane = md5(local.cloud_init_rendered["controlplane"])
   }
+
+  depends_on = [local_file.cloud_init_rendered]
 }
 
 locals {
@@ -71,6 +87,10 @@ locals {
       memory      = 12288
       ip          = "192.168.1.101"
       cloud_init  = "master"
+      public_keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOrNZ7JA97YCtp8zNmrF0t3XwhgOi3eytHdA057yIhRX thibaud@M1",
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH1HxNNmPvsZQFSuU8EuTn/cFwL9Jh1CUZiRvNbbP/gG other-nodes",
+      ]
     }
     "master-node-2" = {
       vmid        = 202
@@ -79,6 +99,9 @@ locals {
       memory      = 6144
       ip          = "192.168.1.102"
       cloud_init  = "controlplane"
+      public_keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOrNZ7JA97YCtp8zNmrF0t3XwhgOi3eytHdA057yIhRX thibaud@M1",
+      ]
     }
     "master-node-3" = {
       vmid        = 203
@@ -87,6 +110,9 @@ locals {
       memory      = 6144
       ip          = "192.168.1.103"
       cloud_init  = "controlplane"
+      public_keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOrNZ7JA97YCtp8zNmrF0t3XwhgOi3eytHdA057yIhRX thibaud@M1",
+      ]
     }
   }
 }
@@ -122,10 +148,7 @@ resource "proxmox_vm_qemu" "k3s-nodes" {
   skip_ipv6  = true
   ciuser     = "ubuntu"
   cipassword = "ubuntu"
-  sshkeys    = <<EOT
-    ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOrNZ7JA97YCtp8zNmrF0t3XwhgOi3eytHdA057yIhRX thibaud@M1
-    ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH1HxNNmPvsZQFSuU8EuTn/cFwL9Jh1CUZiRvNbbP/gG other-nodes
-  EOT
+  sshkeys    = join("\n", each.value.public_keys)
 
   depends_on = [proxmox_pool.k3s-pool, terraform_data.cloud-init_upload]
 
