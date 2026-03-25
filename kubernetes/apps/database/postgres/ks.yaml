@@ -1,22 +1,19 @@
+---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app gitlab-runner
+  name: &app postgres-operator
   namespace: flux-system
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: longhorn
-      namespace: flux-system
-  interval: 1h
-  path: ./kubernetes/apps/default/gitlab-runner/app
-  prune: false
+  path: ./kubernetes/apps/database/postgres/app
+  interval: 30m
   retryInterval: 2m
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  timeout: 15m
   wait: false

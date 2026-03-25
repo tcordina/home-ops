@@ -8,11 +8,11 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: infrastructure
+    - name: longhorn
       namespace: flux-system
   interval: 1h
   path: ./kubernetes/apps/multimedia/radarr/app
-  prune: true
+  prune: false
   retryInterval: 2m
   sourceRef:
     kind: GitRepository

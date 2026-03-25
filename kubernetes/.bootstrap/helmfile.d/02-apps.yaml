@@ -25,14 +25,14 @@ releases:
   - name: certs
     namespace: cert-manager
     # Pointing to a local directory without a helm chart uses Chartify to make a helm chart out of the manifests present in said directory
-    chart: ../../infrastructure/cert-manager/cert-manager/certs/
+    chart: ../../apps/cert-manager/cert-manager/certs/
     needs:
       - kube-system/coredns
 
   - name: bitwarden-config
     namespace: external-secrets
     # Pointing to a local directory without a helm chart uses Chartify to make a helm chart out of the manifests present in said directory
-    chart: ../../infrastructure/external-secrets/external-secrets/bitwarden/
+    chart: ../../apps/external-secrets/external-secrets/bitwarden/
     needs:
       - cert-manager/certs
 

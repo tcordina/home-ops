@@ -12,7 +12,7 @@ spec:
       namespace: flux-system
   interval: 5m
   path: ./kubernetes/apps/default/discord-bot/app
-  prune: true
+  prune: false
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
@@ -31,11 +31,13 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: infrastructure
+    - name: longhorn
+      namespace: flux-system
+    - name: postgres-operator
       namespace: flux-system
   interval: 1h
   path: ./kubernetes/apps/default/discord-bot/db
-  prune: true
+  prune: false
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
