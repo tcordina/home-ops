@@ -15,10 +15,19 @@ repositories:
     url: https://kubernetes.github.io/ingress-nginx
 
 releases:
+  - name: coredns
+    namespace: kube-system
+    chart: oci://ghcr.io/coredns/charts/coredns
+    version: 1.45.2
+    values:
+      - ./templates/values.yaml.gotmpl
+
   - name: certs
     namespace: cert-manager
     # Pointing to a local directory without a helm chart uses Chartify to make a helm chart out of the manifests present in said directory
     chart: ../../infrastructure/cert-manager/cert-manager/certs/
+    needs:
+      - kube-system/coredns
 
   - name: bitwarden-config
     namespace: external-secrets

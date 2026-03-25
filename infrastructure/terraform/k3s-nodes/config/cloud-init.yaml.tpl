@@ -30,7 +30,7 @@ runcmd:
   - |
     curl -sfL https://get.k3s.io | sh -s - server \
       --cluster-init \
-      --disable=traefik \
+      --disable=coredns,traefik \
       --tls-san=192.168.1.100 \
       --etcd-expose-metrics=true \
       --write-kubeconfig-mode=644 \
@@ -42,7 +42,7 @@ runcmd:
     curl -sfL https://get.k3s.io | sh -s - server \
       --server https://10.0.1.11:6443 \
       --token $REMOTE_TOKEN \
-      --disable=traefik \
+      --disable=coredns,traefik \
       --tls-san=192.168.1.100 \
       --etcd-expose-metrics=true \
       --write-kubeconfig-mode=644 \
