@@ -1,0 +1,30 @@
+auto lo
+iface lo inet loopback
+
+auto enp1s0
+iface enp1s0 inet manual
+
+iface wlp2s0 inet manual
+
+auto vmbr0
+iface vmbr0 inet static
+        address 192.168.1.21/24
+        gateway 192.168.1.1
+        bridge-ports enp1s0
+        bridge-stp off
+        bridge-fd 0
+
+auto vmbr0.10
+iface vmbr0.10 inet manual
+    vlan-raw-device vmbr0
+
+auto vmbr10
+iface vmbr10 inet static
+    address 10.0.1.1/24
+    bridge-ports vmbr0.10
+    bridge-stp off
+    bridge-fd 0
+    post-up   iptables -t nat -A POSTROUTING -s 10.0.1.0/24 -o vmbr0 -j MASQUERADE
+    post-down iptables -t nat -D POSTROUTING -s 10.0.1.0/24 -o vmbr0 -j MASQUERADE
+
+source /etc/network/interfaces.d/*

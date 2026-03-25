@@ -33,18 +33,20 @@ runcmd:
       --disable=traefik \
       --tls-san=192.168.1.100 \
       --etcd-expose-metrics=true \
-      --write-kubeconfig-mode=644
+      --write-kubeconfig-mode=644 \
+      --embedded-registry
 %{~ else }
-  - until [ "$$(curl -ks -o /dev/null -w "%%{http_code}" https://192.168.1.101:6443)" -eq 401 ]; do sleep 5; done
-  - REMOTE_TOKEN=$$(ssh -o StrictHostKeyChecking=accept-new ubuntu@192.168.1.101 sudo cat /var/lib/rancher/k3s/server/node-token)
+  - until [ "$(curl -ks -o /dev/null -w "%%{http_code}" https://10.0.1.11:6443)" -eq 401 ]; do sleep 5; done
+  - REMOTE_TOKEN=$(ssh -o StrictHostKeyChecking=accept-new ubuntu@10.0.1.11 sudo cat /var/lib/rancher/k3s/server/node-token)
   - |
     curl -sfL https://get.k3s.io | sh -s - server \
-      --server https://192.168.1.101:6443 \
-      --token $$REMOTE_TOKEN \
+      --server https://10.0.1.11:6443 \
+      --token $REMOTE_TOKEN \
       --disable=traefik \
       --tls-san=192.168.1.100 \
       --etcd-expose-metrics=true \
-      --write-kubeconfig-mode=644
+      --write-kubeconfig-mode=644 \
+      --embedded-registry
 %{~ endif }
   - chown ubuntu:ubuntu /etc/rancher/k3s/k3s.yaml
   - chown ubuntu:ubuntu /var/lib/rancher/k3s/server/node-token

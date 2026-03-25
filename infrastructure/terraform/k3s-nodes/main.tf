@@ -83,9 +83,10 @@ locals {
     "master-node-1" = {
       vmid        = 201
       target_node = "pve"
+      gateway     = "10.0.1.1"
       cores       = 4
       memory      = 12288
-      ip          = "192.168.1.101"
+      ip          = "10.0.1.11"
       cloud_init  = "master"
       public_keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOrNZ7JA97YCtp8zNmrF0t3XwhgOi3eytHdA057yIhRX thibaud@M1",
@@ -95,9 +96,10 @@ locals {
     "master-node-2" = {
       vmid        = 202
       target_node = "pve2"
+      gateway     = "10.0.1.2"
       cores       = 6
       memory      = 6144
-      ip          = "192.168.1.102"
+      ip          = "10.0.1.12"
       cloud_init  = "controlplane"
       public_keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOrNZ7JA97YCtp8zNmrF0t3XwhgOi3eytHdA057yIhRX thibaud@M1",
@@ -106,9 +108,10 @@ locals {
     "master-node-3" = {
       vmid        = 203
       target_node = "pve2"
+      gateway     = "10.0.1.2"
       cores       = 6
       memory      = 6144
-      ip          = "192.168.1.103"
+      ip          = "10.0.1.13"
       cloud_init  = "controlplane"
       public_keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOrNZ7JA97YCtp8zNmrF0t3XwhgOi3eytHdA057yIhRX thibaud@M1",
@@ -143,8 +146,7 @@ resource "proxmox_vm_qemu" "k3s-nodes" {
   # Cloud-Init configuration
   cicustom   = "vendor=local:snippets/cloud-init-${each.value.cloud_init}.yaml" # inside /var/lib/vz/snippets/
   nameserver = "1.1.1.1 1.0.0.1"
-  ipconfig0  = "ip=${each.value.ip}/24,gw=192.168.1.1"
-  # ipconfig1  = "ip=10.0.1.x/24"
+  ipconfig0  = "ip=${each.value.ip}/24,gw=${each.value.gateway}"
   skip_ipv6  = true
   ciuser     = "ubuntu"
   cipassword = "ubuntu"
@@ -178,17 +180,17 @@ resource "proxmox_vm_qemu" "k3s-nodes" {
     }
   }
 
-  network {
-    id     = 0
-    bridge = "vmbr0"
-    model  = "virtio"
-  }
-
-  # Create the corresponding bridge in the proxmox UI
-  # pve > system > network > create > linux bridge > ipv4 10.0.1.0 > create > apply configuration
+  # 192.168.1.0/24 network
   # network {
-  #   id     = 1
-  #   bridge = "vmbr10"
+  #   id     = 0
+  #   bridge = "vmbr0"
   #   model  = "virtio"
   # }
+
+  # 10.0.1.0/24 network
+  network {
+    id     = 0
+    bridge = "vmbr10"
+    model  = "virtio"
+  }
 }

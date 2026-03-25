@@ -11,7 +11,6 @@ vrrp_instance VI_1 {
     priority ${vrrp_priority}
     advert_int 1
 
-    # unicast mode: works in LXC without multicast
     unicast_src_ip ${self_ip}
     unicast_peer {
         ${peer_ip}

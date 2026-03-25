@@ -31,14 +31,16 @@ locals {
     "haproxy-1" = {
       vmid        = 400
       target_node = "pve"
-      ip          = "192.168.1.98"
+      public_ip   = "192.168.1.98"
+      private_ip  = "10.0.1.8"
       vrrp_role   = "MASTER"
       vrrp_prio   = 100
     }
     "haproxy-2" = {
       vmid        = 401
       target_node = "pve2"
-      ip          = "192.168.1.99"
+      public_ip   = "192.168.1.99"
+      private_ip  = "10.0.1.9"
       vrrp_role   = "BACKUP"
       vrrp_prio   = 90
     }
@@ -70,8 +72,14 @@ resource "proxmox_lxc" "haproxy" {
   network {
     name   = "eth0"
     bridge = "vmbr0"
-    ip     = "${each.value.ip}/24"
+    ip     = "${each.value.public_ip}/24"
     gw     = "192.168.1.1"
+  }
+
+  network {
+    name   = "eth1"
+    bridge = "vmbr10"
+    ip     = "${each.value.private_ip}/24"
   }
 
   features {
@@ -83,8 +91,19 @@ resource "terraform_data" "haproxy_config" {
   for_each   = local.haproxy_instances
   depends_on = [proxmox_lxc.haproxy]
 
+  triggers_replace = {
+    haproxy_cfg    = filemd5("${path.module}/config/haproxy.cfg")
+    keepalived_cfg = md5(templatefile("${path.module}/config/keepalived.conf.tpl", {
+      vrrp_role     = each.value.vrrp_role
+      vrrp_priority = each.value.vrrp_prio
+      vip           = local.haproxy_vip
+      self_ip       = each.value.public_ip
+      peer_ip       = each.key == "haproxy-1" ? local.haproxy_instances["haproxy-2"].public_ip : local.haproxy_instances["haproxy-1"].public_ip
+    }))
+  }
+
   connection {
-    host        = each.value.ip
+    host        = each.value.public_ip
     type        = "ssh"
     user        = "root"
     private_key = file("~/.ssh/id_ed25519")
@@ -100,8 +119,8 @@ resource "terraform_data" "haproxy_config" {
       vrrp_role     = each.value.vrrp_role
       vrrp_priority = each.value.vrrp_prio
       vip           = local.haproxy_vip
-      self_ip       = each.value.ip
-      peer_ip       = each.key == "haproxy-1" ? local.haproxy_instances["haproxy-2"].ip : local.haproxy_instances["haproxy-1"].ip
+      self_ip       = each.value.public_ip
+      peer_ip       = each.key == "haproxy-1" ? local.haproxy_instances["haproxy-2"].public_ip : local.haproxy_instances["haproxy-1"].public_ip
     })
     destination = "/tmp/keepalived.conf"
   }
