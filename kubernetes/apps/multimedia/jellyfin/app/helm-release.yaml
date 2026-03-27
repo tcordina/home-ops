@@ -84,10 +84,10 @@ spec:
     #       value: jellyfin
 
     metrics:
-      enabled: true
-      serviceMonitor:
-        enabled: true
-        interval: 5m
+      enabled: false
+      # serviceMonitor:
+      #   enabled: true
+      #   interval: 5m
 
     persistence:
       cache:

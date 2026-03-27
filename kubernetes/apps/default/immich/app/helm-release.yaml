@@ -153,17 +153,17 @@ spec:
         tls:
           - hosts:
               - immich.lan.tablar.ovh
-    serviceMonitor:
-      immich:
-        enabled: true
-        serviceName: immich
-        endpoints:
-          - port: metrics-api
-            scheme: http
-            path: /metrics
-          - port: metrics-ms
-            scheme: http
-            path: /metrics
+    # serviceMonitor:
+    #   immich:
+    #     enabled: true
+    #     serviceName: immich
+    #     endpoints:
+    #       - port: metrics-api
+    #         scheme: http
+    #         path: /metrics
+    #       - port: metrics-ms
+    #         scheme: http
+    #         path: /metrics
     persistence:
       library:
         type: nfs
