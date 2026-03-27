@@ -128,6 +128,48 @@ spec:
               - alertmanager.lan.tablar.ovh
 
 
+    kubeControllerManager:
+      enabled: false
+
+    kubeScheduler:
+      enabled: false
+
+    kubeProxy:
+      enabled: false
+
+
+    kubelet:
+      serviceMonitor:
+        metricRelabelings:
+          # drop metrics already scraped by apiserver
+          - action: drop
+            sourceLabels: [__name__]
+            regex: "apiserver_.*|etcd_.*|workqueue_*"
+
+
+    kubeApiServer:
+      enabled: true
+      ## needs further documentation reading before uncommenting
+      # serviceMonitor:
+      #   metricRelabelings:
+      #     - action: drop
+      #       sourceLabels: [__name__]
+      #       regex: "apiserver_request_body_size_bytes_bucket|apiserver_response_sizes_bucket|apiserver_watch_cache_read_wait_seconds_bucket|apiserver_watch_list_duration_seconds_bucket|apiserver_watch_events_sizes_bucket|apiserver_request_sli_duration_seconds_bucket"
+      #     - action: drop
+      #       sourceLabels: [__name__, verb]
+      #       regex: "apiserver_request_duration_seconds_bucket;(WATCH|LIST|APPLY)"
+      #     # Go from 24 buckets to 8
+      #     # Buckets kept: 0.005, 0.025, 0.05, 0.1, 1, 5, 30, +Inf
+      #     - action: drop
+      #       sourceLabels: [__name__, le]
+      #       regex: "apiserver_request_duration_seconds_bucket;(0\\.(2|4|6|8)|1\\.(25|5)|2\\.0|3\\.0|4\\.0|6\\.0|8\\.0|10\\.0|15\\.0|20\\.0|45\\.0|60\\.0)"
+      #     # Go from 24 buckets to 8
+      #     # Buckets kept: 0.005, 0.025, 0.05, 0.1, 1, 5, 30, +Inf
+      #     - action: drop
+      #       sourceLabels: [__name__, le]
+      #       regex: "etcd_request_duration_seconds_bucket;(0\\.(2|4|6|8)|1\\.(25|5)|2\\.0|3\\.0|4\\.0|6\\.0|8\\.0|10\\.0|15\\.0|20\\.0|45\\.0|60\\.0)"
+
+
     kubeEtcd:
       enabled: true
       endpoints:
@@ -158,7 +200,7 @@ spec:
         scrapeConfigSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false
         externalPrefixNilUsesHelmValues: false
-        scrapeInterval: 30s
+        scrapeInterval: 1m
         retention: 2d
         retentionSize: "9GiB"
         storageSpec:
@@ -166,7 +208,7 @@ spec:
             metadata:
               name: data
             spec:
-              storageClassName: local-path
+              storageClassName: longhorn-local
               accessModes: ["ReadWriteOnce"]
               resources:
                 requests:
