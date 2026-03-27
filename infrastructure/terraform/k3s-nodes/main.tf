@@ -136,12 +136,13 @@ resource "proxmox_vm_qemu" "k3s-nodes" {
   cpu {
     cores = each.value.cores
   }
-  memory           = each.value.memory
-  boot             = "order=scsi0"        # has to be the same as the OS disk of the template
-  clone            = "ubuntu24-cloudinit" # The name of the template
-  scsihw           = "virtio-scsi-single"
-  vm_state         = "running"
-  automatic_reboot = true
+  memory              = each.value.memory
+  boot                = "order=scsi0"        # has to be the same as the OS disk of the template
+  clone               = "ubuntu24-cloudinit" # The name of the template
+  scsihw              = "virtio-scsi-single"
+  vm_state            = "running"
+  automatic_reboot    = true
+  start_at_node_boot  = true
 
   # Cloud-Init configuration
   cicustom   = "vendor=local:snippets/cloud-init-${each.value.cloud_init}.yaml" # inside /var/lib/vz/snippets/
