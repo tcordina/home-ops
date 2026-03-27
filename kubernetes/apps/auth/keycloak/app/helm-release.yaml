@@ -1,0 +1,135 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: keycloak
+  namespace: auth
+spec:
+  interval: 12h
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 4.6.2
+  url: oci://ghcr.io/bjw-s-labs/helm/app-template
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app keycloak
+  namespace: auth
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+    namespace: auth
+  values:
+    controllers:
+      keycloak:
+        replicas: 1
+        strategy: Recreate
+        containers:
+          app:
+            image:
+              repository: quay.io/keycloak/keycloak
+              tag: "26.5.5"
+
+            env:
+              TZ: "Europe/Paris"
+              # temporary admin credentials, this account is deleted during setup
+              KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
+              KC_BOOTSTRAP_ADMIN_PASSWORD: "admin"
+              KC_DB_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: keycloak-pguser-keycloak
+                    key: jdbc-uri
+              KC_HOSTNAME: "https://auth.lan.tablar.ovh"
+              KC_DB: postgres
+              KC_FEATURES: passkeys,scripts,update-email
+              KC_PROXY_HEADERS: "xforwarded"
+              KC_HTTP_ENABLED: "true"
+              KC_HEALTH_ENABLED: "true"
+              KC_SPI_CORS_ENABLED: "true"
+              KC_CACHE: "ispn"
+              POD_ID:
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.podIP
+              KC_CACHE_EMBEDDED_NETWORK_BIND_ADDRESS: "${POD_ID}"
+              KC_SPI_CORS_ORIGINS: "*"
+              KC_SPI_CORS_METHODS: "GET,HEAD,OPTIONS,POST,PUT,DELETE"
+              KC_SPI_CORS_HEADERS: "Authorization,Content-Type,Accept,Origin,X-Requested-With"
+              KC_SPI_CORS_EXPOSED_HEADERS: "Content-Disposition,Content-Length,Content-Type"
+              KC_SPI_CORS_ALLOW_CREDENTIALS: "true"
+              KC_SPI_CORS_MAX_AGE: "3600"
+
+            # envFrom:
+            #   - secretRef:
+            #       name: keycloak-secret
+
+            args:
+              - start
+              - --db
+              - postgres
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health/live
+                    port: 9000
+                  periodSeconds: 10
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health/ready
+                    port: 9000
+                  periodSeconds: 10
+                  failureThreshold: 3
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health/started
+                    port: 9000
+                  periodSeconds: 1
+                  failureThreshold: 600
+
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                cpu: 1000m
+                memory: 1Gi
+
+    service:
+      keycloak:
+        controller: *app
+        ports:
+          http:
+            port: &http-port 8080
+
+    ingress:
+      main:
+        enabled: true
+        className: nginx
+        hosts:
+          - host: auth.lan.tablar.ovh
+            paths:
+              - path: /
+                service:
+                  identifier: *app
+                  port: *http-port
+        tls:
+          - hosts:
+              - auth.lan.tablar.ovh

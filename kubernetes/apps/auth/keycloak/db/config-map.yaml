@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-postgres-init
+  namespace: auth
+data:
+  init.sql: |
+    BEGIN;
+    ALTER DATABASE "keycloak" OWNER TO "keycloak";
+    COMMIT;
