@@ -9,7 +9,7 @@ releases:
   - name: cert-manager
     namespace: cert-manager
     chart: oci://quay.io/jetstack/charts/cert-manager
-    version: v1.20.0
+    version: v1.20.1
     createNamespace: true
     values:
       - ./templates/values.yaml.gotmpl
@@ -23,5 +23,5 @@ releases:
   - name: kube-prometheus-stack
     namespace: monitoring
     chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
-    version: 82.15.0
+    version: 82.15.1
     createNamespace: true
