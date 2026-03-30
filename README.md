@@ -5,9 +5,7 @@
 
 ![ubuntu version](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fubuntu.json&style=for-the-badge&logo=ubuntu&logoColor=white&logoSize=auto)
 ![k3s version](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fk3s.json&style=for-the-badge&logo=k3s&logoColor=white&logoSize=auto)
-![flux version](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fflux.json&style=for-the-badge&logo=flux&logoColor=white&logoSize=auto&cacheSeconds=1)
-
-
+![flux version](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fflux.json&style=for-the-badge&logo=flux&logoColor=white&logoSize=auto)
 
 ![nodes count](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fnodes.json&style=flat-square)
 ![pods count](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fpods.json&style=flat-square)
@@ -16,6 +14,8 @@
 ![cpu usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fcpu.json&style=flat-square)
 ![ram usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fram.json&style=flat-square)
 ![free disk space](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fdisk.json&style=flat-square)
+
+<br>
 
 Personal homelab running on a 2 nodes Proxmox cluster. Infrastructure and application configuration is managed as code and reconciled via GitOps.
 
@@ -29,24 +29,23 @@ Heavily inspired by the projects shared on [kubesearch.dev](https://kubesearch.d
 
 ### Hardware
 
-| Host | CPU | RAM | Storage |
-|---|---|---|---|
-| Acemagic Vista Mini V1 | Intel 4C | 16 GB DDR4 | 512 GB SSD |
+| Host                     | CPU          | RAM        | Storage               |
+| ------------------------ | ------------ | ---------- | --------------------- |
+| Acemagic Vista Mini V1   | Intel 4C     | 16 GB DDR4 | 512 GB SSD            |
 | Spare parts custom build | AMD 8C / 16T | 16 GB DDR4 | 512 GB SSD + 2 TB HDD |
 
 ### Virtual machines & LXC
 
-| Guest | Type | Host | Role |
-|---|---|---|---|
-| haproxy-1 | LXC | acemagic | Load balancer + VRRP master (haproxy + keepalived) |
-| haproxy-2 | LXC | custom build | Load balancer + VRRP backup (haproxy + keepalived) |
-| master-node-1 | VM | acemagic | Kubernetes node |
-| master-node-2 | VM | custom build | Kubernetes node |
-| master-node-3 | VM | custom build | Kubernetes node |
-| TrueNAS | VM | custom build | NFS storage server |
+| Guest         | Type | Host         | Role                                               |
+| ------------- | ---- | ------------ | -------------------------------------------------- |
+| haproxy-1     | LXC  | acemagic     | Load balancer + VRRP master (haproxy + keepalived) |
+| haproxy-2     | LXC  | custom build | Load balancer + VRRP backup (haproxy + keepalived) |
+| master-node-1 | VM   | acemagic     | Kubernetes node                                    |
+| master-node-2 | VM   | custom build | Kubernetes node                                    |
+| master-node-3 | VM   | custom build | Kubernetes node                                    |
+| TrueNAS       | VM   | custom build | NFS storage server                                 |
 
 _All 3 Kubernetes nodes act as both control plane and worker nodes. Running multiple control planes avoids the single point of failure of a dedicated control plane, and allows workloads to be rescheduled on the remaining nodes if one goes down. See the [note below](#why-do-2-control-plane-nodes-run-on-the-same-machine) for the limitations of this setup._
-
 
 ---
 
@@ -54,59 +53,59 @@ _All 3 Kubernetes nodes act as both control plane and worker nodes. Running mult
 
 ### Main infrastructure components
 
-| Tool | Purpose |
-|---|---|
-| [Proxmox VE](https://www.proxmox.com/en/products/proxmox-virtual-environment/overview) | Virtualization platform |
-| [TrueNAS](https://www.truenas.com/truenas-community-edition/) | Provide network attached storage |
-| [Ubuntu server](https://documentation.ubuntu.com/server/explanation/clouds/find-cloud-images/) | Host Kubernetes nodes |
-| [K3s](https://k3s.io/) | Easy to deploy Kubernetes distribution |
-| [HAProxy](https://www.haproxy.org/) | Load balancer distributing traffic across Kubernetes nodes |
-| [Keepalived](https://www.keepalived.org/) | VRRP-based virtual IP failover between the two HAProxy instances |
+| Tool                                                                                           | Purpose                                                          |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [Proxmox VE](https://www.proxmox.com/en/products/proxmox-virtual-environment/overview)         | Virtualization platform                                          |
+| [TrueNAS](https://www.truenas.com/truenas-community-edition/)                                  | Provide network attached storage                                 |
+| [Ubuntu server](https://documentation.ubuntu.com/server/explanation/clouds/find-cloud-images/) | Host Kubernetes nodes                                            |
+| [K3s](https://k3s.io/)                                                                         | Easy to deploy Kubernetes distribution                           |
+| [HAProxy](https://www.haproxy.org/)                                                            | Load balancer distributing traffic across Kubernetes nodes       |
+| [Keepalived](https://www.keepalived.org/)                                                      | VRRP-based virtual IP failover between the two HAProxy instances |
 
 ### GitOps & Infrastructure as Code
 
-| Tool | Purpose |
-|---|---|
-| [Flux CD](https://fluxcd.io/) | GitOps operator - reconciles cluster state from this repo |
-| [SOPS + Age](https://github.com/getsops/sops) | Encrypted secrets at rest in Git |
-| [Helm](https://helm.sh/) | Application packaging |
-| [Terraform](https://www.terraform.io/) | Proxmox VM / LXC provisioning |
-| [cloud-init](https://cloud-init.io/) | Server configuration |
-| [Renovate](https://docs.renovatebot.com/) | Automated dependency updates |
+| Tool                                          | Purpose                                                   |
+| --------------------------------------------- | --------------------------------------------------------- |
+| [Flux CD](https://fluxcd.io/)                 | GitOps operator - reconciles cluster state from this repo |
+| [SOPS + Age](https://github.com/getsops/sops) | Encrypted secrets at rest in Git                          |
+| [Helm](https://helm.sh/)                      | Application packaging                                     |
+| [Terraform](https://www.terraform.io/)        | Proxmox VM / LXC provisioning                             |
+| [cloud-init](https://cloud-init.io/)          | Server configuration                                      |
+| [Renovate](https://docs.renovatebot.com/)     | Automated dependency updates                              |
 
 ### Kubernetes cluster infrastructure
 
-| Component | Purpose |
-|---|---|
-| [ingress-nginx](https://kubernetes.github.io/ingress-nginx/) | Ingress controller |
-| [cert-manager](https://cert-manager.io/) | TLS certificates via Let's Encrypt |
-| [external-secrets](https://external-secrets.io/) | Load secrets from Bitwarden |
-| [CSI Driver NFS](https://github.com/kubernetes-csi/csi-driver-nfs) | NFS persistent volumes backed by TrueNAS |
-| [Longhorn](https://longhorn.io/) | Distributed block storage with replication across nodes |
-| [snapshot-controller](https://github.com/kubernetes-csi/external-snapshotter) | Volume snapshot support for CSI drivers |
-| [Crunchy Data PGO](https://access.crunchydata.com/documentation/postgres-operator/) | PostgreSQL operator |
+| Component                                                                           | Purpose                                                 |
+| ----------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| [ingress-nginx](https://kubernetes.github.io/ingress-nginx/)                        | Ingress controller                                      |
+| [cert-manager](https://cert-manager.io/)                                            | TLS certificates via Let's Encrypt                      |
+| [external-secrets](https://external-secrets.io/)                                    | Load secrets from Bitwarden                             |
+| [CSI Driver NFS](https://github.com/kubernetes-csi/csi-driver-nfs)                  | NFS persistent volumes backed by TrueNAS                |
+| [Longhorn](https://longhorn.io/)                                                    | Distributed block storage with replication across nodes |
+| [snapshot-controller](https://github.com/kubernetes-csi/external-snapshotter)       | Volume snapshot support for CSI drivers                 |
+| [Crunchy Data PGO](https://access.crunchydata.com/documentation/postgres-operator/) | PostgreSQL operator                                     |
 
 ### Applications
 
-| App | Purpose |
-|---|---|
-| [Discord Bot](https://gitlab.com/tcordina/discord-bot) | Custom bot with a Python + PostgreSQL + TimescaleDB stack |
-| [OpenCloud](https://opencloud.eu/) | File storage |
-| [Immich](https://immich.app/) | Photo library |
-| [GitLab Runner](https://docs.gitlab.com/runner/) | CI/CD executor |
-| [Jellyfin](https://jellyfin.org/) | Media server |
-| [Sonarr](https://sonarr.tv/) | TV show automation / management |
-| [Radarr](https://radarr.video/) | Movie automation / management |
-| [Prowlarr](https://prowlarr.com/) | Indexer manager |
-| [qBittorrent](https://www.qbittorrent.org/) | Torrent client (behind a VPN via [Gluetun](https://github.com/qdm12/gluetun)) |
+| App                                                    | Purpose                                                                       |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| [Discord Bot](https://gitlab.com/tcordina/discord-bot) | Custom bot with a Python + PostgreSQL + TimescaleDB stack                     |
+| [OpenCloud](https://opencloud.eu/)                     | File storage                                                                  |
+| [Immich](https://immich.app/)                          | Photo library                                                                 |
+| [GitLab Runner](https://docs.gitlab.com/runner/)       | CI/CD executor                                                                |
+| [Jellyfin](https://jellyfin.org/)                      | Media server                                                                  |
+| [Sonarr](https://sonarr.tv/)                           | TV show automation / management                                               |
+| [Radarr](https://radarr.video/)                        | Movie automation / management                                                 |
+| [Prowlarr](https://prowlarr.com/)                      | Indexer manager                                                               |
+| [qBittorrent](https://www.qbittorrent.org/)            | Torrent client (behind a VPN via [Gluetun](https://github.com/qdm12/gluetun)) |
 
 ### Observability
 
-| Component | Purpose |
-|---|---|
+| Component                                                                                                           | Purpose                             |
+| ------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
 | [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) | Prometheus + Grafana + Alertmanager |
-| [Telegram bot webhook](https://core.telegram.org/bots/api#making-requests-when-getting-updates) | Receive alerts |
-| [Loki](https://grafana.com/oss/loki/) | Log aggregation |
+| [Telegram bot webhook](https://core.telegram.org/bots/api#making-requests-when-getting-updates)                     | Receive alerts                      |
+| [Loki](https://grafana.com/oss/loki/)                                                                               | Log aggregation                     |
 
 ### Why do 2 control plane nodes run on the same machine?
 
