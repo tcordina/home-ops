@@ -1,0 +1,3 @@
+# GitLab language statistics
+*.yaml linguist-detectable
+*.yml linguist-detectable
