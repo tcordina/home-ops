@@ -1,7 +1,8 @@
 <div align="center">
-<h1>Homelab</h1>
 
-<h4>Kubernetes cluster stats</h4>
+# Homelab
+
+#### Kubernetes cluster info
 
 ![ubuntu version](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fubuntu.json&style=for-the-badge&logo=ubuntu&logoColor=white&logoSize=auto)
 ![k3s version](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fk3s.json&style=for-the-badge&logo=k3s&logoColor=white&logoSize=auto)
@@ -120,12 +121,13 @@ That said, this setup is **not truly highly available**. According to etcd's doc
 ```
 .
 ├── infrastructure/
-│   ├── terraform/          # Proxmox VM definitions
-│   └── proxmox/            # Proxmox .conf files for VMs not provisioned via Terraform
+│   ├── proxmox/
+│   │   ├── network/    # Network config for PVE hosts
+│   │   └── vms/        # .conf files for VMs not provisioned via Terraform
+│   └── terraform/      # Proxmox VM/LXC definitions
 └── kubernetes/
-    ├── .bootstrap/         # Cluster bootstrap
-    ├── clusters/           # Flux entry point
-    ├── components/         # Reusable Kustomize components
-    ├── apps/               # Application manifests
-    └── infrastructure/     # Kubernetes infrastructure manifests
+    ├── .bootstrap/     # Cluster bootstrap
+    ├── apps/           # Application manifests
+    ├── clusters/       # Flux entry point
+    └── components/     # Reusable Kustomize components
 ```
