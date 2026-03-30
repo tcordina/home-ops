@@ -1,9 +1,26 @@
 <div align="center">
 <h1>Homelab</h1>
 
+<h4>Kubernetes cluster stats</h4>
+
+![ubuntu version](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fubuntu.json&style=for-the-badge&logo=ubuntu&logoColor=white&logoSize=auto)
+![k3s version](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fk3s.json&style=for-the-badge&logo=k3s&logoColor=white&logoSize=auto)
+![flux version](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fflux.json&style=for-the-badge&logo=flux&logoColor=white&logoSize=auto&cacheSeconds=1)
+
+
+
+![nodes count](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fnodes.json&style=flat-square)
+![pods count](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fpods.json&style=flat-square)
+![cluster age](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fage.json&style=flat-square)
+![alerts count](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Falerts.json&style=flat-square)
+![cpu usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fcpu.json&style=flat-square)
+![ram usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fram.json&style=flat-square)
+![free disk space](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fdisk.json&style=flat-square)
+
 Personal homelab running on a 2 nodes Proxmox cluster. Infrastructure and application configuration is managed as code and reconciled via GitOps.
 
-Heavily inspired by the manifests shared on [kubesearch.dev](https://kubesearch.dev/)
+Heavily inspired by the projects shared on [kubesearch.dev](https://kubesearch.dev/)
+
 </div>
 
 ---
