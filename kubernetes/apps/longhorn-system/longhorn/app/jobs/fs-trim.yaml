@@ -1,0 +1,11 @@
+---
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: &name fs-trim
+spec:
+  name: *name
+  cron: "0 4 * * *" # every day at 4AM
+  task: filesystem-trim
+  groups:
+    - maintenance

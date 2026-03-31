@@ -10,6 +10,7 @@ parameters:
   staleReplicaTimeout: "2880" # 48 hours in minutes
   fromBackup: ""
   fsType: "ext4"
+  recurringJobSelector: '[ { "name":"maintenance", "isGroup":true } ]'
 ---
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
@@ -22,7 +23,7 @@ parameters:
   staleReplicaTimeout: "2880" # 48 hours in minutes
   fromBackup: ""
   fsType: "ext4"
-  recurringJobSelector: '[ { "name":"snapshot-6h", "isGroup":false }, { "name":"backup-daily", "isGroup":false } ]'
+  recurringJobSelector: '[ { "name":"maintenance", "isGroup":true }, { "name":"backup", "isGroup":true } ]'
   encrypted: "false"
 # ---
 ## encrypted volumes for S3

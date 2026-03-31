@@ -4,3 +4,5 @@ kind: Kustomization
 resources:
   - backup-daily.yaml
   - snapshot-6h.yaml
+  - fs-trim.yaml
+  - snapshot-cleanup.yaml
