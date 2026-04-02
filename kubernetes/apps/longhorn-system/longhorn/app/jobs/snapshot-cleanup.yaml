@@ -7,5 +7,7 @@ spec:
   name: *name
   cron: "0 4 * * *" # every day at 4AM
   task: snapshot-cleanup
+  retain: 8
+  concurrency: 2
   groups:
     - backup

@@ -5,7 +5,8 @@ metadata:
   name: &name fs-trim
 spec:
   name: *name
-  cron: "0 4 * * *" # every day at 4AM
+  cron: "0 5 * * *" # every day at 5AM
   task: filesystem-trim
+  concurrency: 1
   groups:
     - maintenance
