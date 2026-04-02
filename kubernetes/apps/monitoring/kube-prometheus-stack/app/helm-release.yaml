@@ -15,7 +15,6 @@ spec:
       enabled: true
     cleanPrometheusOperatorObjectNames: true
 
-
     grafana:
       envFromSecrets:
         - name: grafana-oidc-secret
@@ -60,47 +59,46 @@ spec:
           - hosts:
               - grafana.lan.tablar.ovh
 
-
     alertmanager:
       config:
         global:
           resolve_timeout: 5m
 
         route:
-          group_by: ['alertname', 'namespace']
+          group_by: ["alertname", "namespace"]
           group_wait: 30s
           group_interval: 5m
           repeat_interval: 12h
-          receiver: 'null'
+          receiver: "null"
           routes:
             # prometheus stack heartbeat
             - match:
                 alertname: Watchdog
-              receiver: 'null'
+              receiver: "null"
             # false positives on k3s
             - match:
                 alertname: KubeControllerManagerDown
-              receiver: 'null'
+              receiver: "null"
             - match:
                 alertname: KubeSchedulerDown
-              receiver: 'null'
+              receiver: "null"
             # - match:
             #     alertname: KubeEtcdDown
             #   receiver: 'null'
             - match:
                 alertname: KubeProxyDown
-              receiver: 'null'
+              receiver: "null"
             # default routes
             - match:
                 severity: critical
-              receiver: 'telegram'
+              receiver: "telegram"
             - match:
                 severity: warning
-              receiver: 'telegram'
+              receiver: "telegram"
 
         receivers:
-          - name: 'null'
-          - name: 'telegram'
+          - name: "null"
+          - name: "telegram"
             telegram_configs:
               - bot_token_file: /etc/alertmanager/secrets/alertmanager-telegram-secrets/bot_token
                 chat_id: 506962726
@@ -127,7 +125,6 @@ spec:
           - hosts:
               - alertmanager.lan.tablar.ovh
 
-
     kubeControllerManager:
       enabled: false
 
@@ -137,7 +134,6 @@ spec:
     kubeProxy:
       enabled: false
 
-
     kubelet:
       serviceMonitor:
         metricRelabelings:
@@ -145,7 +141,6 @@ spec:
           - action: drop
             sourceLabels: [__name__]
             regex: "apiserver_.*|etcd_.*|workqueue_*"
-
 
     kubeApiServer:
       enabled: true
@@ -169,7 +164,6 @@ spec:
       #       sourceLabels: [__name__, le]
       #       regex: "etcd_request_duration_seconds_bucket;(0\\.(2|4|6|8)|1\\.(25|5)|2\\.0|3\\.0|4\\.0|6\\.0|8\\.0|10\\.0|15\\.0|20\\.0|45\\.0|60\\.0)"
 
-
     kubeEtcd:
       enabled: true
       endpoints:
@@ -182,7 +176,6 @@ spec:
         targetPort: 2381
       serviceMonitor:
         scheme: http
-
 
     prometheus:
       ingress:
@@ -202,7 +195,7 @@ spec:
         externalPrefixNilUsesHelmValues: false
         scrapeInterval: 1m
         retention: 2d
-        retentionSize: "9GiB"
+        retentionSize: "10GiB"
         storageSpec:
           volumeClaimTemplate:
             metadata:
@@ -212,4 +205,4 @@ spec:
               accessModes: ["ReadWriteOnce"]
               resources:
                 requests:
-                  storage: 10Gi
+                  storage: 15Gi
