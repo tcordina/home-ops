@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: quay.io/keycloak/keycloak
-              tag: "26.5.7"
+              tag: "26.6.0"
 
             env:
               TZ: "Europe/Paris"
