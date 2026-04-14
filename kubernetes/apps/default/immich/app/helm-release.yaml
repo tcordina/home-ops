@@ -30,7 +30,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v2.7.4 # {"$imagepolicy": "multimedia:immich-server:tag"}
+              tag: v2.7.5 # {"$imagepolicy": "multimedia:immich-server:tag"}
             env:
               TZ: "Europe/Paris"
               IMMICH_MEDIA_LOCATION: &media-location /data
