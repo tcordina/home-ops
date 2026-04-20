@@ -1,54 +1,27 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ],
+  "extends": ["config:recommended"],
   "timezone": "Europe/Paris",
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "🤖 Renovate Dashboard",
-  "suppressNotifications": [
-    "prEditedNotification"
-  ],
+  "suppressNotifications": ["prEditedNotification"],
   "rebaseWhen": "conflicted",
   "semanticCommits": "enabled",
-  "commitMessagePrefix": "chore(deps):",
-  "commitMessageAction": "update",
-  // "commitMessageTopic": "{{depName}}",
-  "commitMessageExtra": "to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isMajor}}{{prettyNewMajor}}{{else}}{{#if isSingleVersion}}{{prettyNewVersion}}{{else}}{{#if newValue}}{{{newValue}}}{{else}}{{{newDigestShort}}}{{/if}}{{/if}}{{/if}}{{/if}}",
-  "labels": [
-    "dependencies",
-    "renovate"
-  ],
+  "labels": ["dependencies", "renovate"],
   "assigneesFromCodeOwners": true,
-  "flux": {
-    "managerFilePatterns": [
-      "/^kubernetes/.+\\.yaml?$/"
-    ]
-  },
-  "helm-values": {
-    "managerFilePatterns": [
-      "/^kubernetes/.+\\.yaml$/"
-    ]
-  },
   "kubernetes": {
-    "managerFilePatterns": [
-      "/^kubernetes/.+\\.yaml$/"
-    ]
+    "managerFilePatterns": ["/^kubernetes/.+\\.yaml$/"]
+  },
+  "helmfile": {
+    "managerFilePatterns": ["/(^|/)helmfile\\.d/.+\\.yaml(?:\\.gotmpl)?$/"]
   },
   "terraform": {
-    "managerFilePatterns": [
-      "/infrastructure/terraform/.+\\.tf$"
-    ]
+    "managerFilePatterns": ["/infrastructure/terraform/.+\\.tf$"]
   },
   "packageRules": [
     {
       "description": "Auto-merge minor and patch updates",
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true,
       "automergeType": "pr",
       "automergeStrategy": "squash",
@@ -56,65 +29,32 @@
     },
     {
       "description": "Major updates require manual review",
-      "matchUpdateTypes": [
-        "major"
-      ],
+      "matchUpdateTypes": ["major"],
       "automerge": false,
-      "addLabels": [
-        "major-update",
-        "requires-review"
-      ]
+      "addLabels": ["major-update", "requires-review"]
     },
     {
       "description": "Terraform providers and modules",
-      "matchDatasources": [
-        "terraform-provider",
-        "terraform-module"
-      ],
-      "groupName": "Terraform",
-      "commitMessageTopic": "Terraform {{depName}}"
+      "matchDatasources": ["terraform-provider", "terraform-module"],
+      "groupName": "terraform",
+      // "group": {
+      //   "commitMessageTopic": "{{{groupName}}} group"
+      // },
+      "commitMessageTopic": "terraform providers"
     },
     {
-      "description": "Flux components",
-      "matchDatasources": [
-        "docker",
-        "helm"
-      ],
-      "groupName": "Flux",
-      "commitMessageTopic": "Flux {{depName}}",
-      "addLabels": [
-        "flux"
-      ],
-      "matchPackageNames": [
-        "/^fluxcd//",
-        "/^ghcr.io/fluxcd//"
-      ]
+      "description": "Docker images",
+      "matchDatasources": ["docker"],
+      "groupName": "docker",
+      "commitMessageTopic": "docker images",
+      "addLabels": ["kubernentes", "docker"]
     },
     {
-      "description": "Kubernetes manifests",
-      "matchDatasources": [
-        "docker",
-        "helm"
-      ],
-      "groupName": "Kubernetes",
-      "commitMessageTopic": "Kubernetes manifests {{depName}}",
-      "addLabels": [
-        "kubernetes"
-      ]
-    },
-    {
-      "description": "Bootstrap helmfiles",
-      "matchDatasources": [
-        "helm"
-      ],
-      "matchFileNames": [
-        "/(^|/)helmfile\\.d/.+\\.yaml(?:\\.gotmpl)?$/"
-      ],
-      "groupName": "Kubernetes",
-      "commitMessageTopic": "Bootstrap helmfiles {{depName}}",
-      "addLabels": [
-        "kubernetes"
-      ]
+      "description": "Helm repositories",
+      "matchDatasources": ["helm"],
+      "groupName": "helm",
+      "commitMessageTopic": "helm repositories",
+      "addLabels": ["kubernetes", "helm"]
     },
     {
       "description": "Linuxserver qBittorrent - filter outdated versions",
@@ -125,17 +65,13 @@
     },
     {
       "description": "Disable updates for unused apps",
-      "matchFileNames": [
-        "kubernetes/apps/unused/**"
-      ],
+      "matchFileNames": ["kubernetes/apps/unused/**"],
       "enabled": false
     }
   ],
   "vulnerabilityAlerts": {
     "enabled": true,
-    "labels": [
-      "security"
-    ],
+    "labels": ["security"],
     "automerge": false
   },
   "prConcurrentLimit": 10,
