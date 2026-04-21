@@ -9,7 +9,8 @@
   "semanticCommits": "enabled",
   "labels": ["dependencies", "renovate"],
   "assigneesFromCodeOwners": true,
-  "kubernetes": {
+  "enabledManagers": ["flux", "helmfile", "terraform"],
+  "flux": {
     "managerFilePatterns": ["/^kubernetes/.+\\.yaml$/"]
   },
   "helmfile": {
@@ -37,9 +38,6 @@
       "description": "Terraform providers and modules",
       "matchDatasources": ["terraform-provider", "terraform-module"],
       "groupName": "terraform",
-      // "group": {
-      //   "commitMessageTopic": "{{{groupName}}} group"
-      // },
       "commitMessageTopic": "terraform providers"
     },
     {
