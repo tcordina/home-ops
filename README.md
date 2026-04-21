@@ -94,6 +94,8 @@ _All 3 Kubernetes nodes act as both control plane and worker nodes. Running mult
 | [Telegram bot webhook](https://core.telegram.org/bots/api#making-requests-when-getting-updates)                     | Receive alerts                      |
 | [Loki](https://grafana.com/oss/loki/)                                                                               | Log aggregation                     |
 
+---
+
 ## Applications
 
 ### Media streaming
@@ -115,11 +117,12 @@ _All 3 Kubernetes nodes act as both control plane and worker nodes. Running mult
 
 ### Misc
 
-| App                                                    | Purpose                                                   |
-| ------------------------------------------------------ | --------------------------------------------------------- |
-| [Discord Bot](https://gitlab.com/tcordina/discord-bot) | Custom bot with a Python + PostgreSQL + TimescaleDB stack |
-| [GitLab Runner](https://docs.gitlab.com/runner/)       | CI/CD executor                                            |
-| [Keycloak](https://www.keycloak.org/)                  | Single sign-on provider                                   |
+| App                                                          | Purpose                                                   |
+| ------------------------------------------------------------ | --------------------------------------------------------- |
+| [Discord Bot](https://gitlab.com/tcordina/discord-bot)       | Custom bot with a Python + PostgreSQL + TimescaleDB stack |
+| [GitLab Runner](https://docs.gitlab.com/runner/)             | CI/CD executor                                            |
+| [Keycloak](https://www.keycloak.org/)                        | Single sign-on provider                                   |
+| [OAuth2 Proxy](https://oauth2-proxy.github.io/oauth2-proxy/) | Reverse proxy providing authentication via Keycloak       |
 
 ### Why do 2 control plane nodes run on the same machine?
 
