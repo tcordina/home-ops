@@ -4,9 +4,9 @@ metadata:
   name: nfs-csi
 provisioner: nfs.csi.k8s.io
 parameters:
-  server: 192.168.1.30
-  share: /mnt/main/k8s-volumes
-  subDir: ${pvc.metadata.name}-pv
+  server: ${NFS_IP}
+  share: ${NFS_VOLUMES_PATH}
+  subDir: $${pvc.metadata.name}-pv
 reclaimPolicy: Delete
 allowVolumeExpansion: true
 volumeBindingMode: Immediate

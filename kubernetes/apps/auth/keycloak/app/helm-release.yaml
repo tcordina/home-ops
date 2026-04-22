@@ -58,7 +58,7 @@ spec:
                 valueFrom:
                   fieldRef:
                     fieldPath: status.podIP
-              KC_CACHE_EMBEDDED_NETWORK_BIND_ADDRESS: "${POD_ID}"
+              KC_CACHE_EMBEDDED_NETWORK_BIND_ADDRESS: "$${POD_ID}"
               KC_SPI_CORS_ORIGINS: "*"
               KC_SPI_CORS_METHODS: "GET,HEAD,OPTIONS,POST,PUT,DELETE"
               KC_SPI_CORS_HEADERS: "Authorization,Content-Type,Accept,Origin,X-Requested-With"

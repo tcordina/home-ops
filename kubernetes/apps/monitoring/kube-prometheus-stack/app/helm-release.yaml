@@ -28,8 +28,8 @@ spec:
           enabled: true
           name: Keycloak
           allow_sign_up: true
-          client_id: "${GF_AUTH_GENERIC_OAUTH_CLIENT_ID}"
-          client_secret: "${GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}"
+          client_id: "$${GF_AUTH_GENERIC_OAUTH_CLIENT_ID}"
+          client_secret: "$${GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}"
           scopes: openid email profile
           # auth_url must be accessible from the user's browser
           auth_url: https://auth.lan.tablar.ovh/realms/monitoring/protocol/openid-connect/auth
