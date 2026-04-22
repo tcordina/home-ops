@@ -66,13 +66,13 @@ spec:
       enabled: true
       className: nginx
       hosts:
-        - host: cinema.lan.tablar.ovh
+        - host: cinema.${DOMAIN}
           paths:
             - path: /
               pathType: ImplementationSpecific
       tls:
         - hosts:
-            - cinema.lan.tablar.ovh
+            - cinema.${DOMAIN}
 
     # jellyfin:
     #   env:
@@ -111,8 +111,8 @@ spec:
     volumes:
       - name: movies-library
         nfs:
-          server: 192.168.1.30
-          path: /mnt/main/movies-library/data/media
+          server: ${NFS_IP}
+          path: ${NFS_MOVIES_PATH}/data/media
 
     volumeMounts:
       - mountPath: /movies-library

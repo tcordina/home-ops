@@ -42,7 +42,7 @@ spec:
     ingress:
       enabled: true
       ingressClassName: nginx
-      host: longhorn.lan.tablar.ovh
+      host: longhorn.${DOMAIN}
       tls: true
 
     longhornUI:

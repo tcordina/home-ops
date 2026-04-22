@@ -54,7 +54,7 @@ spec:
       enabled: true
       ingressClassName: nginx
       hosts:
-        - pihole.lan.tablar.ovh
+        - pihole.${DOMAIN}
       tls:
         - hosts:
-            - pihole.lan.tablar.ovh
+            - pihole.${DOMAIN}

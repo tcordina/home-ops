@@ -50,7 +50,7 @@ spec:
               OC_ENABLE_OCM: false
               OC_INSECURE: false
               OC_LOG_LEVEL: info
-              OC_URL: https://kumo.lan.tablar.ovh
+              OC_URL: https://kumo.${DOMAIN}
               PROXY_HTTP_ADDR: 0.0.0.0:9200
               PROXY_TLS: false
             probes:
@@ -82,7 +82,7 @@ spec:
           # proxy-body-size is set to 0 to remove the body limit on file uploads
           nginx.ingress.kubernetes.io/proxy-body-size: "0"
         hosts:
-          - host: kumo.lan.tablar.ovh
+          - host: kumo.${DOMAIN}
             paths:
               - path: /
                 service:
@@ -90,7 +90,7 @@ spec:
                   port: *port
         tls:
           - hosts:
-              - kumo.lan.tablar.ovh
+              - kumo.${DOMAIN}
 
     persistence:
       data:

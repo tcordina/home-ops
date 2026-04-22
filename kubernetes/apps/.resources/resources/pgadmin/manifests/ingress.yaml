@@ -3,14 +3,14 @@ kind: Ingress
 metadata:
   name: pgadmin-ingress
   annotations:
-    nginx.ingress.kubernetes.io/use-regex: 'true'
+    nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /$2
     nginx.ingress.kubernetes.io/configuration-snippet: |
       proxy_set_header X-Script-Name /${namespace};
 spec:
   ingressClassName: nginx
   rules:
-    - host: pgadmin.lan.tablar.ovh
+    - host: pgadmin.${DOMAIN}
       http:
         paths:
           - path: /${namespace}(/|$)(.*)
@@ -22,4 +22,4 @@ spec:
                   number: 5050
   tls:
     - hosts:
-        - pgadmin.lan.tablar.ovh
+        - pgadmin.${DOMAIN}

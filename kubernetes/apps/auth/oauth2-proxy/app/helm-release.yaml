@@ -26,15 +26,15 @@ spec:
 
     extraArgs:
       provider: keycloak-oidc
-      oidc-issuer-url: "https://auth.lan.tablar.ovh/realms/home"
+      oidc-issuer-url: "https://auth.${DOMAIN}/realms/home"
       upstream: "static://202"
       http-address: "0.0.0.0:4180"
       reverse-proxy: "true"
       skip-provider-button: "true"
       cookie-secure: "true"
       cookie-samesite: "lax"
-      cookie-domain: ".lan.tablar.ovh"
-      whitelist-domain: ".lan.tablar.ovh"
+      cookie-domain: ".${DOMAIN}"
+      whitelist-domain: ".${DOMAIN}"
       email-domain: "*"
       set-xauthrequest: "true"
       skip-jwt-bearer-tokens: "true"
@@ -46,12 +46,12 @@ spec:
       annotations:
         nginx.ingress.kubernetes.io/proxy-buffer-size: "8k"
       hosts:
-        - oauth2-proxy.lan.tablar.ovh
+        - oauth2-proxy.${DOMAIN}
       path: /
       pathType: Prefix
       tls:
         - hosts:
-            - oauth2-proxy.lan.tablar.ovh
+            - oauth2-proxy.${DOMAIN}
 
     resources:
       requests:

@@ -41,13 +41,13 @@ spec:
       enabled: true
       className: nginx
       hosts:
-        - host: uptime.lan.tablar.ovh
+        - host: uptime.${DOMAIN}
           paths:
             - path: /
               pathType: ImplementationSpecific
       tls:
         - hosts:
-            - uptime.lan.tablar.ovh
+            - uptime.${DOMAIN}
 
     volume:
       enabled: true

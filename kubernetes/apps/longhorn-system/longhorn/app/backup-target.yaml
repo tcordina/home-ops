@@ -5,7 +5,7 @@ metadata:
   name: default
   namespace: longhorn-system
 spec:
-  backupTargetURL: nfs://192.168.1.30:/mnt/main/k8s-volumes
+  backupTargetURL: nfs://${NFS_IP}:${NFS_VOLUMES_PATH}
   credentialSecret: ""
   pollInterval: "10m"
 ## Thanks to a whopping 80KB/s upload speed, uploading to S3 is compromised for now (i'm not mad)

@@ -14,8 +14,8 @@ spec:
     kind: ClusterIssuer
 
   dnsNames:
-    - lan.tablar.ovh
-    - "*.lan.tablar.ovh"
+    - ${DOMAIN}
+    - "*.${DOMAIN}"
 
   usages:
     - digital signature

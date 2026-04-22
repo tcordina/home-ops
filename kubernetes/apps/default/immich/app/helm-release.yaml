@@ -32,7 +32,7 @@ spec:
               repository: ghcr.io/immich-app/immich-server
               tag: v2.7.5 # {"$imagepolicy": "multimedia:immich-server:tag"}
             env:
-              TZ: "Europe/Paris"
+              TZ: ${TIMEZONE}
               IMMICH_MEDIA_LOCATION: &media-location /data
               REDIS_HOSTNAME: '{{ printf "%s-valkey" .Release.Name }}'
               IMMICH_MACHINE_LEARNING_URL: false
@@ -144,7 +144,7 @@ spec:
           # proxy-body-size is set to 0 to remove the body limit on file uploads
           nginx.ingress.kubernetes.io/proxy-body-size: "0"
         hosts:
-          - host: immich.lan.tablar.ovh
+          - host: immich.${DOMAIN}
             paths:
               - path: /
                 service:
@@ -152,7 +152,7 @@ spec:
                   port: *http-port
         tls:
           - hosts:
-              - immich.lan.tablar.ovh
+              - immich.${DOMAIN}
     # serviceMonitor:
     #   immich:
     #     enabled: true
@@ -167,7 +167,7 @@ spec:
     persistence:
       library:
         type: nfs
-        server: 192.168.1.30
+        server: ${NFS_IP}
         path: /mnt/main/photos-library
         globalMounts:
           - path: *media-location
