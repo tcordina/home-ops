@@ -9,7 +9,7 @@
   "semanticCommits": "enabled",
   "labels": ["dependencies", "renovate"],
   "assigneesFromCodeOwners": true,
-  "enabledManagers": ["flux", "helmfile", "terraform"],
+  "enabledManagers": ["flux", "helmfile", "terraform", "regex"],
   "flux": {
     "managerFilePatterns": ["/^kubernetes/.+\\.yaml$/"]
   },
@@ -19,6 +19,15 @@
   "terraform": {
     "managerFilePatterns": ["/infrastructure/terraform/.+\\.tf$"]
   },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Process OCI dependencies",
+      "managerFilePatterns": ["/^kubernetes/.+\\.yaml$/"],
+      "matchStrings": ["oci://(?<depName>[^:]+):(?<currentValue>\\S+)"],
+      "datasourceTemplate": "docker"
+    }
+  ],
   "packageRules": [
     {
       "description": "Auto-merge minor and patch updates",
@@ -37,22 +46,35 @@
     {
       "description": "Terraform providers and modules",
       "matchDatasources": ["terraform-provider", "terraform-module"],
+      "commitMessageTopic": "terraform dependency : {{depName}}",
+      "addLabels": ["terraform"],
       "groupName": "terraform",
-      "commitMessageTopic": "terraform providers"
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} dependencies"
+      },
+      "minimumGroupSize": 2
     },
     {
       "description": "Docker images",
       "matchDatasources": ["docker"],
+      "commitMessageTopic": "docker dependency : {{depName}}",
+      "addLabels": ["kubernentes", "docker"],
       "groupName": "docker",
-      "commitMessageTopic": "docker images",
-      "addLabels": ["kubernentes", "docker"]
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} dependencies"
+      },
+      "minimumGroupSize": 2
     },
     {
       "description": "Helm repositories",
       "matchDatasources": ["helm"],
+      "commitMessageTopic": "helm dependency : {{depName}}",
+      "addLabels": ["kubernetes", "helm"],
       "groupName": "helm",
-      "commitMessageTopic": "helm repositories",
-      "addLabels": ["kubernetes", "helm"]
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} dependencies"
+      },
+      "minimumGroupSize": 2
     },
     {
       "description": "Linuxserver qBittorrent - filter outdated versions",
