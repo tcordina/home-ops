@@ -3,6 +3,7 @@
 .PHONY: encrypt-secret encrypt-all
 .PHONY: bootstrap-kubeconfig bootstrap-cluster bootstrap bootstrap-dir
 .PHONY: shell
+.PHONY: renovate-validate renovate-dryrun
 
 INFRA_DIR = $(abspath ./infrastructure)
 TF_DIR = $(INFRA_DIR)/terraform
@@ -70,3 +71,11 @@ bootstrap-dir:
 # e.g. make shell node=1
 shell:
 	@ssh -o ProxyJump=root@192.168.1.21 ubuntu@10.0.1.1$(node)
+
+
+# --- RENOVATE --- #
+renovate-validate:
+	@npx --yes --package renovate@43 -- renovate-config-validator
+
+renovate-dryrun:
+	@npx --yes renovate@43 --platform=local --onboarding=false --dry-run=full
