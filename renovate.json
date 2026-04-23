@@ -51,8 +51,7 @@
       "groupName": "terraform",
       "group": {
         "commitMessageTopic": "{{{groupName}}} dependencies"
-      },
-      "minimumGroupSize": 2
+      }
     },
     {
       "description": "Docker images",
@@ -62,8 +61,7 @@
       "groupName": "docker",
       "group": {
         "commitMessageTopic": "{{{groupName}}} dependencies"
-      },
-      "minimumGroupSize": 2
+      }
     },
     {
       "description": "Helm repositories",
@@ -73,8 +71,7 @@
       "groupName": "helm",
       "group": {
         "commitMessageTopic": "{{{groupName}}} dependencies"
-      },
-      "minimumGroupSize": 2
+      }
     },
     {
       "description": "Linuxserver qBittorrent - filter outdated versions",
