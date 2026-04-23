@@ -2,7 +2,9 @@
 
 # Homelab
 
-#### Kubernetes cluster info
+![Static Badge](https://img.shields.io/badge/renovate-%23308BE3?style=for-the-badge&logo=renovate&logoColor=white&label=powered%20by)
+
+**Kubernetes cluster info**
 
 ![ubuntu version](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fubuntu.json&style=for-the-badge&logo=ubuntu&logoColor=white&logoSize=auto)
 ![k3s version](https://img.shields.io/endpoint?url=https%3A%2F%2Fshieldsio-badges-786f2e.gitlab.io%2Fk3s.json&style=for-the-badge&logo=k3s&logoColor=white&logoSize=auto)
@@ -73,62 +75,17 @@ That said, this setup is **not truly highly available**. According to etcd's doc
 
 | Tool                                          | Purpose                                                   |
 | --------------------------------------------- | --------------------------------------------------------- |
-| [Flux CD](https://fluxcd.io/)                 | GitOps operator - reconciles cluster state from this repo |
+| [Flux](https://fluxcd.io/)                    | GitOps operator - reconciles cluster state from this repo |
 | [SOPS + Age](https://github.com/getsops/sops) | Encrypted secrets at rest in Git                          |
 | [Helm](https://helm.sh/)                      | Application packaging                                     |
 | [Terraform](https://www.terraform.io/)        | Proxmox VM / LXC provisioning                             |
 | [cloud-init](https://cloud-init.io/)          | Server configuration                                      |
-| [Renovate](https://docs.renovatebot.com/)     | Automated dependency updates                              |
-
-### Kubernetes cluster infrastructure
-
-| Component                                                                           | Purpose                                                 |
-| ----------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| [ingress-nginx](https://kubernetes.github.io/ingress-nginx/)                        | Ingress controller                                      |
-| [cert-manager](https://cert-manager.io/)                                            | TLS certificates via Let's Encrypt                      |
-| [external-secrets](https://external-secrets.io/)                                    | Load secrets from Bitwarden                             |
-| [CSI Driver NFS](https://github.com/kubernetes-csi/csi-driver-nfs)                  | NFS persistent volumes backed by TrueNAS                |
-| [Longhorn](https://longhorn.io/)                                                    | Distributed block storage with replication across nodes |
-| [snapshot-controller](https://github.com/kubernetes-csi/external-snapshotter)       | Volume snapshot support for CSI drivers                 |
-| [Crunchy Data PGO](https://access.crunchydata.com/documentation/postgres-operator/) | PostgreSQL operator                                     |
-
-### Observability
-
-| Component                                                                                                           | Purpose                             |
-| ------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) | Prometheus + Grafana + Alertmanager |
-| [Telegram bot webhook](https://core.telegram.org/bots/api#making-requests-when-getting-updates)                     | Receive alerts                      |
-| [Loki](https://grafana.com/oss/loki/)                                                                               | Log aggregation                     |
 
 ---
 
 ## Applications
 
-### Media streaming
-
-| App                                         | Purpose                                                                       |
-| ------------------------------------------- | ----------------------------------------------------------------------------- |
-| [Jellyfin](https://jellyfin.org/)           | Media server                                                                  |
-| [Sonarr](https://sonarr.tv/)                | TV show automation / management                                               |
-| [Radarr](https://radarr.video/)             | Movie automation / management                                                 |
-| [Prowlarr](https://prowlarr.com/)           | Torrent indexer manager                                                       |
-| [qBittorrent](https://www.qbittorrent.org/) | Torrent client (behind a VPN via [Gluetun](https://github.com/qdm12/gluetun)) |
-
-### File storage
-
-| App                                | Purpose       |
-| ---------------------------------- | ------------- |
-| [OpenCloud](https://opencloud.eu/) | File storage  |
-| [Immich](https://immich.app/)      | Photo library |
-
-### Misc
-
-| App                                                          | Purpose                                                   |
-| ------------------------------------------------------------ | --------------------------------------------------------- |
-| [Discord Bot](https://gitlab.com/tcordina/discord-bot)       | Custom bot with a Python + PostgreSQL + TimescaleDB stack |
-| [GitLab Runner](https://docs.gitlab.com/runner/)             | CI/CD executor                                            |
-| [Keycloak](https://www.keycloak.org/)                        | Single sign-on provider                                   |
-| [OAuth2 Proxy](https://oauth2-proxy.github.io/oauth2-proxy/) | Middleware providing authentication via Keycloak          |
+Check the [`/kubernetes/apps`](/kubernetes/apps#applications) directory for a list of what runs inside the cluster
 
 ---
 
