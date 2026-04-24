@@ -24,6 +24,13 @@ ${indent(6, ssh_private_key)}
     permissions: "0600"
 %{~ endif }
 
+# fix grafana alloy error "failed to create fsnotify watcher: too many open files"
+# https://github.com/containerd/containerd/pull/11652
+write_files:
+  - path: /etc/sysctl.d/99-inotify.conf
+    content: |
+      fs.inotify.max_user_instances=1024
+
 runcmd:
   - systemctl start qemu-guest-agent
 %{~ if is_master }
