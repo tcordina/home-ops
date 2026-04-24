@@ -44,6 +44,8 @@ spec:
             memory_limit = "2Gi"
 
             helper_image = "gitlab/gitlab-runner-helper:x86_64-latest"
+            allowed_pull_policies = ["if-not-present", "always"]
+            poll_timeout = 600
 
             [runners.kubernetes.pod_annotations]
               "container.apparmor.security.beta.kubernetes.io/build" = "unconfined"
