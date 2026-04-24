@@ -29,6 +29,7 @@ Everything running inside the Kubernetes cluster is defined in this directory.
 | [Jellyfin](https://jellyfin.org/)           | Media server                                                                  |
 | [Sonarr](https://sonarr.tv/)                | TV show automation / management                                               |
 | [Radarr](https://radarr.video/)             | Movie automation / management                                                 |
+| [Bazarr](https://www.bazarr.media/)         | Subtitle files automation / management                                        |
 | [Prowlarr](https://prowlarr.com/)           | Torrent indexer manager                                                       |
 | [qBittorrent](https://www.qbittorrent.org/) | Torrent client (behind a VPN via [Gluetun](https://github.com/qdm12/gluetun)) |
 
