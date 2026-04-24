@@ -1,25 +1,28 @@
+---
 apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
+kind: OCIRepository
 metadata:
-  name: grafana
+  name: loki
 spec:
   interval: 12h
-  url: https://grafana.github.io/helm-charts
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 13.2.3
+  url: oci://ghcr.io/grafana-community/helm-charts/loki
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: loki
+  namespace: monitoring
 spec:
   interval: 1h
   timeout: 1h
-  chart:
-    spec:
-      chart: loki
-      version: 6.55.0
-      sourceRef:
-        kind: HelmRepository
-        name: grafana
+  chartRef:
+    kind: OCIRepository
+    name: loki
   values:
     # Deployment mode: SingleBinary (simple), SimpleScalable (medium), Distributed (large)
     deploymentMode: SingleBinary
@@ -96,35 +99,3 @@ spec:
               - path: /
                 pathType: Prefix
         tls: {}
----
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: promtail
-  namespace: monitoring
-spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: promtail
-      version: 6.17.0
-      sourceRef:
-        kind: HelmRepository
-        name: grafana
-        namespace: monitoring
-  values:
-    image:
-      registry: docker.io
-      repository: grafana/promtail
-      tag: 3.6.10
-    config:
-      clients:
-        - url: http://loki:3100/loki/api/v1/push
-
-    resources:
-      limits:
-        cpu: 200m
-        memory: 128Mi
-      requests:
-        cpu: 50m
-        memory: 64Mi
