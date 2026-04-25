@@ -2,14 +2,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app resources-default-pgadmin
+  name: &app pgadmin-multimedia
   namespace: flux-system
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   interval: 1h
-  path: ./kubernetes/apps/.resources/resources/pgadmin/manifests
+  path: ./kubernetes/components/resources/pgadmin/manifests
   prune: false
   retryInterval: 2m
   sourceRef:
@@ -18,7 +18,10 @@ spec:
     namespace: flux-system
   timeout: 15m
   wait: false
-  targetNamespace: default
+  targetNamespace: multimedia
   postBuild:
     substitute:
-      namespace: "default"
+      namespace: "multimedia"
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings

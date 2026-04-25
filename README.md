@@ -95,12 +95,14 @@ Check the [`/kubernetes/apps`](/kubernetes/apps#applications) directory for a li
 .
 ├── infrastructure/
 │   ├── proxmox/
-│   │   ├── network/    # Network config for PVE hosts
-│   │   └── vms/        # .conf files for VMs not provisioned via Terraform
-│   └── terraform/      # Proxmox VM/LXC definitions
+│   │   ├── network/       # Network config for PVE hosts
+│   │   └── vms/           # .conf files for VMs not provisioned via Terraform
+│   └── terraform/         # Proxmox VM/LXC definitions
 └── kubernetes/
-    ├── .bootstrap/     # Cluster bootstrap
-    ├── apps/           # Application manifests
-    ├── clusters/       # Flux entry point
-    └── components/     # Reusable Kustomize components
+    ├── .bootstrap/        # Cluster bootstrap
+    ├── apps/              # Application manifests
+    ├── clusters/          # Flux entry point
+    └── components/
+        ├── replacements/  # Reusable Kustomize components
+        └── resources/     # Cluster-wide resources
 ```

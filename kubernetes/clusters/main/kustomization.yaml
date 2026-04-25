@@ -3,4 +3,5 @@ kind: Kustomization
 resources:
   - cluster-settings.yaml
   - git-repo.yaml
-  - ks.yaml
+  - components.yaml
+  - cluster.yaml
