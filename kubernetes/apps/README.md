@@ -20,7 +20,7 @@ Everything running inside the Kubernetes cluster is defined in this directory.
 | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
 | [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) | Prometheus + Grafana + Alertmanager |
 | [Telegram bot webhook](https://core.telegram.org/bots/api#making-requests-when-getting-updates)                     | Receive alerts                      |
-| [Loki](https://grafana.com/oss/loki/)                                                                               | Log aggregation                     |
+| [Loki](https://grafana.com/oss/loki/) + [Alloy](https://grafana.com/oss/alloy-opentelemetry-collector/)             | Log aggregation                     |
 
 ## Media streaming
 
