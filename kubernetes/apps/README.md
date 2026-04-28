@@ -53,3 +53,18 @@ Everything running inside the Kubernetes cluster is defined in this directory.
 | ------------------------------------------------------ | --------------------------------------- |
 | [Discord Bot](https://gitlab.com/tcordina/discord-bot) | Custom bot running on my Discord server |
 | [GitLab Runner](https://docs.gitlab.com/runner/)       | CI/CD executor                          |
+
+---
+
+## Directory structure
+
+Application declaration follows this directory structure (example with Immich) :
+
+```bash
+apps
+└── default               # Immich resides inside the "default" k8s namespace
+    └── immich
+        ├── app           # manifests for the app itself (HelmRepository, HelmRelease, Secrets)
+        ├── db            # manifests for the app database (PostgresCluster, Secrets)
+        └── ks.yaml       # file containing both Flux Kustomizations needed to reconcile the manifests in app/ and db/
+```
