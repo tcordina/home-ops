@@ -1,6 +1,6 @@
 <div align="center">
 
-# Homelab
+<h1>Homelab</h1>
 
 ![Static Badge](https://img.shields.io/badge/renovate-%23308BE3?style=for-the-badge&logo=renovate&logoColor=white&label=powered%20by)
 
@@ -20,7 +20,7 @@
 
 <br>
 
-Personal homelab running on a 2 nodes Proxmox cluster. Infrastructure and application configuration is managed as code and reconciled via GitOps.
+Personal homelab running on a 2-node Proxmox cluster. Infrastructure and application configuration is managed as code and reconciled via GitOps.
 
 Heavily inspired by the projects shared on [kubesearch.dev](https://kubesearch.dev/)
 
