@@ -1,0 +1,12 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: "3"
+
+tasks:
+  default:
+    desc: "SSH to a K3s node via proxy jump — e.g. task shell node=1"
+    requires:
+      vars: [node]
+    cmds:
+      - ssh -o ProxyJump=root@{{.JUMP_HOST}} ubuntu@10.0.1.1{{.node}}

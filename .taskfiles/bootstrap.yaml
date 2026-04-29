@@ -1,0 +1,31 @@
+version: "3"
+
+tasks:
+  default:
+    desc: "Full cluster bootstrap (kubeconfig then cluster)"
+    cmds:
+      - task: kubeconfig
+      - task: cluster
+
+  kubeconfig:
+    desc: "Grab kubeconfig from cluster"
+    dir: "{{.BOOTSTRAP_DIR}}"
+    cmds:
+      - bash grab-kubeconfig.sh
+
+  cluster:
+    desc: "Bootstrap the cluster"
+    dir: "{{.BOOTSTRAP_DIR}}"
+    cmds:
+      - bash bootstrap.sh
+
+  dir:
+    desc: "Create directory scaffold for new K8s app / e.g. go-task bootstrap:dir ns=monitoring app=grafana"
+    requires:
+      vars: [ns, app]
+    cmds:
+      - mkdir -p {{.K8S_DIR}}/apps/{{.ns}}/{{.app}}/app
+      - touch -a {{.K8S_DIR}}/apps/{{.ns}}/namespace.yaml
+      - touch -a {{.K8S_DIR}}/apps/{{.ns}}/kustomization.yaml
+      - touch -a {{.K8S_DIR}}/apps/{{.ns}}/{{.app}}/ks.yaml
+      - touch -a {{.K8S_DIR}}/apps/{{.ns}}/{{.app}}/app/helm-release.yaml

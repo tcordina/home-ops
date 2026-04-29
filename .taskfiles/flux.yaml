@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+  gr-sync:
+    desc: Sync Flux GitRepositories
+    cmds:
+      - |
+        kubectl --context {{.cluster}} get gitrepositories --all-namespaces --no-headers | awk '{print $1, $2}' \
+          | xargs --max-procs=4 -l bash -c \
+            'kubectl --context {{.cluster}} -n $0 annotate gitrepository/$1 reconcile.fluxcd.io/requestedAt=$(date +%s) --field-manager=flux-client-side-apply --overwrite'
+    requires:
+      vars:
+        - cluster
+
+  ks-sync:
+    desc: Sync Flux Kustomizations
+    cmds:
+      - |
+        kubectl --context {{.cluster}} get kustomization --all-namespaces --no-headers | awk '{print $1, $2}' \
+          | xargs --max-procs=4 -l bash -c \
+            'kubectl --context {{.cluster}} -n $0 annotate kustomization/$1 reconcile.fluxcd.io/requestedAt="$(date +%s)" --field-manager=flux-client-side-apply --overwrite'
+    requires:
+      vars:
+        - cluster
+
+  hr-sync:
+    desc: Sync Flux HelmReleases
+    cmds:
+      - |
+        kubectl --context {{.cluster}} get helmreleases --all-namespaces --no-headers | awk '{print $1, $2}' \
+          | xargs --max-procs=4 -l bash -c \
+            'kubectl --context {{.cluster}} -n $0 annotate helmrelease/$1 reconcile.fluxcd.io/requestedAt="$(date +%s)" --overwrite'
+    requires:
+      vars:
+        - cluster
+
+  force-hr-sync:
+    desc: Force Sync Flux HelmResources
+    cmds:
+      - flux --context {{.cluster}} get hr --no-header -A | awk '{print $1, $2}' | xargs -l bash -c 'flux --context {{.cluster}} reconcile hr --force --reset -n $0 $1'
+    requires:
+      vars:
+        - cluster
+
+  sync:
+    desc: Sync flux-cluster with the Git Repository
+    cmds:
+      - flux --context {{.cluster}} reconcile source git flux-system
+      - flux --context {{.cluster}} reconcile kustomization cluster-apps
+    silent: false
+    requires:
+      vars:
+        - cluster
+
+  hr-suspend:
+    desc: Suspend all Flux HelmReleases
+    cmds:
+      - |
+        flux get helmrelease --all-namespaces --no-header | awk '{print $1, $2}' \
+          | xargs -l bash -c 'flux -n $0 suspend helmrelease $1'
+
+  hr-resume:
+    desc: Resume all Flux HelmReleases
+    cmds:
+      - |
+        flux get helmrelease --all-namespaces --no-header | awk '{print $1, $2}' \
+          | xargs -l bash -c 'flux -n $0 resume helmrelease $1'

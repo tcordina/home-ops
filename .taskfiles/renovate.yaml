@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: "3"
+
+tasks:
+  validate:
+    desc: "Validate renovate.json configuration"
+    cmds:
+      - npx --yes --package renovate@43 -- renovate-config-validator
+
+  dry-run:
+    desc: "Dry run renovate locally"
+    cmds:
+      - npx renovate@43 --platform=local --onboarding=false --dry-run=full --github-token-warn=false

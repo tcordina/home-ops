@@ -1,0 +1,29 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: "3"
+
+tasks:
+  plan:
+    desc: "Run terraform plan / e.g. go-task tf:plan dir=haproxy"
+    requires:
+      vars: [dir]
+    dir: "{{.TERRAFORM_DIR}}/{{.dir}}"
+    cmds:
+      - terraform plan -var-file="{{.TERRAFORM_DIR}}/{{.dir}}/secrets.auto.tfvars"
+
+  apply:
+    desc: "Apply terraform with auto-approve / e.g. go-task tf:apply dir=haproxy"
+    requires:
+      vars: [dir]
+    dir: "{{.TERRAFORM_DIR}}/{{.dir}}"
+    cmds:
+      - terraform apply -var-file="{{.TERRAFORM_DIR}}/{{.dir}}/secrets.auto.tfvars" -auto-approve
+
+  destroy:
+    desc: "Destroy terraform infrastructure / e.g. go-task tf:destroy dir=haproxy"
+    requires:
+      vars: [dir]
+    dir: "{{.TERRAFORM_DIR}}/{{.dir}}"
+    cmds:
+      - terraform destroy -var-file="{{.TERRAFORM_DIR}}/{{.dir}}/secrets.auto.tfvars" -auto-approve

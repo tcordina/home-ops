@@ -1,0 +1,25 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: "3"
+
+dotenv:
+  - ".env"
+
+vars:
+  # Directories
+  BOOTSTRAP_DIR: "{{.ROOT_DIR}}/bootstrap"
+  KUBERNETES_DIR: "{{.ROOT_DIR}}/kubernetes"
+  TERRAFORM_DIR: "{{.ROOT_DIR}}/infrastructure/terraform"
+  # Files
+  AGE_FILE: "{{.ROOT_DIR}}/age.agekey"
+  SOPS_CONFIG_FILE: "{{.ROOT_DIR}}/.sops.yaml"
+
+includes:
+  bootstrap: .taskfiles/bootstrap.yaml
+  flux: .taskfiles/flux.yaml
+  pre-commit: .taskfiles/pre-commit.yaml
+  renovate: .taskfiles/renovate.yaml
+  sops: .taskfiles/sops.yaml
+  ssh: .taskfiles/ssh.yaml
+  tf: .taskfiles/terraform.yaml
