@@ -6,7 +6,8 @@ yaml-files:
 
 rules:
   anchors: enable
-  braces: enable
+  braces:
+    max-spaces-inside: 1
   brackets: enable
   colons: enable
   commas: enable
