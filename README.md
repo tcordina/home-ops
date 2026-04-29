@@ -60,7 +60,7 @@ That said, this setup is **not truly highly available**. According to etcd's doc
 
 ## Stack
 
-### Main infrastructure components
+### Infrastructure components
 
 | Tool                                                                                           | Purpose                                                          |
 | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
@@ -71,15 +71,15 @@ That said, this setup is **not truly highly available**. According to etcd's doc
 | [HAProxy](https://www.haproxy.org/)                                                            | Load balancer distributing traffic across Kubernetes nodes       |
 | [Keepalived](https://www.keepalived.org/)                                                      | VRRP-based virtual IP failover between the two HAProxy instances |
 
-### GitOps & Infrastructure as Code
+### Automation tools
 
-| Tool                                          | Purpose                                                   |
-| --------------------------------------------- | --------------------------------------------------------- |
-| [Flux](https://fluxcd.io/)                    | GitOps operator - reconciles cluster state from this repo |
-| [SOPS + Age](https://github.com/getsops/sops) | Encrypted secrets at rest in Git                          |
-| [Helm](https://helm.sh/)                      | Application packaging                                     |
-| [Terraform](https://www.terraform.io/)        | Proxmox VM / LXC provisioning                             |
-| [cloud-init](https://cloud-init.io/)          | Server configuration                                      |
+| Tool                                         | Purpose                                                           |
+| -------------------------------------------- | ----------------------------------------------------------------- |
+| [Terraform](https://www.terraform.io/)       | Proxmox VM / LXC provisioning                                     |
+| [cloud-init](https://cloud-init.io/)         | Server configuration                                              |
+| [Flux](https://fluxcd.io/)                   | GitOps operator - reconciles cluster state from this repo         |
+| [Helmfile](https://helmfile.readthedocs.io/) | Deploy helm charts via declarative yaml files - used at bootstrap |
+| [Taskfile](https://taskfile.dev/)            | Task runner for common repo operations                            |
 
 ---
 
@@ -93,13 +93,13 @@ Check the [`/kubernetes/apps`](/kubernetes/apps#applications) directory for a li
 
 ```bash
 .
+├── bootstrap/             # K8S cluster bootstrap
 ├── infrastructure/
 │   ├── proxmox/
 │   │   ├── network/       # Network config for PVE hosts
 │   │   └── vms/           # .conf files for VMs not provisioned via Terraform
 │   └── terraform/         # Proxmox VM/LXC definitions
 └── kubernetes/
-    ├── .bootstrap/        # Cluster bootstrap
     ├── apps/              # Application manifests
     ├── clusters/          # Flux entry point
     └── components/
