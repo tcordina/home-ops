@@ -4,4 +4,4 @@ resources:
   - namespace.yaml
   - deployment.yaml
   - pvc.yaml
-  - secret.secrets.yaml
+  - secret.sops.yaml
