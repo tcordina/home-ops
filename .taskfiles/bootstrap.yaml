@@ -20,7 +20,7 @@ tasks:
       - bash bootstrap.sh
 
   dir:
-    desc: "Create directory scaffold for new K8s app / e.g. go-task bootstrap:dir ns=monitoring app=grafana"
+    desc: "Create directory scaffold for new K8s app / e.g. task bootstrap:dir ns=monitoring app=grafana"
     requires:
       vars: [ns, app]
     cmds:

@@ -20,6 +20,6 @@ includes:
   flux: .taskfiles/flux.yaml
   pre-commit: .taskfiles/pre-commit.yaml
   renovate: .taskfiles/renovate.yaml
+  shell: .taskfiles/shell.yaml
   sops: .taskfiles/sops.yaml
-  ssh: .taskfiles/ssh.yaml
   tf: .taskfiles/terraform.yaml
