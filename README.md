@@ -80,6 +80,7 @@ That said, this setup is **not truly highly available**. According to etcd's doc
 | [Flux](https://fluxcd.io/)                   | GitOps operator - reconciles cluster state from this repo         |
 | [Helmfile](https://helmfile.readthedocs.io/) | Deploy helm charts via declarative yaml files - used at bootstrap |
 | [Taskfile](https://taskfile.dev/)            | Task runner for common repo operations                            |
+| [Renovate](https://docs.renovatebot.com/)    | Automated dependency updates                                      |
 
 ---
 
