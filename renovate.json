@@ -25,7 +25,7 @@
       "description": "Process OCI dependencies",
       "managerFilePatterns": ["/^kubernetes/.+\\.yaml$/"],
       "matchStrings": ["oci://(?<depName>[^:]+):(?<currentValue>\\S+)"],
-      "datasourceTemplate": "helm"
+      "datasourceTemplate": "docker"
     }
   ],
   "packageRules": [
@@ -41,13 +41,13 @@
       "description": "Major updates require manual review",
       "matchUpdateTypes": ["major"],
       "automerge": false,
-      "addLabels": ["major-update", "requires-review"]
+      "labels": ["major-update", "requires-review"]
     },
     {
       "description": "Terraform providers and modules",
       "matchDatasources": ["terraform-provider", "terraform-module"],
       "commitMessageTopic": "terraform dependency : {{depName}}",
-      "addLabels": ["terraform"],
+      "labels": ["terraform"],
       "groupName": "terraform",
       "group": {
         "commitMessageTopic": "{{{groupName}}} dependencies"
@@ -57,7 +57,7 @@
       "description": "Docker images",
       "matchDatasources": ["docker"],
       "commitMessageTopic": "docker dependency : {{depName}}",
-      "addLabels": ["kubernentes", "docker"],
+      "labels": ["kubernetes", "docker"],
       "groupName": "docker",
       "group": {
         "commitMessageTopic": "{{{groupName}}} dependencies"
@@ -67,14 +67,25 @@
       "description": "Helm repositories",
       "matchDatasources": ["helm"],
       "commitMessageTopic": "helm dependency : {{depName}}",
-      "addLabels": ["kubernetes", "helm"],
+      "labels": ["kubernetes", "helm"],
       "groupName": "helm",
       "group": {
         "commitMessageTopic": "{{{groupName}}} dependencies"
       }
     },
     {
-      "description": "Linuxserver qBittorrent - filter outdated versions",
+      "description": "OCI Helm charts",
+      "matchManagers": ["flux", "helmfile"],
+      "matchDatasources": ["docker"],
+      "commitMessageTopic": "helm dependency : {{depName}}",
+      "labels": ["kubernetes", "helm"],
+      "groupName": "helm",
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} dependencies"
+      }
+    },
+    {
+      "description": "qBittorrent - filter outdated versions",
       "matchDatasources": ["docker"],
       "matchPackageNames": ["linuxserver/qbittorrent"],
       "rangeStrategy": "bump",
