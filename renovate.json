@@ -47,7 +47,7 @@
       "description": "Terraform providers and modules",
       "matchDatasources": ["terraform-provider", "terraform-module"],
       "commitMessageTopic": "terraform dependency : {{depName}}",
-      "labels": ["terraform"],
+      "addLabels": ["terraform"],
       "groupName": "terraform",
       "group": {
         "commitMessageTopic": "{{{groupName}}} dependencies"
@@ -57,7 +57,7 @@
       "description": "Docker images",
       "matchDatasources": ["docker"],
       "commitMessageTopic": "docker dependency : {{depName}}",
-      "labels": ["kubernetes", "docker"],
+      "addLabels": ["kubernetes", "docker"],
       "groupName": "docker",
       "group": {
         "commitMessageTopic": "{{{groupName}}} dependencies"
@@ -67,7 +67,7 @@
       "description": "Helm repositories",
       "matchDatasources": ["helm"],
       "commitMessageTopic": "helm dependency : {{depName}}",
-      "labels": ["kubernetes", "helm"],
+      "addLabels": ["kubernetes", "helm"],
       "groupName": "helm",
       "group": {
         "commitMessageTopic": "{{{groupName}}} dependencies"
@@ -78,7 +78,7 @@
       "matchManagers": ["flux", "helmfile"],
       "matchDatasources": ["docker"],
       "commitMessageTopic": "helm dependency : {{depName}}",
-      "labels": ["kubernetes", "helm"],
+      "labels": ["dependencies", "renovate", "kubernetes", "helm"],
       "groupName": "helm",
       "group": {
         "commitMessageTopic": "{{{groupName}}} dependencies"
