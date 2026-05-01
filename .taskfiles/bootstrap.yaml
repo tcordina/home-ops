@@ -14,8 +14,15 @@ tasks:
       - bash grab-kubeconfig.sh
 
   cluster:
-    desc: "Bootstrap the cluster"
+    desc: "Bootstrap the cluster / e.g. task bootstrap:cluster env=main"
     dir: "{{.BOOTSTRAP_DIR}}"
+    requires:
+      vars:
+        - name: env
+          enum: [main, staging]
+    env:
+      CLUSTER_GIT_REF: "refs/heads/{{.env}}"
+      CLUSTER_SYNC_PATH: "kubernetes/clusters/{{.env}}"
     cmds:
       - bash bootstrap.sh
 

@@ -4,13 +4,21 @@ version: "3"
 
 tasks:
   sync:
-    desc: Sync flux-cluster with the Git Repository
+    desc: "Sync flux-cluster with the Git Repository / e.g. task flux:sync env=main"
+    requires:
+      vars:
+        - name: env
+          enum: [main, staging]
     cmds:
-      - flux reconcile source git flux-system
+      - flux reconcile source git flux-system --kubeconfig {{.KUBECONFIG}} --context {{.env}}
     silent: false
 
   hr-restart:
-    desc: Restart all failed Helm Releases
+    desc: "Restart all failed Helm Releases / e.g. task flux:hr-restart env=main"
+    requires:
+      vars:
+        - name: env
+          enum: [main, staging]
     cmds:
-      - kubectl get hr --all-namespaces | grep False | awk '{print $2, $1}' | xargs -l bash -c 'flux suspend hr $0 -n $1'
-      - kubectl get hr --all-namespaces | grep False | awk '{print $2, $1}' | xargs -l bash -c 'flux resume hr $0 -n $1'
+      - kubectl get hr --all-namespaces --kubeconfig {{.KUBECONFIG}} --context {{.env}} | grep False | awk '{print $2, $1}' | xargs -l bash -c 'flux suspend hr $0 -n $1 --kubeconfig {{.KUBECONFIG}} --context {{.env}}'
+      - kubectl get hr --all-namespaces --kubeconfig {{.KUBECONFIG}} --context {{.env}} | grep False | awk '{print $2, $1}' | xargs -l bash -c 'flux resume hr $0 -n $1 --kubeconfig {{.KUBECONFIG}} --context {{.env}}'

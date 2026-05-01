@@ -8,11 +8,12 @@ dotenv:
 
 vars:
   # Directories
-  BOOTSTRAP_DIR: "{{.ROOT_DIR}}/bootstrap"
+  BOOTSTRAP_DIR: "{{.ROOT_DIR}}/kubernetes/bootstrap"
   KUBERNETES_DIR: "{{.ROOT_DIR}}/kubernetes"
   TERRAFORM_DIR: "{{.ROOT_DIR}}/infrastructure/terraform"
   # Files
   AGE_FILE: "{{.ROOT_DIR}}/age.agekey"
+  KUBECONFIG: "{{.ROOT_DIR}}/kubeconfig"
   SOPS_CONFIG_FILE: "{{.ROOT_DIR}}/.sops.yaml"
 
 includes:

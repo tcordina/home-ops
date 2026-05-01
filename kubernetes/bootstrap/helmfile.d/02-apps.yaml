@@ -25,14 +25,14 @@ releases:
   - name: certs
     namespace: cert-manager
     # Pointing to a local directory without a helm chart uses Chartify to make a helm chart out of the manifests present in said directory
-    chart: ../../kubernetes/apps/cert-manager/cert-manager/certs/
+    chart: ../../apps/cert-manager/cert-manager/certs/bitwarden # point to /certs/bitwarden instead ?
     needs:
       - kube-system/coredns
 
   - name: bitwarden-config
     namespace: external-secrets
     # Pointing to a local directory without a helm chart uses Chartify to make a helm chart out of the manifests present in said directory
-    chart: ../../kubernetes/apps/external-secrets/external-secrets/bitwarden/
+    chart: ../../apps/external-secrets/external-secrets/bitwarden/
     needs:
       - cert-manager/certs
 
@@ -45,24 +45,24 @@ releases:
     needs:
       - external-secrets/bitwarden-config
 
-  - name: ingress-nginx
-    namespace: ingress-nginx
-    createNamespace: true
-    chart: ingress-nginx/ingress-nginx
-    version: 4.15.1
-    values:
-      - ./templates/values.yaml.gotmpl
-    needs:
-      - external-secrets/external-secrets
+  # - name: ingress-nginx
+  #   namespace: ingress-nginx
+  #   createNamespace: true
+  #   chart: ingress-nginx/ingress-nginx
+  #   version: 4.15.1
+  #   values:
+  #     - ./templates/values.yaml.gotmpl
+  #   needs:
+  #     - external-secrets/external-secrets
 
-  - name: kube-prometheus-stack
-    namespace: monitoring
-    chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
-    version: 84.4.0
-    values:
-      - ./templates/values.yaml.gotmpl
-    needs:
-      - ingress-nginx/ingress-nginx
+  # - name: kube-prometheus-stack
+  #   namespace: monitoring
+  #   chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
+  #   version: 84.4.0
+  #   values:
+  #     - ./templates/values.yaml.gotmpl
+  #   needs:
+  #     - ingress-nginx/ingress-nginx
 
   - name: flux-operator
     namespace: flux-system
@@ -71,7 +71,8 @@ releases:
     values:
       - ./templates/values.yaml.gotmpl
     needs:
-      - monitoring/kube-prometheus-stack
+      # - monitoring/kube-prometheus-stack
+      - external-secrets/external-secrets
 
   - name: flux-instance
     namespace: flux-system
@@ -80,5 +81,6 @@ releases:
     wait: false
     values:
       - ./templates/values.yaml.gotmpl
+      - ./templates/flux-instance-sync.yaml.gotmpl
     needs:
       - flux-system/flux-operator

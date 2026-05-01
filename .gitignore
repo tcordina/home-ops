@@ -2,6 +2,7 @@
 .zed
 
 .env
+kubeconfig
 *.agekey
 *.drawio
 *.bak

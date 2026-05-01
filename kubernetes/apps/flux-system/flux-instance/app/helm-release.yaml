@@ -38,8 +38,8 @@ spec:
       sync:
         kind: GitRepository
         url: https://gitlab.com/tcordina/homelab-cluster.git
-        ref: refs/heads/main
-        path: kubernetes/clusters/main
+        ref: ${CLUSTER_GIT_REF}
+        path: ${CLUSTER_SYNC_PATH}
         pullSecret: "flux-system"
         interval: 1h
       commonMetadata:

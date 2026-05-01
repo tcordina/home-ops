@@ -1,0 +1,4 @@
+instance:
+  sync:
+    ref: {{ env "CLUSTER_GIT_REF" | default "refs/heads/main" }}
+    path: {{ env "CLUSTER_SYNC_PATH" | default "kubernetes/clusters/main" }}
