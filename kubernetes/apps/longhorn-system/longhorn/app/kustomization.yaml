@@ -4,7 +4,4 @@ resources:
   - external-secret.yaml
   - helm-release.yaml
   - storage-class.yaml
-  - backup-target.yaml
   - volume-snapshot-class.yaml
-  - ./jobs
-  - ./monitoring
