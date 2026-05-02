@@ -1,4 +1,3 @@
----
 # Certificate for Bitwarden SDK server
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -18,28 +17,6 @@ spec:
     algorithm: RSA
     encoding: PKCS8
     size: 2048
-  issuerRef:
-    name: bitwarden-certificate-issuer
-    kind: ClusterIssuer
-    group: cert-manager.io
----
-# Client certificate for Bitwarden Cluster Secret Store
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: bitwarden-css-certs
-  namespace: external-secrets
-spec:
-  secretName: bitwarden-css-certs
-  dnsNames:
-    - bitwarden-secrets-manager.external-secrets.svc.cluster.local
-  privateKey:
-    algorithm: RSA
-    encoding: PKCS8
-    size: 2048
-    rotationPolicy: Always
-  usages:
-    - client auth
   issuerRef:
     name: bitwarden-certificate-issuer
     kind: ClusterIssuer

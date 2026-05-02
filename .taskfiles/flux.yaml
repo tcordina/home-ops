@@ -13,6 +13,16 @@ tasks:
       - flux reconcile source git flux-system --kubeconfig {{.KUBECONFIG}} --context {{.env}}
     silent: false
 
+  ks-restart:
+    desc: "Restart all failed Kustomizations / e.g. task flux:ks-restart env=main"
+    requires:
+      vars:
+        - name: env
+          enum: [main, staging]
+    cmds:
+      - kubectl get ks --all-namespaces --kubeconfig {{.KUBECONFIG}} --context {{.env}} | grep False | awk '{print $2, $1}' | xargs -l bash -c 'flux suspend ks $0 -n $1 --kubeconfig {{.KUBECONFIG}} --context {{.env}}'
+      - kubectl get ks --all-namespaces --kubeconfig {{.KUBECONFIG}} --context {{.env}} | grep False | awk '{print $2, $1}' | xargs -l bash -c 'flux resume ks $0 -n $1 --kubeconfig {{.KUBECONFIG}} --context {{.env}}'
+
   hr-restart:
     desc: "Restart all failed Helm Releases / e.g. task flux:hr-restart env=main"
     requires:

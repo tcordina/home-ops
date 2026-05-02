@@ -1,3 +1,5 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
 tasks:
@@ -23,6 +25,8 @@ tasks:
     env:
       CLUSTER_GIT_REF: "refs/heads/{{.env}}"
       CLUSTER_SYNC_PATH: "kubernetes/clusters/{{.env}}"
+      KUBECONFIG: "{{.KUBECONFIG}}"
+      KUBE_CONTEXT: "{{.env}}"
     cmds:
       - bash bootstrap.sh
 

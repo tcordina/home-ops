@@ -1,0 +1,92 @@
+---
+helmDefaults:
+  cleanupOnFail: true
+  timeout: 900 # 15m timeout because my internet sucks
+  wait: true
+  waitForJobs: true
+
+hooks:
+  - events: ["presync"]
+    command: "kubectl"
+    args: ["api-resources", "--cached=false"]
+
+repositories:
+  - name: bedag
+    url: https://bedag.github.io/helm-charts
+
+releases:
+  - name: coredns
+    namespace: kube-system
+    installed: {{ ne (env "KUBE_CONTEXT") "staging" }}
+    chart: oci://ghcr.io/coredns/charts/coredns
+    version: 1.45.2
+    values:
+      - ./templates/values.yaml.gotmpl
+
+  - name: cert-manager
+    namespace: cert-manager
+    chart: oci://quay.io/jetstack/charts/cert-manager
+    version: v1.20.2
+    createNamespace: true
+    values:
+      - ./templates/values.yaml.gotmpl
+    {{- if ne (env "KUBE_CONTEXT") "staging" }}
+    needs:
+      - kube-system/coredns
+    {{- end }}
+
+  - name: bitwarden-token-secret
+    namespace: external-secrets
+    chart: bedag/raw
+    version: 2.0.2
+    createNamespace: true
+    values:
+      - resources:
+          - apiVersion: v1
+            kind: Secret
+            metadata:
+              name: bitwarden-access-token
+              namespace: external-secrets
+            type: Opaque
+            stringData:
+              token: {{ requiredEnv "BW_TOKEN" }}
+    needs:
+      - cert-manager/cert-manager
+
+  - name: bitwarden-certs
+    namespace: cert-manager
+    # Pointing to a local directory without a helm chart uses Chartify to make a helm chart out of the manifests present in said directory
+    chart: ../../apps/cert-manager/cert-manager/certs/bitwarden
+    needs:
+      - external-secrets/bitwarden-token-secret
+
+  - name: bitwarden-certs
+    namespace: external-secrets
+    # Pointing to a local directory without a helm chart uses Chartify to make a helm chart out of the manifests present in said directory
+    chart: ../../apps/external-secrets/external-secrets/bitwarden/certs/
+    needs:
+      - cert-manager/bitwarden-certs
+
+  - name: external-secrets
+    namespace: external-secrets
+    chart: oci://ghcr.io/external-secrets/charts/external-secrets
+    version: 2.4.1
+    values:
+      - ./templates/values.yaml.gotmpl
+    needs:
+      - external-secrets/bitwarden-certs
+
+  - name: bitwarden-store
+    namespace: external-secrets
+    # Pointing to a local directory without a helm chart uses Chartify to make a helm chart out of the manifests present in said directory
+    chart: ../../apps/external-secrets/external-secrets/bitwarden/store/
+    needs:
+      - external-secrets/external-secrets
+
+  - name: kube-prometheus-stack
+    namespace: monitoring
+    chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
+    version: 84.4.0
+    createNamespace: true
+    needs:
+      - external-secrets/bitwarden-store
