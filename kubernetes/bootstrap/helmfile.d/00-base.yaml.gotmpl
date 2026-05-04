@@ -13,15 +13,27 @@ hooks:
 repositories:
   - name: bedag
     url: https://bedag.github.io/helm-charts
+  - name: prometheus-community
+    url: ghcr.io/prometheus-community/charts
+    oci: true
 
 releases:
+  - name: kube-prometheus-stack-crds
+    namespace: monitoring
+    chart: prometheus-community/prometheus-operator-crds
+    version: 28.0.1
+
   - name: coredns
     namespace: kube-system
-    installed: {{ ne (env "KUBE_CONTEXT") "staging" }}
     chart: oci://ghcr.io/coredns/charts/coredns
     version: 1.45.2
     values:
       - ./templates/values.yaml.gotmpl
+      {{- if eq (env "KUBE_CONTEXT") "staging" }}
+      - replicaCount: 1
+      {{- end }}
+    needs:
+      - monitoring/kube-prometheus-stack-crds
 
   - name: cert-manager
     namespace: cert-manager
@@ -30,10 +42,8 @@ releases:
     createNamespace: true
     values:
       - ./templates/values.yaml.gotmpl
-    {{- if ne (env "KUBE_CONTEXT") "staging" }}
     needs:
       - kube-system/coredns
-    {{- end }}
 
   - name: bitwarden-token-secret
     namespace: external-secrets
@@ -83,10 +93,10 @@ releases:
     needs:
       - external-secrets/external-secrets
 
-  - name: kube-prometheus-stack
-    namespace: monitoring
-    chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
-    version: 84.4.0
-    createNamespace: true
-    needs:
-      - external-secrets/bitwarden-store
+  # - name: kube-prometheus-stack
+  #   namespace: monitoring
+  #   chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
+  #   version: 84.4.0
+  #   createNamespace: true
+  #   needs:
+  #     - external-secrets/bitwarden-store
