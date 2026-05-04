@@ -35,9 +35,9 @@ resource "local_file" "cloud_init" {
 
 resource "multipass_instance" "staging" {
   name           = "staging"
-  cpus           = 2
-  memory         = "8G"
-  disk           = "40G"
+  cpus           = 4
+  memory         = "10G"
+  disk           = "100G"
   image          = var.ubuntu_img_path
   cloudinit_file = local_file.cloud_init.filename
   depends_on     = [local_file.cloud_init]
