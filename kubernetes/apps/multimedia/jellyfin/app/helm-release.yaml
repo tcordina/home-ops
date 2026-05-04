@@ -21,42 +21,42 @@ spec:
         kind: HelmRepository
         name: *app
 
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: Deployment
-              name: jellyfin
-            patch: |-
-              apiVersion: apps/v1
-              kind: Deployment
-              metadata:
-                name: not-used
-              spec:
-                template:
-                  spec:
-                    volumes:
-                      - name: cache
-                        emptyDir:
-                          medium: Memory
-                          sizeLimit: 2Gi
-          # - target:
-          #     kind: Deployment
-          #     name: jellyfin
-          #   patch: |-
-          #     apiVersion: apps/v1
-          #     kind: Deployment
-          #     metadata:
-          #       name: not-used
-          #     spec:
-          #       template:
-          #         spec:
-          #           containers:
-          #             - name: jellyfin
-          #               envFrom:
-          #                 # sets POSTGRES_USER and POSTGRES_PASSWORD
-          #                 - secretRef:
-          #                     name: jellyfin-postgres-auth
+  # postRenderers:
+  #   - kustomize:
+  #       patches:
+  #         - target:
+  #             kind: Deployment
+  #             name: jellyfin
+  #           patch: |-
+  #             apiVersion: apps/v1
+  #             kind: Deployment
+  #             metadata:
+  #               name: not-used
+  #             spec:
+  #               template:
+  #                 spec:
+  #                   volumes:
+  #                     - name: cache
+  #                       emptyDir:
+  #                         medium: Memory
+  #                         sizeLimit: 2Gi
+  # - target:
+  #     kind: Deployment
+  #     name: jellyfin
+  #   patch: |-
+  #     apiVersion: apps/v1
+  #     kind: Deployment
+  #     metadata:
+  #       name: not-used
+  #     spec:
+  #       template:
+  #         spec:
+  #           containers:
+  #             - name: jellyfin
+  #               envFrom:
+  #                 # sets POSTGRES_USER and POSTGRES_PASSWORD
+  #                 - secretRef:
+  #                     name: jellyfin-postgres-auth
 
   values:
     image:
