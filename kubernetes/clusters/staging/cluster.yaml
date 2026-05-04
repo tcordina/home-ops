@@ -58,6 +58,16 @@ spec:
                 group: helm.toolkit.fluxcd.io
                 kind: HelmRelease
 
+            # Staging: skip TLS verification for oauth2-proxy (LE staging CA untrusted)
+            - patch: |-
+                - op: add
+                  path: /spec/values/extraArgs/ssl-insecure-skip-verify
+                  value: "true"
+              target:
+                group: helm.toolkit.fluxcd.io
+                kind: HelmRelease
+                name: oauth2-proxy
+
             # Staging: reduce ingress-nginx from 3 replicas to 1
             - patch: |-
                 - op: replace
@@ -77,6 +87,43 @@ spec:
                 group: helm.toolkit.fluxcd.io
                 kind: HelmRelease
                 name: coredns
+
+            # Staging: reduce longhorn component and data replicas to 1
+            - patch: |-
+                apiVersion: helm.toolkit.fluxcd.io/v2
+                kind: HelmRelease
+                metadata:
+                  name: longhorn
+                spec:
+                  values:
+                    persistence:
+                      defaultClassReplicaCount: 1
+                    csi:
+                      attacherReplicaCount: 1
+                      provisionerReplicaCount: 1
+                      resizerReplicaCount: 1
+                      snapshotterReplicaCount: 1
+              target:
+                group: helm.toolkit.fluxcd.io
+                kind: HelmRelease
+                name: longhorn
+
+            # Staging: reduce longhorn StorageClass data replicas to 1
+            - patch: |-
+                - op: replace
+                  path: /parameters/numberOfReplicas
+                  value: "1"
+              target:
+                kind: StorageClass
+                name: longhorn-local
+
+            - patch: |-
+                - op: replace
+                  path: /parameters/numberOfReplicas
+                  value: "1"
+              target:
+                kind: StorageClass
+                name: longhorn-backup
       target:
         group: kustomize.toolkit.fluxcd.io
         kind: Kustomization
