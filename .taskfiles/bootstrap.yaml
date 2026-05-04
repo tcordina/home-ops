@@ -12,6 +12,8 @@ tasks:
   kubeconfig:
     desc: "Grab kubeconfig from cluster"
     dir: "{{.BOOTSTRAP_DIR}}"
+    env:
+      KUBE_CONTEXT: "{{.env}}"
     cmds:
       - bash grab-kubeconfig.sh
 

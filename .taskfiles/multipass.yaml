@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: "3"
+
+tasks:
+  start:
+    desc: "Start the staging VM"
+    cmds:
+      - multipass start staging
+
+  stop:
+    desc: "Stop the staging VM"
+    cmds:
+      - multipass stop staging
+
+  shell:
+    desc: "Open a shell in the staging VM"
+    cmds:
+      - multipass shell staging
+
+  ip:
+    desc: "Show the staging VM IP"
+    dir: "{{.TERRAFORM_DIR}}/multipass"
+    cmds:
+      - terraform output vm_ip

@@ -19,6 +19,7 @@ vars:
 includes:
   bootstrap: .taskfiles/bootstrap.yaml
   flux: .taskfiles/flux.yaml
+  multipass: .taskfiles/multipass.yaml
   pre-commit: .taskfiles/pre-commit.yaml
   renovate: .taskfiles/renovate.yaml
   shell: .taskfiles/shell.yaml

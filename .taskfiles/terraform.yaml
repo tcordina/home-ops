@@ -9,7 +9,7 @@ tasks:
     requires:
       vars:
         - name: dir
-          enum: [haproxy, k3s-nodes]
+          enum: [haproxy, k3s-nodes, multipass]
     dir: "{{.TERRAFORM_DIR}}/{{.dir}}"
     cmds:
       - terraform init
@@ -19,7 +19,7 @@ tasks:
     requires:
       vars:
         - name: dir
-          enum: [haproxy, k3s-nodes]
+          enum: [haproxy, k3s-nodes, multipass]
     dir: "{{.TERRAFORM_DIR}}/{{.dir}}"
     cmds:
       - terraform plan -var-file="{{.TERRAFORM_DIR}}/{{.dir}}/secrets.auto.tfvars"
@@ -29,7 +29,7 @@ tasks:
     requires:
       vars:
         - name: dir
-          enum: [haproxy, k3s-nodes]
+          enum: [haproxy, k3s-nodes, multipass]
     dir: "{{.TERRAFORM_DIR}}/{{.dir}}"
     cmds:
       - terraform apply -var-file="{{.TERRAFORM_DIR}}/{{.dir}}/secrets.auto.tfvars" -auto-approve
@@ -39,7 +39,29 @@ tasks:
     requires:
       vars:
         - name: dir
-          enum: [haproxy, k3s-nodes]
+          enum: [haproxy, k3s-nodes, multipass]
     dir: "{{.TERRAFORM_DIR}}/{{.dir}}"
     cmds:
       - terraform destroy -var-file="{{.TERRAFORM_DIR}}/{{.dir}}/secrets.auto.tfvars" -auto-approve
+
+  reset:
+    desc: "Destroy then re-apply a module / e.g. task tf:reset dir=multipass"
+    requires:
+      vars:
+        - name: dir
+          enum: [haproxy, k3s-nodes, multipass]
+    cmds:
+      - task: destroy
+        vars: { dir: "{{.dir}}" }
+      - task: apply
+        vars: { dir: "{{.dir}}" }
+
+  output:
+    desc: "Show values defined in output / e.g. task tf:destroy dir=multipass"
+    requires:
+      vars:
+        - name: dir
+          enum: [haproxy, k3s-nodes, multipass]
+    dir: "{{.TERRAFORM_DIR}}/{{.dir}}"
+    cmds:
+      - terraform output
