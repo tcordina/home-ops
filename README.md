@@ -90,19 +90,30 @@ Check the [`/kubernetes/apps`](/kubernetes/apps#applications) directory for a li
 
 ---
 
+## Staging environment
+
+The staging environment runs a single K3s node inside a local VM, providing an environment as close as possible to the production cluster without requiring dedicated hardware. The VM is provisioned using [Multipass](https://multipass.run/), a lightweight tool from Canonical that spins up Ubuntu VMs.
+
+Flux reconciles from the [`/kubernetes/clusters/staging`](/kubernetes/clusters/staging) directory, which tracks the `staging` branch. Cluster-specific overrides such as reduced replica counts and relaxed TLS verification are applied via Kustomization patches in that directory, keeping the application manifests themselves environment-agnostic.
+
+---
+
 ## Repository structure
 
 ```bash
 .
-├── bootstrap/             # K8S cluster bootstrap
 ├── infrastructure/
 │   ├── proxmox/
 │   │   ├── network/       # Network config for PVE hosts
 │   │   └── vms/           # .conf files for VMs not provisioned via Terraform
-│   └── terraform/         # Proxmox VM/LXC definitions
+│   └── terraform/
+│       ├── haproxy/       # ha-proxy LXCs definition
+│       ├── k3s-nodes/     # K3s nodes definition
+│       └── multipass/     # Staging VM definition
 └── kubernetes/
     ├── apps/              # Application manifests
-    ├── clusters/          # Flux entry point
+    ├── bootstrap/         # Cluster bootstrap
+    ├── clusters/          # Flux entry points
     └── components/
         ├── replacements/  # Reusable Kustomize components
         └── resources/     # Cluster-wide resources
