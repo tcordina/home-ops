@@ -32,6 +32,8 @@ write_files:
       fs.inotify.max_user_instances=1024
 
 runcmd:
+  - apt-get remove -y multipath-tools
+  - apt-get autoremove -y
   - systemctl start qemu-guest-agent
 %{~ if is_master }
   - |
