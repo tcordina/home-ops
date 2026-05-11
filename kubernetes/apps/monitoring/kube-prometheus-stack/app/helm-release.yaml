@@ -75,19 +75,6 @@ spec:
             - match:
                 alertname: Watchdog
               receiver: "null"
-            # false positives on k3s
-            - match:
-                alertname: KubeControllerManagerDown
-              receiver: "null"
-            - match:
-                alertname: KubeSchedulerDown
-              receiver: "null"
-            # - match:
-            #     alertname: KubeEtcdDown
-            #   receiver: 'null'
-            - match:
-                alertname: KubeProxyDown
-              receiver: "null"
             # default routes
             - match:
                 severity: critical
@@ -140,7 +127,7 @@ spec:
           # drop metrics already scraped by apiserver
           - action: drop
             sourceLabels: [__name__]
-            regex: "apiserver_.*|etcd_.*|workqueue_*"
+            regex: "apiserver_.*|etcd_.*|workqueue_.*"
 
     kubeApiServer:
       enabled: true
