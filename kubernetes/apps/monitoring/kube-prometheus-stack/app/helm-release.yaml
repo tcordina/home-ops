@@ -130,6 +130,11 @@ spec:
           - action: drop
             sourceLabels: [__name__]
             regex: "apiserver_.*"
+          # Reduce amount of buckets (24 > 9)
+          # Buckets kept: 0.005, 0.025, 0.05, 0.1, 1, 5, 10, 30, +Inf
+          - action: drop
+            sourceLabels: [__name__, le]
+            regex: "etcd_request_duration_seconds_bucket;(0\\.(2|4|6|8)|1\\.(25|5)|2\\.0|3\\.0|4\\.0|6\\.0|8\\.0|15\\.0|20\\.0|45\\.0|60\\.0)"
 
     kubeApiServer:
       enabled: true
@@ -139,6 +144,20 @@ spec:
           - action: keep
             sourceLabels: [__name__]
             regex: "apiserver_.*"
+          # - action: drop
+          #   sourceLabels: [__name__]
+          #   regex: "apiserver_request_body_size_bytes_bucket|apiserver_response_sizes_bucket|apiserver_watch_cache_read_wait_seconds_bucket|apiserver_watch_list_duration_seconds_bucket|apiserver_watch_events_sizes_bucket|apiserver_request_sli_duration_seconds_bucket"
+          - action: drop
+            sourceLabels: [__name__, verb]
+            regex: "apiserver_request_duration_seconds_bucket;(WATCH|LIST|APPLY)"
+          # Reduce amount of buckets (24 > 9)
+          # Buckets kept: 0.005, 0.025, 0.05, 0.1, 1, 5, 10, 30, +Inf
+          - action: drop
+            sourceLabels: [__name__, le]
+            regex: "apiserver_request_duration_seconds_bucket;(0\\.(2|4|6|8)|1\\.(25|5)|2\\.0|3\\.0|4\\.0|6\\.0|8\\.0|15\\.0|20\\.0|45\\.0|60\\.0)"
+          - action: drop
+            sourceLabels: [__name__, le]
+            regex: "apiserver_request_sli_duration_seconds_bucket;(0\\.(2|4|6|8)|1\\.(25|5)|2\\.0|3\\.0|4\\.0|6\\.0|8\\.0|15\\.0|20\\.0|45\\.0|60\\.0)"
 
     kubeEtcd:
       enabled: true
