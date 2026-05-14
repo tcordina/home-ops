@@ -26,7 +26,7 @@ spec:
             image:
               repository: registry.gitlab.com/tcordina/discord-bot
               tag: latest
-              digest: sha256:bce3cd5ce362b2c055bbef9d1d3647e659a3817a2747bd681bb91d5ab9a93629 # @bot
+              digest: sha256:bd4b2d419a9a7b93bc4c95aff27750341d018e5f80df722ed0e32d3e2eb02f54 # @bot
               pullPolicy: IfNotPresent
             env: &env
               - name: LOG_LEVEL
@@ -74,7 +74,7 @@ spec:
             image:
               repository: registry.gitlab.com/tcordina/discord-bot
               tag: migrate-latest
-              digest: sha256:f49a02fea6b8476f0e0d0c0e90a77eb72363fe6f97cd973773683fc35cb00936 # @migrate
+              digest: sha256:d7921daeb8889ac88e6c9e5c29e9ed25da228176268ab5cfae3b568507ccc890 # @migrate
               pullPolicy: IfNotPresent
             command: ["uv", "run", "alembic", "upgrade", "head"]
             env: *env
