@@ -65,7 +65,7 @@ spec:
               requests:
                 memory: "128Mi"
                 cpu: "10m"
-            securityContext: &securityContext
+            securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
@@ -76,9 +76,11 @@ spec:
               tag: migrate-latest
               digest: sha256:d7921daeb8889ac88e6c9e5c29e9ed25da228176268ab5cfae3b568507ccc890 # @migrate
               pullPolicy: IfNotPresent
-            command: ["uv", "run", "alembic", "upgrade", "head"]
             env: *env
             envFrom:
               - secretRef:
                   name: discord-bot-secrets
-            securityContext: *securityContext
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: { drop: ["ALL"] }
