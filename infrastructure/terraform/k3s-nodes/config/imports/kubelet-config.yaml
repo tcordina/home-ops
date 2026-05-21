@@ -1,0 +1,5 @@
+kind: KubeletConfiguration
+apiVersion: kubelet.config.k8s.io/v1beta1
+
+# the maximum age an image can be unused before it is garbage collected.
+imageMaximumGCAge: "120h" # 5 days

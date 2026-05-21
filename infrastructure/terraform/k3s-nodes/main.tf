@@ -42,12 +42,18 @@ variable "ssh_private_key" {
 locals {
   cloud_init_rendered = {
     master = templatefile("${path.module}/config/cloud-init.yaml.tpl", {
-      is_master       = true
+      is_master      = true
       ssh_private_key = ""
+      k3s_config     = file("${path.module}/config/imports/k3s-config.yaml")
+      kubelet_config = file("${path.module}/config/imports/kubelet-config.yaml")
+      inotify_conf   = file("${path.module}/config/imports/99-notify.conf")
     })
     controlplane = templatefile("${path.module}/config/cloud-init.yaml.tpl", {
-      is_master       = false
+      is_master      = false
       ssh_private_key = var.ssh_private_key
+      k3s_config     = file("${path.module}/config/imports/k3s-config.yaml")
+      kubelet_config = file("${path.module}/config/imports/kubelet-config.yaml")
+      inotify_conf   = file("${path.module}/config/imports/99-notify.conf")
     })
   }
 }

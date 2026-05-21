@@ -1,0 +1,10 @@
+tls-san:
+  - "192.168.1.100"
+disable:
+  - "coredns"
+  - "traefik"
+write-kubeconfig-mode: "0644"
+embedded-registry: true
+etcd-expose-metrics: true
+kubelet-arg:
+  - "config=/etc/rancher/k3s/kubelet-config.yaml"
