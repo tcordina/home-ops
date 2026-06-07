@@ -25,7 +25,7 @@ spec:
           app:
             image:
               repository: linuxserver/radarr
-              tag: 6.2.0-develop
+              tag: 6.2.1-develop
             env:
               RADARR__APP__INSTANCENAME: Radarr
               RADARR__AUTH__METHOD: External
