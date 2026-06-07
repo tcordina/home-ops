@@ -1,0 +1,8 @@
+stages:
+  - renovate
+  - badges
+  - pages
+
+include:
+  - local: .gitlab/badges.yml
+  - local: .gitlab/renovate.yml
