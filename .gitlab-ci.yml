@@ -1,8 +1,10 @@
 stages:
+  - validate
   - renovate
   - badges
   - pages
 
 include:
+  - local: .gitlab/validate.yml
   - local: .gitlab/badges.yml
   - local: .gitlab/renovate.yml

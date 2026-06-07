@@ -1,0 +1,22 @@
+validate-kubernetes:
+  stage: validate
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  image:
+    name: ghcr.io/yannh/kubeconform:latest-alpine
+    entrypoint: [""]
+  script:
+    - |
+      find kubernetes/ -name '*.yaml' \
+        -not -path '*/unused/*' \
+        -not -path '*/replacements/*' \
+        -not -name '*.sops.yaml' \
+        -print0 | xargs -0 /kubeconform \
+          -strict \
+          -ignore-missing-schemas \
+          -schema-location default \
+          -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
+          -summary
+  tags:
+    - docker
