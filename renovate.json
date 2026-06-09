@@ -26,6 +26,16 @@
       "managerFilePatterns": ["/^kubernetes/.+\\.yaml$/"],
       "matchStrings": ["oci://(?<depName>[^:]+):(?<currentValue>\\S+)"],
       "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "description": "Process annotated dependencies",
+      "managerFilePatterns": ["/(^|/).+\\.yaml$/"],
+      "matchStrings": [
+        "renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n\\s*\\S+:\\s+\\S+/(?<currentValue>[^\\s/]+)",
+        "renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n\\s*\\S+:\\s+(?<currentValue>(?:v|\\d)\\S*)"
+      ],
+      "datasourceTemplate": "{{datasource}}"
     }
   ],
   "packageRules": [
@@ -90,6 +100,14 @@
       "matchPackageNames": ["linuxserver/qbittorrent"],
       "rangeStrategy": "bump",
       "allowedVersions": "!/^(14|18|20)\\./"
+    },
+    {
+      "description": "k3s upgrade plan - isolated MR, no automerge",
+      "matchDepNames": ["k3s-io/k3s"],
+      "matchDatasources": ["github-releases"],
+      "groupName": "k3s",
+      "automerge": false,
+      "labels": ["dependencies", "renovate", "kubernetes", "k3s"]
     },
     {
       "description": "Disable updates for unused apps",
