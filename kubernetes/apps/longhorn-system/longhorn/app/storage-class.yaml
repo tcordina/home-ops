@@ -5,8 +5,10 @@ metadata:
   name: longhorn-local
 provisioner: driver.longhorn.io
 allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
 parameters:
   numberOfReplicas: "3"
+  migratable: "true"
   staleReplicaTimeout: "2880" # 48 hours in minutes
   fromBackup: ""
   fsType: "ext4"
@@ -18,8 +20,10 @@ metadata:
   name: longhorn-backup
 provisioner: driver.longhorn.io
 allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
 parameters:
   numberOfReplicas: "3"
+  migratable: "true"
   staleReplicaTimeout: "2880" # 48 hours in minutes
   fromBackup: ""
   fsType: "ext4"

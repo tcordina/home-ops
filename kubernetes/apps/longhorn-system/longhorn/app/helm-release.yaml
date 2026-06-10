@@ -23,13 +23,7 @@ spec:
         name: longhorn
   values:
     persistence:
-      defaultClass: true
-      defaultClassReplicaCount: 3
-      reclaimPolicy: Delete
-      recurringJobSelector:
-        enable: false
-      unmapMarkSnapChainRemoved: enabled
-      dataEngine: v1
+      createStorageClass: false
 
     ingress:
       enabled: true
