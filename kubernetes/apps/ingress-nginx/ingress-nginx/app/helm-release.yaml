@@ -5,7 +5,7 @@ metadata:
   name: ingress-nginx
 spec:
   interval: 1h
-  timeout: 10m
+  timeout: 1h
   chart:
     spec:
       chart: ingress-nginx
@@ -13,14 +13,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: ingress-nginx
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
   values:
     controller:
       service:
@@ -39,8 +31,8 @@ spec:
 
       resources:
         requests:
-          cpu: 100m
-          memory: 90Mi
+          cpu: 10m
+          memory: 192Mi
         limits: {}
 
       replicaCount: 3

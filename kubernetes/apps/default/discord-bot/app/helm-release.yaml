@@ -63,8 +63,10 @@ spec:
                   name: default-auth-backblaze
             resources:
               requests:
-                memory: "128Mi"
-                cpu: "10m"
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 128Mi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

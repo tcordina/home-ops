@@ -39,11 +39,10 @@ spec:
           value: "1000"
       resources:
         requests:
-          cpu: 200m
-          memory: 512Mi
+          cpu: 50m
+          memory: 64Mi
         limits:
-          cpu: 1000m
-          memory: 2Gi
+          memory: 64Mi
       service:
         port: *port
       bittorrentPort: *torrentPort
@@ -95,11 +94,10 @@ spec:
 
       resources:
         requests:
-          cpu: 100m
-          memory: 128Mi
+          cpu: 50m
+          memory: 64Mi
         limits:
-          cpu: 300m
-          memory: 256Mi
+          memory: 64Mi
       persistence:
         enabled: false
         # existingClaim: gluetun-config

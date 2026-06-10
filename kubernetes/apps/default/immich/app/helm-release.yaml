@@ -68,11 +68,10 @@ spec:
                   failureThreshold: 30
             resources:
               requests:
-                memory: "1024Mi"
-                cpu: "10m"
+                cpu: 10m
+                memory: 1024Mi
               limits:
-                memory: "4096Mi"
-                cpu: "2000m"
+                memory: 1024Mi
       valkey:
         containers:
           app:
@@ -110,6 +109,12 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 5
                   failureThreshold: 30
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 64Mi
     service:
       immich:
         controller: immich

@@ -45,6 +45,12 @@ spec:
                     fieldPath: spec.nodeName
               SYSTEM_UPGRADE_JOB_BACKOFF_LIMIT: 99
               SYSTEM_UPGRADE_JOB_PRIVILEGED: true
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 64Mi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

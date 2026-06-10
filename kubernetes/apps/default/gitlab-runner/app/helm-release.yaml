@@ -39,9 +39,8 @@ spec:
             image = "ubuntu:24.04"
 
             cpu_request = "500m"
-            cpu_limit = "2"
             memory_request = "512Mi"
-            memory_limit = "2Gi"
+            memory_limit = "512Mi"
 
             helper_image = "gitlab/gitlab-runner-helper:x86_64-latest"
             allowed_pull_policies = ["if-not-present", "always", ""]
@@ -59,14 +58,13 @@ spec:
               mount_path = "/cache"
 
     resources:
-      limits:
-        cpu: 1000m
-        memory: 256Mi
-        ephemeral-storage: 512Mi
       requests:
-        cpu: 200m
+        cpu: 10m
         memory: 128Mi
         ephemeral-storage: 256Mi
+      limits:
+        memory: 128Mi
+        ephemeral-storage: 512Mi
 
     replicas: 1
     concurrent: 3

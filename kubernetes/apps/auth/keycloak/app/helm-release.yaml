@@ -92,11 +92,10 @@ spec:
 
             resources:
               requests:
-                cpu: 100m
-                memory: 256Mi
+                cpu: 10m
+                memory: 640Mi
               limits:
-                cpu: 1000m
-                memory: 1Gi
+                memory: 640Gi
 
     service:
       keycloak:

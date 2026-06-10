@@ -5,21 +5,19 @@ metadata:
   name: cert-manager
 spec:
   interval: 1h
-  timeout: 10m
+  timeout: 1h
   chartRef:
     kind: OCIRepository
     name: cert-manager
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
   values:
     crds:
       enabled: true
       keep: true
     prometheus:
       enabled: true
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 64Mi
