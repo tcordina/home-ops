@@ -24,3 +24,8 @@ tasks:
     dir: "{{.TERRAFORM_DIR}}/multipass"
     cmds:
       - terraform output vm_ip
+
+  assign-ip:
+    desc: "Assign a fixed IP to the VM (the terraform provider does not allow that)"
+    cmds:
+      - multipass set staging static.eth0=10.127.22.195/24

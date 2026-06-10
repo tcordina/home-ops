@@ -11,5 +11,7 @@ tasks:
 
   dry-run:
     desc: "Dry run renovate locally"
+    env:
+      LOG_LEVEL: info
     cmds:
       - npx renovate@43 --platform=local --onboarding=false --dry-run=full --github-token-warn=false

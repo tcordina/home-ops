@@ -34,11 +34,12 @@ tasks:
 
   dir:
     desc: "Create directory scaffold for new K8s app / e.g. task bootstrap:dir ns=monitoring app=grafana"
+    dir: "{{.KUBERNETES_DIR}}"
     requires:
       vars: [ns, app]
     cmds:
-      - mkdir -p {{.K8S_DIR}}/apps/{{.ns}}/{{.app}}/app
-      - touch -a {{.K8S_DIR}}/apps/{{.ns}}/namespace.yaml
-      - touch -a {{.K8S_DIR}}/apps/{{.ns}}/kustomization.yaml
-      - touch -a {{.K8S_DIR}}/apps/{{.ns}}/{{.app}}/ks.yaml
-      - touch -a {{.K8S_DIR}}/apps/{{.ns}}/{{.app}}/app/helm-release.yaml
+      - mkdir -p apps/{{.ns}}/{{.app}}/app
+      - touch -a apps/{{.ns}}/namespace.yaml
+      - touch -a apps/{{.ns}}/kustomization.yaml
+      - touch -a apps/{{.ns}}/{{.app}}/ks.yaml
+      - touch -a apps/{{.ns}}/{{.app}}/app/helm-release.yaml
