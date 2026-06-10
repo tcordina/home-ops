@@ -95,7 +95,7 @@ spec:
                 cpu: 10m
                 memory: 640Mi
               limits:
-                memory: 640Gi
+                memory: 640Mi
 
     service:
       keycloak:
