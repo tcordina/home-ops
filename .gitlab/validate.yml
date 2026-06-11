@@ -1,6 +1,8 @@
 validate-kubernetes:
   stage: validate
   rules:
+    - if: $CI_COMMIT_TITLE =~ /^chore\(deps\):/
+      when: never
     - if: $CI_PIPELINE_SOURCE == "push"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   image:
