@@ -13,6 +13,7 @@ Everything running inside the Kubernetes cluster is defined in this directory.
 | [Longhorn](https://longhorn.io/)                                                    | Distributed block storage with replication across nodes |
 | [snapshot-controller](https://github.com/kubernetes-csi/external-snapshotter)       | Volume snapshot support                                 |
 | [Crunchy Data PGO](https://access.crunchydata.com/documentation/postgres-operator/) | PostgreSQL operator                                     |
+| [System upgrade Controller](https://github.com/rancher/system-upgrade-controller/)  | Auto update K3s                                         |
 
 ## Observability
 

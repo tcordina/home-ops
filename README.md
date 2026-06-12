@@ -24,6 +24,8 @@ Personal homelab running on a 2-node Proxmox cluster. Infrastructure and applica
 
 Heavily inspired by the projects shared on [kubesearch.dev](https://kubesearch.dev/)
 
+_This is a learning environment first. Certain design choices may be suboptimal or overengineered._
+
 </div>
 
 ---
@@ -39,22 +41,29 @@ Heavily inspired by the projects shared on [kubesearch.dev](https://kubesearch.d
 
 ### Virtual machines & LXC
 
-| Guest         | Type | Host         | Role                        |
-| ------------- | ---- | ------------ | --------------------------- |
-| haproxy-1     | LXC  | acemagic     | Load balancer + VRRP master |
-| haproxy-2     | LXC  | custom build | Load balancer + VRRP backup |
-| master-node-1 | VM   | acemagic     | Kubernetes node             |
-| master-node-2 | VM   | custom build | Kubernetes node             |
-| master-node-3 | VM   | custom build | Kubernetes node             |
-| TrueNAS       | VM   | custom build | NFS storage server          |
+#### Proxmox node #1 (acemagic)
 
-_All 3 Kubernetes nodes act as both control plane and worker nodes. Running multiple control planes avoids the single point of failure of a dedicated control plane, and allows workloads to be rescheduled on the remaining nodes if one goes down._
+| Guest         | Type | Role                        |
+| ------------- | ---- | --------------------------- |
+| haproxy-1     | LXC  | Load balancer + VRRP master |
+| master-node-1 | VM   | Kubernetes node             |
+
+#### Proxmox node #2 (custom build)
+
+| Guest         | Type | Role                        |
+| ------------- | ---- | --------------------------- |
+| haproxy-2     | LXC  | Load balancer + VRRP backup |
+| master-node-2 | VM   | Kubernetes node             |
+| master-node-3 | VM   | Kubernetes node             |
+| TrueNAS       | VM   | NFS storage server          |
+
+_All 3 Kubernetes nodes act as both control plane and worker nodes._
 
 ### Why do 2 control plane nodes run on the same machine?
 
-I only have 2 physical machines, but wanted to learn how to operate a multi-node highly available cluster. Running 3 K3s server nodes lets me explore distributing ingress traffic across nodes, with HAProxy fronting the cluster and load balancing across 3 ingress-nginx pods. It also gives me a real multi-node environment to learn how to manage highly available storage with Longhorn, with volume replicas spread across nodes.
+I only have 2 physical machines, but wanted to learn how to operate a multi-node highly available cluster. Running 3 K3s server nodes lets me explore distributing traffic across nodes. It also allows me to learn how to manage highly available storage with Longhorn, with volume replicas spread across nodes.
 
-That said, this setup is **not truly highly available**. According to etcd's documentation, [with 3 nodes, the failure tolerance is 1](https://etcd.io/docs/v3.5/faq/#what-is-failure-tolerance). But since `master-node-2` and `master-node-3` both run on the same physical host, a single hardware failure takes out 2 etcd members at once, marking the cluster as failed and making it read-only until nodes come back up.
+That said, this setup is **not truly highly available**. According to etcd's documentation, [with 3 nodes, the failure tolerance is 1](https://etcd.io/docs/v3.5/faq/#what-is-failure-tolerance). But since `master-node-2` and `master-node-3` both run on the same physical host, a single hardware failure takes out 2 etcd members at once, marking the cluster as failed until nodes come back up.
 
 ---
 
@@ -92,9 +101,9 @@ Check the [`/kubernetes/apps`](/kubernetes/apps#applications) directory for a li
 
 ## Staging environment
 
-The staging environment runs a single K3s node inside a local VM, providing an environment as close as possible to the production cluster without requiring dedicated hardware. The VM is provisioned using [Multipass](https://multipass.run/), a lightweight tool from Canonical that spins up Ubuntu VMs.
+The staging environment runs a single K3s node inside a local VM, providing an environment as close as possible to the production cluster without requiring dedicated hardware. The VM is provisioned using [Multipass](https://multipass.run/) (a lightweight tool that spins up Ubuntu VMs) via [this Terraform provider](https://registry.terraform.io/providers/larstobi/multipass). Configuration files reside in [`/infrastructure/terraform/multipass`](/infrastructure/terraform/multipass)
 
-Flux reconciles from the [`/kubernetes/clusters/staging`](/kubernetes/clusters/staging) directory, which tracks the `staging` branch. Cluster-specific overrides such as reduced replica counts and relaxed TLS verification are applied via Kustomization patches in that directory, keeping the application manifests themselves environment-agnostic.
+Flux reconciles from the [`/kubernetes/clusters/staging`](/kubernetes/clusters/staging) directory, which tracks the `staging` branch. Environment-specific overrides are defined inside [`cluster.yaml`](/kubernetes/clusters/staging/cluster.yaml)
 
 ---
 
