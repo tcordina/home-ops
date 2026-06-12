@@ -43,8 +43,8 @@ update-badges:
     - RAM_COLOR=$(awk "BEGIN{if($RAM<=65) print \"seagreen\"; else if($RAM<=90) print \"orange\"; else print \"red\"}")
 
     # free storage
-    - STORAGE=$(promql 'floor(min((longhorn_disk_capacity_bytes - longhorn_disk_usage_bytes) / (1e9)))')
-    - STORAGE_COLOR=$(awk "BEGIN{if($STORAGE>20) print \"seagreen\"; else print \"red\"}")
+    - STORAGE=$(promql 'floor(sum((longhorn_disk_capacity_bytes - longhorn_disk_usage_bytes) / (1e9)))')
+    - STORAGE_COLOR=$(awk "BEGIN{if($STORAGE>=100) print \"seagreen\"; else print \"red\"}")
 
     # generate JSON files for shields.io
     - mkdir -p public
