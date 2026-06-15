@@ -1,30 +1,4 @@
-terraform {
-  required_providers {
-    proxmox = {
-      source  = "Telmate/proxmox"
-      version = "3.0.2-rc07"
-    }
-  }
-}
-
-variable "pve_ip" {
-  sensitive = false
-  type      = string
-}
-
-variable "proxmox_api_token" {
-  sensitive = true
-  type      = string
-}
-
-provider "proxmox" {
-  pm_api_url          = "https://${var.pve_ip}:8006/api2/json"
-  pm_api_token_id     = "terraform-prov@pve!mytoken"
-  pm_api_token_secret = var.proxmox_api_token
-  pm_tls_insecure     = true
-  pm_debug            = true
-}
-
+# --- Create LXC --- #
 locals {
   haproxy_vip = "192.168.1.100"
   haproxy_instances = {
@@ -87,6 +61,8 @@ resource "proxmox_lxc" "haproxy" {
   }
 }
 
+
+# --- Install & configure haproxy + keepalived --- #
 resource "terraform_data" "haproxy_config" {
   for_each   = local.haproxy_instances
   depends_on = [proxmox_lxc.haproxy]

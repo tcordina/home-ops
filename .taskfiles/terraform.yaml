@@ -3,65 +3,51 @@
 
 version: "3"
 
+x-module: &module
+  requires:
+    vars:
+      - name: module # relative path from the "infrastructure/terraform" directory
+  dir: "{{.TERRAFORM_DIR}}/{{.module}}"
+  preconditions:
+    - msg: "Local module {{.module}} does not exist"
+      sh: "test -d {{.TERRAFORM_DIR}}/{{.module}}"
+
 tasks:
   init:
-    desc: "Run terraform init / e.g. task tf:init dir=haproxy"
-    requires:
-      vars:
-        - name: dir
-          enum: [haproxy, k3s-nodes, multipass]
-    dir: "{{.TERRAFORM_DIR}}/{{.dir}}"
+    desc: "Run terraform init / e.g. task tf:init module=main/haproxy"
+    <<: *module
     cmds:
       - terraform init
 
   plan:
-    desc: "Run terraform plan / e.g. task tf:plan dir=haproxy"
-    requires:
-      vars:
-        - name: dir
-          enum: [haproxy, k3s-nodes, multipass]
-    dir: "{{.TERRAFORM_DIR}}/{{.dir}}"
+    desc: "Run terraform plan / e.g. task tf:plan module=main/haproxy"
+    <<: *module
     cmds:
-      - terraform plan -var-file="{{.TERRAFORM_DIR}}/{{.dir}}/secrets.auto.tfvars"
+      - terraform plan -var-file="{{.TERRAFORM_DIR}}/{{.module}}/secrets.auto.tfvars"
 
   apply:
-    desc: "Apply terraform with auto-approve / e.g. task tf:apply dir=haproxy"
-    requires:
-      vars:
-        - name: dir
-          enum: [haproxy, k3s-nodes, multipass]
-    dir: "{{.TERRAFORM_DIR}}/{{.dir}}"
+    desc: "Run terraform apply / e.g. task tf:apply module=main/haproxy"
+    <<: *module
     cmds:
-      - terraform apply -var-file="{{.TERRAFORM_DIR}}/{{.dir}}/secrets.auto.tfvars" -auto-approve
+      - terraform apply -var-file="{{.TERRAFORM_DIR}}/{{.module}}/secrets.auto.tfvars"
 
   destroy:
-    desc: "Destroy terraform infrastructure / e.g. task tf:destroy dir=haproxy"
-    requires:
-      vars:
-        - name: dir
-          enum: [haproxy, k3s-nodes, multipass]
-    dir: "{{.TERRAFORM_DIR}}/{{.dir}}"
+    desc: "Run terraform destroy / e.g. task tf:destroy module=main/haproxy"
+    <<: *module
     cmds:
-      - terraform destroy -var-file="{{.TERRAFORM_DIR}}/{{.dir}}/secrets.auto.tfvars" -auto-approve
-
-  reset:
-    desc: "Destroy then re-apply a module / e.g. task tf:reset dir=multipass"
-    requires:
-      vars:
-        - name: dir
-          enum: [haproxy, k3s-nodes, multipass]
-    cmds:
-      - task: destroy
-        vars: { dir: "{{.dir}}" }
-      - task: apply
-        vars: { dir: "{{.dir}}" }
+      - terraform destroy -var-file="{{.TERRAFORM_DIR}}/{{.module}}/secrets.auto.tfvars"
 
   output:
-    desc: "Show values defined in output / e.g. task tf:destroy dir=multipass"
-    requires:
-      vars:
-        - name: dir
-          enum: [haproxy, k3s-nodes, multipass]
-    dir: "{{.TERRAFORM_DIR}}/{{.dir}}"
+    desc: "Run terraform output / e.g. task tf:output module=main/haproxy"
+    <<: *module
     cmds:
       - terraform output
+
+  reset:
+    desc: "Destroy then re-apply a module / e.g. task tf:reset module=main/haproxy"
+    <<: *module
+    cmds:
+      - task: destroy
+        vars: { module: "{{.module}}" }
+      - task: apply
+        vars: { module: "{{.module}}" }

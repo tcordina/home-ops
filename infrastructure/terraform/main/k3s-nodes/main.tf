@@ -1,44 +1,4 @@
-terraform {
-  required_providers {
-    proxmox = {
-      source  = "Telmate/proxmox"
-      version = "3.0.2-rc07"
-    }
-    local = {
-      source  = "hashicorp/local"
-      version = "~> 2.0"
-    }
-  }
-}
-
-variable "pve_ip" {
-  sensitive = false
-  type      = string
-}
-
-variable "pve2_ip" {
-  sensitive = false
-  type      = string
-}
-
-variable "proxmox_api_token" {
-  sensitive = true
-  type      = string
-}
-
-provider "proxmox" {
-  pm_api_url          = "https://${var.pve_ip}:8006/api2/json"
-  pm_api_token_id     = "terraform-prov@pve!mytoken"
-  pm_api_token_secret = var.proxmox_api_token
-  pm_tls_insecure     = true
-  pm_debug            = true
-}
-
-variable "ssh_private_key" {
-  sensitive = true
-  type      = string
-}
-
+# --- Render & upload cloud-init file to pve host --- #
 locals {
   cloud_init_rendered = {
     master = templatefile("${path.module}/config/cloud-init.yaml.tpl", {
@@ -84,6 +44,15 @@ resource "terraform_data" "cloud-init_upload" {
   depends_on = [local_file.cloud_init_rendered]
 }
 
+
+# --- Create proxmox resource pool --- #
+resource "proxmox_pool" "k3s-pool" {
+  poolid  = "k3s-cluster"
+  comment = ""
+}
+
+
+# --- Provision k3s nodes --- #
 locals {
   k3s_nodes = {
     "master-node-1" = {
@@ -126,11 +95,6 @@ locals {
   }
 }
 
-resource "proxmox_pool" "k3s-pool" {
-  poolid  = "k3s-cluster"
-  comment = ""
-}
-
 resource "proxmox_vm_qemu" "k3s-nodes" {
   for_each = local.k3s_nodes
 
@@ -151,7 +115,7 @@ resource "proxmox_vm_qemu" "k3s-nodes" {
   start_at_node_boot  = true
 
   # Cloud-Init configuration
-  cicustom   = "vendor=local:snippets/cloud-init-${each.value.cloud_init}.yaml" # inside /var/lib/vz/snippets/
+  cicustom   = "vendor=local:snippets/cloud-init-${each.value.cloud_init}.yaml" # inside /var/lib/vz/snippets/ on pve host
   nameserver = "1.1.1.1 1.0.0.1"
   ipconfig0  = "ip=${each.value.ip}/24,gw=${each.value.gateway}"
   skip_ipv6  = true
