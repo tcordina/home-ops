@@ -1,10 +1,19 @@
 validate-kubernetes:
   stage: validate
   rules:
-    - if: $CI_COMMIT_TITLE =~ /^chore\(deps\):/
+    - # ignore changes made by renovate
+      if: $CI_COMMIT_TITLE =~ /^chore\(deps\):/
       when: never
     - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
+        - kubernetes/apps/**/*
+        - kubernetes/clusters/**/*
+        - kubernetes/components/**/*
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - kubernetes/apps/**/*
+        - kubernetes/clusters/**/*
+        - kubernetes/components/**/*
   image:
     name: ghcr.io/yannh/kubeconform:latest-alpine
     entrypoint: [""]
