@@ -41,14 +41,15 @@ _This is a learning environment first. Certain design choices may be suboptimal 
 
 ### Virtual machines & LXC
 
-#### Proxmox node #1 (acemagic)
+#### Proxmox node 1 (acemagic)
 
 | Guest         | Type | Role                        |
 | ------------- | ---- | --------------------------- |
 | haproxy-1     | LXC  | Load balancer + VRRP master |
+| technitium    | LXC  | DNS server                  |
 | master-node-1 | VM   | Kubernetes node             |
 
-#### Proxmox node #2 (custom build)
+#### Proxmox node 2 (custom build)
 
 | Guest         | Type | Role                        |
 | ------------- | ---- | --------------------------- |
@@ -59,12 +60,6 @@ _This is a learning environment first. Certain design choices may be suboptimal 
 
 _All 3 Kubernetes nodes act as both control plane and worker nodes._
 
-### Why do 2 control plane nodes run on the same machine?
-
-I only have 2 physical machines, but wanted to learn how to operate a multi-node highly available cluster. Running 3 K3s server nodes lets me explore distributing traffic across nodes. It also allows me to learn how to manage highly available storage with Longhorn, with volume replicas spread across nodes.
-
-That said, this setup is **not truly highly available**. According to etcd's documentation, [with 3 nodes, the failure tolerance is 1](https://etcd.io/docs/v3.5/faq/#what-is-failure-tolerance). But since `master-node-2` and `master-node-3` both run on the same physical host, a single hardware failure takes out 2 etcd members at once, marking the cluster as failed until nodes come back up.
-
 ---
 
 ## Stack
@@ -74,6 +69,7 @@ That said, this setup is **not truly highly available**. According to etcd's doc
 | Tool                                                                                           | Purpose                                                          |
 | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | [Proxmox VE](https://www.proxmox.com/en/products/proxmox-virtual-environment/overview)         | Virtualization platform                                          |
+| [Technitium](https://technitium.com/dns)                                                       | DNS server + network-wide ad blocking                            |
 | [TrueNAS](https://www.truenas.com/truenas-community-edition/)                                  | Provide network attached storage                                 |
 | [Ubuntu server](https://documentation.ubuntu.com/server/explanation/clouds/find-cloud-images/) | Host Kubernetes nodes                                            |
 | [K3s](https://k3s.io/)                                                                         | Easy to deploy Kubernetes distribution                           |
@@ -101,7 +97,7 @@ Check the [`/kubernetes/apps`](/kubernetes/apps#applications) directory for a li
 
 ## Staging environment
 
-The staging environment runs a single K3s node inside a local VM, providing an environment as close as possible to the production cluster without requiring dedicated hardware. The VM is provisioned using [Multipass](https://multipass.run/) (a lightweight tool that spins up Ubuntu VMs) via [this Terraform provider](https://registry.terraform.io/providers/larstobi/multipass). Configuration files reside in [`/infrastructure/terraform/multipass`](/infrastructure/terraform/multipass)
+The staging environment runs a single K3s node inside a local VM, providing an environment as close as possible to the production cluster without requiring dedicated hardware. The VM is provisioned using [Multipass](https://multipass.run/) (a lightweight tool that spins up Ubuntu VMs) via [this Terraform provider](https://registry.terraform.io/providers/larstobi/multipass). Configuration files reside in [`/infrastructure/terraform/staging/multipass`](/infrastructure/terraform/staging/multipass)
 
 Flux reconciles from the [`/kubernetes/clusters/staging`](/kubernetes/clusters/staging) directory, which tracks the `staging` branch. Environment-specific overrides are defined inside [`cluster.yaml`](/kubernetes/clusters/staging/cluster.yaml)
 
@@ -116,12 +112,11 @@ Flux reconciles from the [`/kubernetes/clusters/staging`](/kubernetes/clusters/s
 │   │   ├── network/       # Network config for PVE hosts
 │   │   └── vms/           # .conf files for VMs not provisioned via Terraform
 │   └── terraform/
-│       ├── haproxy/       # ha-proxy LXCs definition
-│       ├── k3s-nodes/     # K3s nodes definition
-│       └── multipass/     # Staging VM definition
+│       ├── main/          # Terraform modules for the main environment
+│       └── staging/       # Terraform modules for the staging environment
 └── kubernetes/
     ├── apps/              # Application manifests
-    ├── bootstrap/         # Cluster bootstrap
+    ├── bootstrap/         # K8S cluster bootstrap
     ├── clusters/          # Flux entry points
     └── components/
         ├── replacements/  # Reusable Kustomize components
