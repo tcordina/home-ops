@@ -4,3 +4,4 @@ resources:
   - issuers.yaml
   - certificate.yaml
   - secret.sops.yaml
+  - reference-grant.yaml
