@@ -91,11 +91,4 @@ spec:
 
     gateway:
       ingress:
-        enabled: true
-        ingressClassName: nginx
-        hosts:
-          - host: loki-gateway.cluster.local
-            paths:
-              - path: /
-                pathType: Prefix
-        tls: {}
+        enabled: false
