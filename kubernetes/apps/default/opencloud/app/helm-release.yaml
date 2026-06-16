@@ -75,23 +75,20 @@ spec:
         ports:
           http:
             port: &port 9200
-    ingress:
+    route:
       app:
         enabled: true
-        className: nginx
-        annotations:
-          # proxy-body-size is set to 0 to remove the body limit on file uploads
-          nginx.ingress.kubernetes.io/proxy-body-size: "0"
-        hosts:
-          - host: kumo.${DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: *port
-        tls:
-          - hosts:
-              - kumo.${DOMAIN}
+        kind: HTTPRoute
+        parentRefs:
+          - name: main-gateway
+            namespace: network
+            sectionName: https
+        hostnames:
+          - kumo.${DOMAIN}
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
 
     persistence:
       data:
