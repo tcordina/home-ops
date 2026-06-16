@@ -25,11 +25,16 @@ spec:
     persistence:
       createStorageClass: false
 
-    ingress:
+    httproute:
       enabled: true
-      ingressClassName: nginx
-      host: longhorn.${DOMAIN}
-      tls: true
+      parentRefs:
+        - name: main-gateway
+          namespace: network
+          sectionName: https
+      hostnames:
+        - longhorn.${DOMAIN}
+      path: /
+      pathType: PathPrefix
 
     longhornUI:
       replicas: 1

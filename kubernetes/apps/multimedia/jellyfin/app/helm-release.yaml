@@ -62,17 +62,14 @@ spec:
     image:
       repository: docker.io/jellyfin/jellyfin
       tag: 10.11.11
-    ingress:
+    httpRoute:
       enabled: true
-      className: nginx
-      hosts:
-        - host: cinema.${DOMAIN}
-          paths:
-            - path: /
-              pathType: ImplementationSpecific
-      tls:
-        - hosts:
-            - cinema.${DOMAIN}
+      parentRefs:
+        - name: main-gateway
+          namespace: network
+          sectionName: https
+      hostnames:
+        - cinema.${DOMAIN}
 
     # jellyfin:
     #   env:
