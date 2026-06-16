@@ -40,18 +40,14 @@ spec:
       skip-jwt-bearer-tokens: "true"
       # allowed-group: "home-users"
 
-    ingress:
+    gatewayApi:
       enabled: true
-      className: nginx
-      annotations:
-        nginx.ingress.kubernetes.io/proxy-buffer-size: "8k"
-      hosts:
+      gatewayRef:
+        name: main-gateway
+        namespace: network
+        sectionName: https
+      hostnames:
         - oauth2-proxy.${DOMAIN}
-      path: /
-      pathType: Prefix
-      tls:
-        - hosts:
-            - oauth2-proxy.${DOMAIN}
 
     resources:
       requests:

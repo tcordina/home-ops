@@ -51,13 +51,7 @@ spec:
           secureJsonData:
             httpHeaderValue1: "fake"
       ingress:
-        enabled: true
-        ingressClassName: nginx
-        hosts:
-          - grafana.${DOMAIN}
-        tls:
-          - hosts:
-              - grafana.${DOMAIN}
+        enabled: false
 
     alertmanager:
       config:
@@ -103,14 +97,17 @@ spec:
         secrets:
           - alertmanager-telegram-secrets
 
-      ingress:
-        enabled: true
-        ingressClassName: nginx
-        hosts:
-          - alertmanager.${DOMAIN}
-        tls:
-          - hosts:
-              - alertmanager.${DOMAIN}
+      route:
+        main:
+          enabled: true
+          apiVersion: gateway.networking.k8s.io/v1
+          kind: HTTPRoute
+          hostnames:
+            - alertmanager.${DOMAIN}
+          parentRefs:
+            - name: main-gateway
+              namespace: network
+              sectionName: https
 
     kubeControllerManager:
       enabled: false
@@ -174,13 +171,7 @@ spec:
 
     prometheus:
       ingress:
-        enabled: true
-        ingressClassName: nginx
-        hosts:
-          - prometheus.${DOMAIN}
-        tls:
-          - hosts:
-              - prometheus.${DOMAIN}
+        enabled: false
       prometheusSpec:
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false
