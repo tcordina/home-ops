@@ -4,3 +4,6 @@ resources:
   - external-secret.yaml
   - helm-release.yaml
   - pvc.yaml
+  - httproute.yaml
+  - securitypolicy.yaml
+  - backendtrafficpolicy.yaml
