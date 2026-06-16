@@ -104,17 +104,17 @@ spec:
           http:
             port: &http-port 8080
 
-    ingress:
+    route:
       main:
         enabled: true
-        className: nginx
-        hosts:
-          - host: auth.${DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: *app
-                  port: *http-port
-        tls:
-          - hosts:
-              - auth.${DOMAIN}
+        kind: HTTPRoute
+        parentRefs:
+          - name: main-gateway
+            namespace: network
+            sectionName: https
+        hostnames:
+          - auth.${DOMAIN}
+        rules:
+          - backendRefs:
+              - identifier: *app
+                port: *http-port

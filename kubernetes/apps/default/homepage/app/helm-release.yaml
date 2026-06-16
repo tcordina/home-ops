@@ -36,20 +36,20 @@ spec:
         ports:
           http:
             port: &http-port 3000
-    ingress:
+    route:
       main:
         enabled: true
-        className: nginx
-        hosts:
-          - host: homepage.${DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: immich
-                  port: *http-port
-        tls:
-          - hosts:
-              - homepage.${DOMAIN}
+        kind: HTTPRoute
+        parentRefs:
+          - name: main-gateway
+            namespace: network
+            sectionName: https
+        hostnames:
+          - homepage.${DOMAIN}
+        rules:
+          - backendRefs:
+              - identifier: main
+                port: *http-port
     persistence:
       config:
         type: configMap
