@@ -1,0 +1,40 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.ok8.sh/postgres-operator.crunchydata.com/postgrescluster_v1beta1.json
+apiVersion: postgres-operator.crunchydata.com/v1
+kind: PostgresCluster
+metadata:
+  name: &name $APPNAME$
+  labels:
+    app.kubernetes.io/part-of: apps
+spec:
+  image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi9-18.1-2550
+  postgresVersion: 18
+  databaseInitSQL:
+    name: $APPNAME$-postgres-init
+    key: init.sql
+  instances:
+    - name: postgres
+      metadata:
+        labels:
+          app.kubernetes.io/name: *name
+      replicas: 1
+      dataVolumeClaimSpec:
+        storageClassName: longhorn-backup
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: 5Gi
+  users:
+    # Superuser
+    - name: "postgres"
+      databases: ["postgres"]
+      options: "SUPERUSER"
+      password:
+        type: AlphaNumeric
+    # App user
+    - name: "$APPNAME$"
+      databases: ["$APPNAME$"]
+      options: "CREATEDB CREATEROLE"
+      password:
+        type: AlphaNumeric

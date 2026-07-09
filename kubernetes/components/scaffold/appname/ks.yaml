@@ -1,0 +1,47 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app $APPNAME$
+  namespace: flux-system
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  dependsOn:
+    - name: $APPNAME$-postgres
+  interval: 1h
+  path: ./kubernetes/apps/$NAMESPACE$/$APPNAME$/app
+  prune: false
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  timeout: 15m
+  wait: false
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app $APPNAME$-postgres
+  namespace: flux-system
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  dependsOn:
+    - name: csi-driver-nfs
+      namespace: flux-system
+  interval: 1h
+  path: ./kubernetes/apps/$NAMESPACE$/$APPNAME$/db
+  prune: false
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  timeout: 15m
+  wait: false
+  decryption:
+    provider: sops

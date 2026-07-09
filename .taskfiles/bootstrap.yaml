@@ -38,8 +38,5 @@ tasks:
     requires:
       vars: [ns, app]
     cmds:
-      - mkdir -p apps/{{.ns}}/{{.app}}/app
-      - touch -a apps/{{.ns}}/namespace.yaml
-      - touch -a apps/{{.ns}}/kustomization.yaml
-      - touch -a apps/{{.ns}}/{{.app}}/ks.yaml
-      - touch -a apps/{{.ns}}/{{.app}}/app/helm-release.yaml
+      - cp -rT components/scaffold/appname apps/{{.ns}}/{{.app}}
+      - find apps/{{.ns}}/{{.app}} -type f -exec sed -i 's/\$APPNAME\$/{{.app}}/g; s/\$NAMESPACE\$/{{.ns}}/g' {} +

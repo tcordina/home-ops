@@ -32,3 +32,28 @@ tasks:
     cmds:
       - kubectl get hr --all-namespaces --kubeconfig {{.KUBECONFIG}} --context {{.env}} | grep False | awk '{print $2, $1}' | xargs -l bash -c 'flux suspend hr $0 -n $1 --kubeconfig {{.KUBECONFIG}} --context {{.env}}'
       - kubectl get hr --all-namespaces --kubeconfig {{.KUBECONFIG}} --context {{.env}} | grep False | awk '{print $2, $1}' | xargs -l bash -c 'flux resume hr $0 -n $1 --kubeconfig {{.KUBECONFIG}} --context {{.env}}'
+
+  branch-override:
+    desc: "Pin a cluster to a specific git branch / e.g. task flux:branch-override env=staging branch=feat/new-feature"
+    requires:
+      vars:
+        - name: env
+          enum: [main, staging]
+        - name: branch
+    cmds:
+      - flux suspend kustomization flux-instance --kubeconfig {{.KUBECONFIG}} --context {{.env}}
+      - kubectl patch gitrepository flux-system --kubeconfig {{.KUBECONFIG}} --context {{.env}} --type=json -p '[{"op":"replace","path":"/spec/ref/name","value":"refs/heads/{{.branch}}"}]'
+      - kubectl patch helmrelease flux-instance --kubeconfig {{.KUBECONFIG}} --context {{.env}} --type=json -p '[{"op":"replace","path":"/spec/values/instance/sync/ref","value":"refs/heads/{{.branch}}"}]'
+      - task: sync
+        vars: { env: "{{.env}}" }
+
+  branch-restore:
+    desc: "Restore a cluster to its default git branch / e.g. task flux:branch-restore env=staging"
+    requires:
+      vars:
+        - name: env
+          enum: [main, staging]
+    cmds:
+      - flux resume kustomization flux-instance --kubeconfig {{.KUBECONFIG}} --context {{.env}}
+      - task: sync
+        vars: { env: "{{.env}}" }
