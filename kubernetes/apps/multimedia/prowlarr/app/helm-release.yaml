@@ -65,19 +65,13 @@ spec:
                 memory: 256Mi
               limits:
                 memory: 256Mi
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
+
     service:
       app:
-        controller: prowlarr
         ports:
           http:
             port: *port
+
     route:
       prowlarr:
         enabled: true
@@ -92,6 +86,7 @@ spec:
           - backendRefs:
               - identifier: app
                 port: *port
+
     persistence:
       config:
         existingClaim: prowlarr-config

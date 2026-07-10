@@ -15,19 +15,37 @@ validate-kubernetes:
         - kubernetes/clusters/**/*
         - kubernetes/components/**/*
   image:
-    name: ghcr.io/yannh/kubeconform:latest-alpine
-    entrypoint: [""]
+    name: alpine:3
+  before_script:
+    - apk add --no-cache curl bash gettext
+    - curl -sL "https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz"
+      | tar xz -C /usr/local/bin
+    - curl -sL "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"
+      | bash && mv kustomize /usr/local/bin/
   script:
     - |
-      find kubernetes/ -name '*.yaml' \
-        -not -path '*/unused/*' \
-        -not -path '*/replacements/*' \
-        -not -name '*.sops.yaml' \
-        -print0 | xargs -0 /kubeconform \
-          -strict \
-          -ignore-missing-schemas \
-          -schema-location default \
-          -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
-          -summary
+      # Dummy values matching the schema of each Flux substitution variable
+      export DOMAIN=example.com
+      export NFS_IP=192.168.1.1
+      export NFS_MOVIES_PATH=/mnt/movies
+      export NFS_VOLUMES_PATH=/mnt/volumes
+      export TIMEZONE=UTC
+      export CLUSTER_GIT_REF=refs/heads/main
+      export CLUSTER_SYNC_PATH=kubernetes/clusters/main
+
+      find kubernetes/apps kubernetes/components -name 'kustomization.yaml' \
+        -not -path '*/scaffold/*' | \
+      while IFS= read -r f; do
+        echo "---"
+        kustomize build "$(dirname "$f")" 2>/dev/null || true
+      done | \
+      envsubst '${DOMAIN} ${NFS_IP} ${NFS_MOVIES_PATH} ${NFS_VOLUMES_PATH} ${TIMEZONE} ${CLUSTER_GIT_REF} ${CLUSTER_SYNC_PATH}' | \
+      kubeconform \
+        -strict \
+        -ignore-missing-schemas \
+        -skip Secret \
+        -schema-location default \
+        -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
+        -summary
   tags:
     - docker

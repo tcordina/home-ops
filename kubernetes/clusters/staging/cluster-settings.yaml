@@ -12,9 +12,6 @@ data:
   CLUSTER_SYNC_PATH: kubernetes/clusters/staging
   CLUSTER_GIT_REF: refs/heads/staging
 
-  # Cert manager
-  LETSENCRYPT_ISSUER: letsencrypt-staging
-
   # NFS
   NFS_IP: 192.168.1.30
   NFS_VOLUMES_PATH: /mnt/main/k8s-volumes-staging

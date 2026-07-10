@@ -1,8 +1,0 @@
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: envoy-gateway
-  namespace: network
-spec:
-  interval: 24h
-  url: https://gateway.envoyproxy.io/helm

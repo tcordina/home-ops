@@ -1,0 +1,19 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: qbittorrent-oidc
+spec:
+  targetRefs:
+    - kind: HTTPRoute
+      group: gateway.networking.k8s.io
+      name: qbittorrent
+  oidc:
+    provider:
+      issuer: "https://auth.${DOMAIN}/realms/home"
+    clientID: "servarr"
+    clientSecret:
+      name: servarr-oidc-secret
+    redirectURL: "https://torrent.${DOMAIN}/oauth2/callback"
+    logoutPath: "/oauth2/sign_out"
+    scopes:
+      - openid
