@@ -2,6 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: coredns
+  namespace: kube-system
 spec:
   interval: 1h
   timeout: 15m
@@ -29,6 +30,15 @@ spec:
       clusterIP: 10.43.0.10
 
     servers:
+      - zones:
+          - zone: ${DOMAIN}
+        port: 53
+        plugins:
+          - name: forward
+            parameters: . 192.168.1.50
+          - name: cache
+            parameters: 30
+
       - zones:
           - zone: .
             use_tcp: true
@@ -73,7 +83,7 @@ spec:
       - labelSelector:
           matchLabels:
             app.kubernetes.io/name: '{{ template "coredns.name" . }}'
-            app.kubernetes.io/instance: '{{ .Release.Name }}'
+            app.kubernetes.io/instance: "{{ .Release.Name }}"
         topologyKey: kubernetes.io/hostname
         maxSkew: 1
         whenUnsatisfiable: DoNotSchedule
