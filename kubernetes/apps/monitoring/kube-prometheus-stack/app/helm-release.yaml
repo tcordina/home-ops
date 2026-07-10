@@ -3,7 +3,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: kube-prometheus-stack
-  namespace: monitoring
 spec:
   interval: 1h
   timeout: 1h
@@ -14,6 +13,43 @@ spec:
     crds:
       enabled: true
     cleanPrometheusOperatorObjectNames: true
+
+    defaultRules:
+      disabled:
+        KubeAPIDown: true
+        KubeAPIInstanceUnreachable: true
+        KubeControllerManagerDown: true
+        KubeControllerManagerInstanceUnreachable: true
+        KubeSchedulerDown: true
+        KubeSchedulerInstanceUnreachable: true
+
+    prometheus:
+      prometheusSpec:
+        image:
+          registry: ghcr.io
+          repository: deckhouse/prompp
+          tag: 0.8.1
+        nodeSelector:
+          kubernetes.io/hostname: master-node-1
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        probeSelectorNilUsesHelmValues: false
+        scrapeConfigSelectorNilUsesHelmValues: false
+        ruleSelectorNilUsesHelmValues: false
+        externalPrefixNilUsesHelmValues: false
+        scrapeInterval: 1m
+        retention: 2d
+        retentionSize: "10GiB"
+        storageSpec:
+          volumeClaimTemplate:
+            metadata:
+              name: data
+            spec:
+              storageClassName: longhorn-local
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 15Gi
 
     grafana:
       envFromSecrets:
@@ -50,14 +86,11 @@ spec:
             httpHeaderName1: "X-Scope-OrgID"
           secureJsonData:
             httpHeaderValue1: "fake"
-      ingress:
-        enabled: false
 
     alertmanager:
       config:
         global:
           resolve_timeout: 5m
-
         route:
           group_by: ["alertname", "namespace"]
           group_wait: 30s
@@ -97,98 +130,95 @@ spec:
         secrets:
           - alertmanager-telegram-secrets
 
-      route:
-        main:
-          enabled: true
-          apiVersion: gateway.networking.k8s.io/v1
-          kind: HTTPRoute
-          hostnames:
-            - alertmanager.${DOMAIN}
-          parentRefs:
-            - name: main-gateway
-              namespace: network
-              sectionName: https
-
-    kubeControllerManager:
-      enabled: false
-
-    kubeScheduler:
-      enabled: false
-
-    kubeProxy:
-      enabled: false
-
-    # fix certain metrics being scraped by both the kubelet and apiserver at the same time
     kubelet:
       enabled: true
+      jobNameOverride: k3s-server
       serviceMonitor:
+        relabelings:
+          - targetLabel: job
+            replacement: k3s-server
+            action: replace
+          # Fix default kubelet dashboard using wrong instance label value
+          - sourceLabels:
+              [
+                __meta_kubernetes_endpoint_address_target_kind,
+                __meta_kubernetes_endpoint_address_target_name,
+              ]
+            regex: Node;(.*)
+            targetLabel: node
+            action: replace
+          - sourceLabels: ["node"]
+            targetLabel: instance
+            action: replace
+          - sourceLabels: [__metrics_path__]
+            targetLabel: metrics_path
+            action: replace
+        cAdvisorRelabelings:
+          - targetLabel: job
+            replacement: k3s-server
+            action: replace
+          - sourceLabels: [__metrics_path__]
+            targetLabel: metrics_path
+            action: replace
+        probesRelabelings:
+          - targetLabel: job
+            replacement: k3s-server
+            action: replace
+          - sourceLabels: [__metrics_path__]
+            targetLabel: metrics_path
+            action: replace
         metricRelabelings:
-          # drop metrics already scraped by apiserver
+          - action: replace
+            sourceLabels: ["node"]
+            targetLabel: instance
+          # Drop high cardinality labels
+          - action: labeldrop
+            regex: (uid)
+          - action: labeldrop
+            regex: (id|name)
           - action: drop
-            sourceLabels: [__name__]
-            regex: "apiserver_.*"
-          # Reduce amount of buckets (24 > 9)
-          # Buckets kept: 0.005, 0.025, 0.05, 0.1, 1, 5, 10, 30, +Inf
+            sourceLabels: ["__name__"]
+            regex: (apiserver_request_duration_seconds_bucket|apiserver_request_slo_duration_seconds_bucket|etcd_request_duration_seconds_bucket)
           - action: drop
-            sourceLabels: [__name__, le]
-            regex: "etcd_request_duration_seconds_bucket;(0\\.(2|4|6|8)|1\\.(25|5)|2\\.0|3\\.0|4\\.0|6\\.0|8\\.0|15\\.0|20\\.0|45\\.0|60\\.0)"
+            sourceLabels: ["__name__"]
+            regex: (apiserver_response_sizes_bucket|apiserver_watch_events_sizes_bucket)
+          - action: drop
+            sourceLabels: ["__name__"]
+            regex: (rest_client_request_duration_seconds_bucket|rest_client_request_duration_seconds_sum|rest_client_request_duration_seconds_count)
 
     kubeApiServer:
       enabled: true
+      jobNameOverride: k3s-server
       serviceMonitor:
-        metricRelabelings:
-          # keep only apiserver_* metrics, everything else is scraped by the kubelet job
-          - action: keep
-            sourceLabels: [__name__]
-            regex: "apiserver_.*"
-          # - action: drop
-          #   sourceLabels: [__name__]
-          #   regex: "apiserver_request_body_size_bytes_bucket|apiserver_response_sizes_bucket|apiserver_watch_cache_read_wait_seconds_bucket|apiserver_watch_list_duration_seconds_bucket|apiserver_watch_events_sizes_bucket|apiserver_request_sli_duration_seconds_bucket"
-          - action: drop
-            sourceLabels: [__name__, verb]
-            regex: "apiserver_request_duration_seconds_bucket;(WATCH|LIST|APPLY)"
-          # Reduce amount of buckets (24 > 9)
-          # Buckets kept: 0.005, 0.025, 0.05, 0.1, 1, 5, 10, 30, +Inf
-          - action: drop
-            sourceLabels: [__name__, le]
-            regex: "apiserver_request_duration_seconds_bucket;(0\\.(2|4|6|8)|1\\.(25|5)|2\\.0|3\\.0|4\\.0|6\\.0|8\\.0|15\\.0|20\\.0|45\\.0|60\\.0)"
-          - action: drop
-            sourceLabels: [__name__, le]
-            regex: "apiserver_request_sli_duration_seconds_bucket;(0\\.(2|4|6|8)|1\\.(25|5)|2\\.0|3\\.0|4\\.0|6\\.0|8\\.0|15\\.0|20\\.0|45\\.0|60\\.0)"
+        enabled: false
 
     kubeEtcd:
       enabled: true
       endpoints:
-        - 10.0.1.11
-        - 10.0.1.12
-        - 10.0.1.13
-      service:
-        enabled: true
-        port: 2381
-        targetPort: 2381
-      serviceMonitor:
-        scheme: http
+        - 192.168.99.10
+        - 192.168.99.11
+        - 192.168.99.12
 
-    prometheus:
-      ingress:
+    kubeControllerManager:
+      enabled: true
+      jobNameOverride: k3s-server
+      service:
         enabled: false
-      prometheusSpec:
-        serviceMonitorSelectorNilUsesHelmValues: false
-        podMonitorSelectorNilUsesHelmValues: false
-        probeSelectorNilUsesHelmValues: false
-        scrapeConfigSelectorNilUsesHelmValues: false
-        ruleSelectorNilUsesHelmValues: false
-        externalPrefixNilUsesHelmValues: false
-        scrapeInterval: 1m
-        retention: 2d
-        retentionSize: "10GiB"
-        storageSpec:
-          volumeClaimTemplate:
-            metadata:
-              name: data
-            spec:
-              storageClassName: longhorn-local
-              accessModes: ["ReadWriteOnce"]
-              resources:
-                requests:
-                  storage: 15Gi
+      serviceMonitor:
+        enabled: false
+
+    kubeScheduler:
+      enabled: true
+      jobNameOverride: k3s-server
+      service:
+        enabled: false
+      serviceMonitor:
+        enabled: false
+
+    kubeProxy:
+      enabled: true
+      jobNameOverride: k3s-server
+      service:
+        enabled: false
+      serviceMonitor:
+        enabled: false

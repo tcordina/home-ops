@@ -4,5 +4,4 @@ resources:
   - external-secret.yaml
   - oci-repo.yaml
   - helm-release.yaml
-  - httproute-grafana.yaml
-  - httproute-prometheus.yaml
+  - http-route.yaml
