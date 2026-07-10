@@ -29,6 +29,12 @@ spec:
           registry: ghcr.io
           repository: deckhouse/prompp
           tag: 0.8.1
+        # Keep < 3.11.0: at >= 3.11.0 prometheus-operator writes storage.tsdb.retention into
+        # the config file, but prompp 0.8.x's parser has no such field (err: "field retention
+        # not found in type config.plain") -- below 3.11.0 the operator uses the
+        # --storage.tsdb.retention.time flag instead, which prompp accepts. Revisit if a
+        # prompp release adds storage.tsdb.retention config support.
+        version: v3.10.0
         nodeSelector:
           kubernetes.io/hostname: master-node-1
         serviceMonitorSelectorNilUsesHelmValues: false
@@ -195,9 +201,9 @@ spec:
     kubeEtcd:
       enabled: true
       endpoints:
-        - 192.168.99.10
-        - 192.168.99.11
-        - 192.168.99.12
+        - 10.0.1.11
+        - 10.0.1.12
+        - 10.0.1.13
 
     kubeControllerManager:
       enabled: true
