@@ -1,0 +1,20 @@
+---
+releases:
+  - name: kube-prometheus-stack-crds
+    namespace: monitoring
+    chart: oci://ghcr.io/prometheus-community/charts/prometheus-operator-crds
+    version: 30.0.1
+
+  - name: gateway-crds
+    namespace: network
+    chart: oci://docker.io/envoyproxy/gateway-crds-helm
+    version: v1.8.2
+    values:
+      - crds:
+          gatewayAPI:
+            enabled: true
+            channel: experimental
+          envoyGateway:
+            enabled: true
+    needs:
+      - monitoring/kube-prometheus-stack-crds

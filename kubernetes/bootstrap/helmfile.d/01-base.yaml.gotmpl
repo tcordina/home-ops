@@ -13,16 +13,8 @@ hooks:
 repositories:
   - name: bedag
     url: https://bedag.github.io/helm-charts
-  - name: prometheus-community
-    url: ghcr.io/prometheus-community/charts
-    oci: true
 
 releases:
-  - name: kube-prometheus-stack-crds
-    namespace: monitoring
-    chart: prometheus-community/prometheus-operator-crds
-    version: 30.0.1
-
   - name: coredns
     namespace: kube-system
     chart: oci://ghcr.io/coredns/charts/coredns
@@ -72,7 +64,6 @@ releases:
 
   - name: bitwarden-certs
     namespace: external-secrets
-    # Pointing to a local directory without a helm chart uses Chartify to make a helm chart out of the manifests present in said directory
     chart: ../../apps/external-secrets/external-secrets/bitwarden/certs/
     needs:
       - cert-manager/bitwarden-certs
@@ -88,15 +79,6 @@ releases:
 
   - name: bitwarden-store
     namespace: external-secrets
-    # Pointing to a local directory without a helm chart uses Chartify to make a helm chart out of the manifests present in said directory
     chart: ../../apps/external-secrets/external-secrets/bitwarden/store/
     needs:
       - external-secrets/external-secrets
-
-  # - name: kube-prometheus-stack
-  #   namespace: monitoring
-  #   chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
-  #   version: 84.4.0
-  #   createNamespace: true
-  #   needs:
-  #     - external-secrets/bitwarden-store

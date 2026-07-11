@@ -6,7 +6,7 @@ Everything running inside the Kubernetes cluster is defined in this directory.
 
 | Component                                                                           | Purpose                                                 |
 | ----------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| [ingress-nginx](https://kubernetes.github.io/ingress-nginx/)                        | Ingress controller                                      |
+| [Envoy](https://gateway.envoyproxy.io/)                                             | Gateway API implementation                              |
 | [cert-manager](https://cert-manager.io/)                                            | TLS certificates via Let's Encrypt                      |
 | [external-secrets](https://external-secrets.io/)                                    | Load secrets from Bitwarden Secret Store                |
 | [CSI Driver NFS](https://github.com/kubernetes-csi/csi-driver-nfs)                  | NFS persistent volumes backed by TrueNAS                |
