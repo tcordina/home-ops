@@ -25,7 +25,7 @@ spec:
           app:
             image:
               repository: linuxserver/bazarr
-              tag: 1.6.0-development
+              tag: 1.6.1-development
             env:
               BAZARR__APP__INSTANCENAME: bazarr
               BAZARR__AUTH__METHOD: External
