@@ -3,6 +3,9 @@
 
 version: "3"
 
+vars:
+  TERRAFORM_DIR: "{{.ROOT_DIR}}/infrastructure/terraform"
+
 x-module: &module
   requires:
     vars:

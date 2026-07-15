@@ -2,6 +2,9 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
+vars:
+  BOOTSTRAP_DIR: "{{.ROOT_DIR}}/kubernetes/bootstrap"
+
 tasks:
   default:
     desc: "Full cluster bootstrap (kubeconfig then cluster)"
