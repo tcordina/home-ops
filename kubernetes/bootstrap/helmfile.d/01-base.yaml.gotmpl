@@ -24,8 +24,6 @@ releases:
       {{- if eq (env "KUBE_CONTEXT") "staging" }}
       - replicaCount: 1
       {{- end }}
-    needs:
-      - monitoring/kube-prometheus-stack-crds
 
   - name: cert-manager
     namespace: cert-manager
