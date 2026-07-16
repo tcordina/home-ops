@@ -35,11 +35,13 @@ spec:
             runAsGroup: 1000
             fsGroup: 1000
             fsGroupChangePolicy: OnRootMismatch
+
     service:
       app:
         ports:
           http:
-            port: 8080
+            port: 8000
+
     persistence:
       data:
         type: nfs

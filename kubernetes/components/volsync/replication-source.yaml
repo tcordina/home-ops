@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.mirceanton.com/volsync.backube/replicationsource_v1alpha1.json
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: "${APP}"
+spec:
+  sourcePVC: "${VOLSYNC_PVC:=${APP}}"
+  trigger:
+    schedule: "0 4,16 * * *" # 4AM & 4PM
+  restic:
+    copyMethod: "${VOLSYNC_COPYMETHOD:=Direct}"
+    pruneIntervalDays: 14
+    repository: "${APP}-volsync-secret"
+    moverSecurityContext:
+      runAsUser: ${VOLSYNC_PUID:=1000}
+      runAsGroup: ${VOLSYNC_PGID:=1000}
+      fsGroup: ${VOLSYNC_PGID:=1000}
+      fsGroupChangePolicy: "OnRootMismatch"
+    retain:
+      hourly: 6
+      daily: 7
