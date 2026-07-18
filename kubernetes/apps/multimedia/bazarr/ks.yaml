@@ -16,10 +16,17 @@ spec:
   targetNamespace: multimedia
 
   path: ./kubernetes/apps/multimedia/bazarr/app
+  components:
+    - ../../../../components/volsync/
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+
+  postBuild:
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 1Gi
 
   dependsOn:
     - name: volsync

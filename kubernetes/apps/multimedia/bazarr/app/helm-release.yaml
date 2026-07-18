@@ -85,7 +85,9 @@ spec:
 
     persistence:
       config:
-        existingClaim: bazarr-config
+        existingClaim: ${APP}
+        globalMounts:
+          - path: /config
       media:
         type: nfs
         server: ${NFS_IP}

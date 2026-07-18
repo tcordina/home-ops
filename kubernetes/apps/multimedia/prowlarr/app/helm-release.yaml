@@ -11,13 +11,6 @@ spec:
     kind: OCIRepository
     name: app-template
     namespace: default
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
   values:
     controllers:
       prowlarr:
@@ -89,7 +82,9 @@ spec:
 
     persistence:
       config:
-        existingClaim: prowlarr-config
+        existingClaim: ${APP}
+        globalMounts:
+          - path: /config
       tmpfs:
         type: emptyDir
         globalMounts:

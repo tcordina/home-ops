@@ -15,14 +15,24 @@ spec:
       app.kubernetes.io/name: *app
 
   path: ./kubernetes/apps/multimedia/jellyfin/app
+  components:
+    - ../../../../components/volsync/
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
 
+  postBuild:
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 1Gi
+
   dependsOn:
     - name: volsync
       namespace: flux-system
+
+  decryption:
+    provider: sops
 # ---
 ## jellyfin postgres support waiting room
 # apiVersion: kustomize.toolkit.fluxcd.io/v1

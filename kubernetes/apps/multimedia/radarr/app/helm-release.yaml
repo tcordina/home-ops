@@ -81,7 +81,9 @@ spec:
 
     persistence:
       config:
-        existingClaim: radarr-config
+        existingClaim: ${APP}
+        globalMounts:
+          - path: /config
       media:
         type: nfs
         server: ${NFS_IP}

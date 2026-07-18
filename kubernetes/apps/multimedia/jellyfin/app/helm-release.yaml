@@ -1,116 +1,104 @@
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: jellyfin
-spec:
-  interval: 12h
-  url: https://jellyfin.github.io/jellyfin-helm
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app jellyfin
+  name: jellyfin
 spec:
   interval: 1h
   timeout: 1h
-  chart:
-    spec:
-      chart: jellyfin
-      version: 3.2.0
-      sourceRef:
-        kind: HelmRepository
-        name: *app
-
-  # postRenderers:
-  #   - kustomize:
-  #       patches:
-  #         - target:
-  #             kind: Deployment
-  #             name: jellyfin
-  #           patch: |-
-  #             apiVersion: apps/v1
-  #             kind: Deployment
-  #             metadata:
-  #               name: not-used
-  #             spec:
-  #               template:
-  #                 spec:
-  #                   volumes:
-  #                     - name: cache
-  #                       emptyDir:
-  #                         medium: Memory
-  #                         sizeLimit: 2Gi
-  # - target:
-  #     kind: Deployment
-  #     name: jellyfin
-  #   patch: |-
-  #     apiVersion: apps/v1
-  #     kind: Deployment
-  #     metadata:
-  #       name: not-used
-  #     spec:
-  #       template:
-  #         spec:
-  #           containers:
-  #             - name: jellyfin
-  #               envFrom:
-  #                 # sets POSTGRES_USER and POSTGRES_PASSWORD
-  #                 - secretRef:
-  #                     name: jellyfin-postgres-auth
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: default
 
   values:
-    image:
-      repository: docker.io/jellyfin/jellyfin
-      tag: 10.11.11
-    httpRoute:
-      enabled: true
-      parentRefs:
-        - name: main-gateway
-          namespace: network
-          sectionName: https
-      hostnames:
-        - cinema.${DOMAIN}
+    global:
+      createDefaultServiceAccount: false
 
-    # jellyfin:
-    #   env:
-    #     - name: POSTGRES_HOST
-    #       value: jellyfin-postgres
-    #     - name: POSTGRES_PORT
-    #       value: "5432"
-    #     - name: POSTGRES_DB
-    #       value: jellyfin
+    controllers:
+      jellyfin:
+        pod:
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
+        containers:
+          app:
+            image:
+              repository: ghcr.io/jellyfin/jellyfin
+              tag: 10.11.11
+            env:
+              TZ: ${TIMEZONE}
+              DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
+              JELLYFIN_FFmpeg__probesize: 50000000
+              JELLYFIN_FFmpeg__analyzeduration: 50000000
+            resources:
+              requests:
+                cpu: 200m
+                memory: 1024Mi
+              limits:
+                memory: 1024Mi
 
-    metrics:
-      enabled: false
-      # serviceMonitor:
-      #   enabled: true
-      #   interval: 5m
+            probes:
+              liveness: &probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: &port 8096
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 30
+              readiness: *probe
+              startup: *probe
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+
+    route:
+      jellyfin:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - name: main-gateway
+            namespace: network
+            sectionName: https
+        hostnames:
+          - cinema.${DOMAIN}
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
 
     persistence:
-      cache:
-        # set to false to use emptyDir
-        enabled: false
       config:
-        existingClaim: jellyfin-config
-      # media produced by jellyfin like thumbnails
-      media:
-        enabled: true
-        existingClaim: jellyfin-media
-
-    resources:
-      requests:
-        cpu: 200m
-        memory: 1024Mi
-      limits:
-        memory: 1024Mi
-
-    volumes:
-      - name: movies-library
-        nfs:
-          server: ${NFS_IP}
-          path: ${NFS_MOVIES_PATH}/data/media
-
-    volumeMounts:
-      - mountPath: /movies-library
-        name: movies-library
-        readOnly: false
+        existingClaim: ${APP}
+        globalMounts:
+          - path: /config
+      movies-library:
+        type: nfs
+        server: ${NFS_IP}
+        path: ${NFS_MOVIES_PATH}/data/media
+        globalMounts:
+          - path: /movies-library
+            readOnly: false
+      cache:
+        type: emptyDir
+        globalMounts:
+          - path: /cache
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
