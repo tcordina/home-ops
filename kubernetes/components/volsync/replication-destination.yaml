@@ -5,19 +5,25 @@ kind: ReplicationDestination
 metadata:
   name: "${APP}-dst"
   labels:
-    # The IfNotPresent policy instructs the controller to only apply the Kubernetes resources if they are not present on the cluster.
     kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
 spec:
   trigger:
     manual: restore-once
   restic:
     repository: "${APP}-volsync-secret"
-    copyMethod: Direct
-    destinationPVC: "${VOLSYNC_PVC:=${APP}}"
+    copyMethod: Snapshot
+    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=openebs-snapshots}"
+    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=openebs-lvm}"
+    cacheAccessModes: ["${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}"]
+    cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:=5Gi}"
+    storageClassName: "${VOLSYNC_STORAGECLASS:=openebs-lvm}"
+    accessModes: ["${VOLSYNC_ACCESSMODES:=ReadWriteOnce}"]
+    capacity: "${VOLSYNC_CAPACITY:=5Gi}"
     moverSecurityContext:
       runAsUser: ${VOLSYNC_PUID:=1000}
       runAsGroup: ${VOLSYNC_PGID:=1000}
       fsGroup: ${VOLSYNC_PGID:=1000}
       fsGroupChangePolicy: "OnRootMismatch"
     enableFileDeletion: true
+    cleanupCachePVC: true
     cleanupTempPVC: true

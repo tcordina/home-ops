@@ -38,7 +38,7 @@ spec:
           volumeSnapshots:
             enabled: false # managed by snapshot-controller
       lvmNode:
-        kubeletDir: "/var/lib/rancher/k3s/agent/kubelet/"
+        kubeletDir: "/var/lib/kubelet/"
       analytics:
         enabled: false
 

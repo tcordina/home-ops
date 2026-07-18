@@ -5,8 +5,14 @@ metadata:
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
-  storageClassName: "${VOLSYNC_STORAGECLASS:=local-path}"
+  storageClassName: "${VOLSYNC_STORAGECLASS:=openebs-lvm}"
   accessModes: ["${VOLSYNC_ACCESSMODES:=ReadWriteOnce}"]
+
+  dataSourceRef:
+    kind: ReplicationDestination
+    apiGroup: volsync.backube
+    name: "${APP}-dst"
+
   resources:
     requests:
       storage: "${VOLSYNC_CAPACITY:=5Gi}"
