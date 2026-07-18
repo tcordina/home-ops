@@ -41,5 +41,6 @@ tasks:
     requires:
       vars: [ns, app]
     cmds:
+      - mkdir -p apps/{{.ns}}
       - cp -rT components/scaffold/appname apps/{{.ns}}/{{.app}}
       - find apps/{{.ns}}/{{.app}} -type f -exec sed -i 's/\$APPNAME\$/{{.app}}/g; s/\$NAMESPACE\$/{{.ns}}/g' {} +

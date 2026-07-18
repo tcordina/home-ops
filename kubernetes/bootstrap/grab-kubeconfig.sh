@@ -19,12 +19,10 @@ merge_kubeconfig() {
 }
 
 if [[ ${KUBE_CONTEXT} == "staging" ]]; then
-	VM_IP=$(multipass info staging --format json | jq -r '.info.staging.ipv4[0]')
-
 	echo -e "\nWaiting for k3s in staging VM..."
 
 	until
-		http_code=$(curl -ks -o /dev/null -w '%{http_code}' "https://${VM_IP}:6443") || true
+		http_code=$(curl -ks -o /dev/null -w '%{http_code}' "https://${STAGING_IP}:6443") || true
 		[[ ${http_code} -eq 401 ]]
 	do
 		sleep 5
@@ -35,8 +33,8 @@ if [[ ${KUBE_CONTEXT} == "staging" ]]; then
 
 	echo -e "\nConfiguring local kubectl..."
 
-	scp "ubuntu@${VM_IP}:/etc/rancher/k3s/k3s.yaml" /tmp/kubeconfig-staging
-	sed -i "s/127\.0\.0\.1/${VM_IP}/g; s/: default$/: staging/g" /tmp/kubeconfig-staging
+	scp "core@${STAGING_IP}:/etc/rancher/k3s/k3s.yaml" /tmp/kubeconfig-staging
+	sed -i "s/127\.0\.0\.1/${STAGING_IP}/g; s/: default$/: staging/g" /tmp/kubeconfig-staging
 	cat /tmp/kubeconfig-staging
 	merge_kubeconfig /tmp/kubeconfig-staging "${KUBECONFIG_TARGET}"
 
