@@ -5,16 +5,18 @@ metadata:
   name: longhorn
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: snapshot-controller
-      namespace: flux-system
   interval: 5m
-  path: ./kubernetes/apps/longhorn-system/longhorn/app
-  prune: false
+  prune: true
   wait: true
+
+  path: ./kubernetes/apps/longhorn-system/longhorn/app
   sourceRef:
     kind: GitRepository
     name: flux-system
+
+  dependsOn:
+    - name: snapshot-controller
+      namespace: flux-system
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -22,13 +24,15 @@ metadata:
   name: longhorn-jobs
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: longhorn
-      namespace: flux-system
   interval: 5m
-  path: ./kubernetes/apps/longhorn-system/longhorn/jobs
-  prune: false
+  prune: true
   wait: false
+
+  path: ./kubernetes/apps/longhorn-system/longhorn/jobs
   sourceRef:
     kind: GitRepository
     name: flux-system
+
+  dependsOn:
+    - name: longhorn
+      namespace: flux-system

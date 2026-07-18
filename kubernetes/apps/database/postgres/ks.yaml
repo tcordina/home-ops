@@ -5,15 +5,18 @@ metadata:
   name: &app postgres-operator
   namespace: flux-system
 spec:
+  interval: 30m
+  retryInterval: 2m
+  prune: true
+  wait: false
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+
   path: ./kubernetes/apps/database/postgres/app
-  interval: 30m
-  retryInterval: 2m
-  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  wait: false
+
+  dependsOn: []

@@ -9,7 +9,7 @@ spec:
   prune: true
   wait: true
 
-  path: ./kubernetes/apps/longhorn-system/snapshot-controller/app
+  path: ./kubernetes/apps/storage-system/snapshot-controller/app
   sourceRef:
     kind: GitRepository
     name: flux-system

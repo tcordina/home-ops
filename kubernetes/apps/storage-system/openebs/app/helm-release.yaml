@@ -1,0 +1,52 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: openebs
+  namespace: storage-system
+spec:
+  interval: 1h
+  timeout: 1h
+  chartRef:
+    kind: OCIRepository
+    name: openebs
+  values:
+    engines:
+      local:
+        lvm:
+          enabled: true
+        zfs:
+          enabled: false
+        rawfile:
+          enabled: false
+        hostpath:
+          enabled: false
+      replicated:
+        mayastor:
+          enabled: false
+
+    openebs-crds:
+      csi:
+        volumeSnapshots:
+          enabled: false # managed by snapshot-controller
+
+    lvm-localpv:
+      crds:
+        lvmLocalPv:
+          enabled: true
+        csi:
+          volumeSnapshots:
+            enabled: false # managed by snapshot-controller
+      lvmNode:
+        kubeletDir: "/var/lib/rancher/k3s/agent/kubelet/"
+      analytics:
+        enabled: false
+
+    loki:
+      enabled: false
+
+    alloy:
+      enabled: false
+
+    preUpgradeHook:
+      enabled: false

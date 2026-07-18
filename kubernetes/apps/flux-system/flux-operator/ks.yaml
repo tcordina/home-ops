@@ -8,15 +8,18 @@ metadata:
     kustomize.toolkit.fluxcd.io/name: infrastructure
     kustomize.toolkit.fluxcd.io/namespace: flux-system
 spec:
+  interval: 1h
+  timeout: 5m
+  prune: true # Never delete this
+  wait: false
   commonMetadata:
     labels:
       app.kubernetes.io/name: flux-operator
-  interval: 1h
-  path: ./kubernetes/apps/flux-system/flux-operator/app
-  prune: false # Never delete this
   targetNamespace: flux-system
+
+  path: ./kubernetes/apps/flux-system/flux-operator/app
   sourceRef:
     kind: GitRepository
     name: flux-system
-  timeout: 5m
-  wait: false
+
+  dependsOn: []

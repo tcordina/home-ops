@@ -6,12 +6,15 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m
-  path: ./kubernetes/apps/external-secrets/external-secrets/app
-  prune: false
+  prune: true
   wait: true
+
+  path: ./kubernetes/apps/external-secrets/external-secrets/app
   sourceRef:
     kind: GitRepository
     name: flux-system
+
+  dependsOn: []
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -19,13 +22,15 @@ metadata:
   name: external-secrets-bitwarden
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: external-secrets
-    - name: cert-manager
   interval: 5m
-  path: ./kubernetes/apps/external-secrets/external-secrets/bitwarden
-  prune: false
+  prune: true
   wait: false
+
+  path: ./kubernetes/apps/external-secrets/external-secrets/bitwarden
   sourceRef:
     kind: GitRepository
     name: flux-system
+
+  dependsOn:
+    - name: external-secrets
+    - name: cert-manager

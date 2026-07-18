@@ -6,12 +6,15 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m
-  path: ./kubernetes/apps/kube-tools/system-upgrade-controller/app
-  prune: false
+  prune: true
   wait: true
+
+  path: ./kubernetes/apps/kube-tools/system-upgrade-controller/app
   sourceRef:
     kind: GitRepository
     name: flux-system
+
+  dependsOn: []
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -20,9 +23,12 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m
-  path: ./kubernetes/apps/kube-tools/system-upgrade-controller/plans
-  prune: false
+  prune: true
   wait: false
+
+  path: ./kubernetes/apps/kube-tools/system-upgrade-controller/plans
   sourceRef:
     kind: GitRepository
     name: flux-system
+
+  dependsOn: []

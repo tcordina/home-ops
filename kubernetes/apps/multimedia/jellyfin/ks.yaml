@@ -5,22 +5,24 @@ metadata:
   name: &app jellyfin
   namespace: flux-system
 spec:
+  interval: 1h
+  retryInterval: 2m
+  timeout: 15m
+  prune: true
+  wait: false
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: longhorn
-      namespace: flux-system
-  interval: 1h
+
   path: ./kubernetes/apps/multimedia/jellyfin/app
-  prune: false
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  timeout: 15m
-  wait: false
+
+  dependsOn:
+    - name: volsync
+      namespace: flux-system
 # ---
 ## jellyfin postgres support waiting room
 # apiVersion: kustomize.toolkit.fluxcd.io/v1

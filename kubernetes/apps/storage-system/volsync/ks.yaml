@@ -1,16 +1,21 @@
+---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: volsync
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: snapshot-controller
-      namespace: flux-system
   interval: 5m
-  path: ./kubernetes/apps/storage-system/volsync/app
-  prune: false
+  prune: true
   wait: true
+
+  path: ./kubernetes/apps/storage-system/volsync/app
   sourceRef:
     kind: GitRepository
     name: flux-system
+
+  dependsOn:
+    - name: openebs
+      namespace: flux-system
+    - name: restic-rest-server
+      namespace: flux-system

@@ -24,5 +24,7 @@ spec:
       APP: *app
       VOLSYNC_CAPACITY: 2Gi
 
+  dependsOn: []
+
   decryption:
     provider: sops

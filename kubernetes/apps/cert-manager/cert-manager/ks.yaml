@@ -6,12 +6,15 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m
-  path: ./kubernetes/apps/cert-manager/cert-manager/app
-  prune: false
+  prune: true
   wait: true
+
+  path: ./kubernetes/apps/cert-manager/cert-manager/app
   sourceRef:
     kind: GitRepository
     name: flux-system
+
+  dependsOn: []
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -19,14 +22,17 @@ metadata:
   name: certs
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: cert-manager
   interval: 5m
-  path: ./kubernetes/apps/cert-manager/cert-manager/certs
-  prune: false
+  prune: true
   wait: false
+
+  path: ./kubernetes/apps/cert-manager/cert-manager/certs
   sourceRef:
     kind: GitRepository
     name: flux-system
+
+  dependsOn:
+    - name: cert-manager
+
   decryption:
     provider: sops
