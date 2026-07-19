@@ -1,118 +1,187 @@
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: qbittorrent
-spec:
-  interval: 12h
-  url: https://rtomik.github.io/helm-charts
----
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/common-4.4.0/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app qbittorrent
+  name: qbittorrent
+  namespace: multimedia
 spec:
   interval: 1h
   timeout: 1h
-  chart:
-    spec:
-      chart: qbittorrent-vpn
-      version: "0.0.2"
-      sourceRef:
-        kind: HelmRepository
-        name: *app
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: default
   values:
-    qbittorrent:
-      image:
-        repository: linuxserver/qbittorrent
-        tag: 5.2.3
-      env:
-        - name: TZ
-          value: ${TIMEZONE}
-        - name: WEBUI_PORT
-          value: &port 8080
-        - name: TORRENTING_PORT
-          value: &torrentPort 50349
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-      resources:
-        requests:
-          cpu: 50m
-          memory: 64Mi
-        limits:
-          cpu: 1000m # override default chart value of 300m
-          memory: 64Mi
-      service:
-        port: *port
-      bittorrentPort: *torrentPort
-      persistence:
-        config:
-          enabled: true
-          existingClaim: "qbittorrent-config"
-      extraVolumeMounts:
-        - name: qbittorrent-downloads
-          mountPath: /data/downloads
+    controllers:
+      qbittorrent:
+        pod:
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/home-operations/qbittorrent
+              tag: 5.2.3@sha256:4fcf15b7f265c2c8d7bc2a7e13240a07e0593c326f3cf3b5b9bb69eec5b79299
+            env:
+              TZ: ${TIMEZONE}
+              QBT_WEBUI_PORT: &port 80
+              QBITTORRENT__BT_PORT: &torrentPort 50349
+              QBT_Preferences__WebUI__AlternativeUIEnabled: false
+              QBT_Preferences__WebUI__AuthSubnetWhitelistEnabled: true
+              QBT_Preferences__WebUI__AuthSubnetWhitelist: |-
+                10.42.0.0/16, 10.0.1.0/24, 192.168.1.0/24
+              QBT_Preferences__WebUI__LocalHostAuth: false
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 10
+                  failureThreshold: 6
+              readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
+              runAsNonRoot: true
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
 
-    gluetun:
-      image:
-        repository: qmcgaw/gluetun
-        tag: v3.41.1
-      vpn:
-        provider: "protonvpn"
-        type: "openvpn" # or wireguard
-        serverCountries: "Netherlands,Switzerland"
-        serverCities: "" # e.g., "Amsterdam,Frankfurt" (optional)
-        serverNames: "" # e.g., "nl1,nl2" (optional)
-        randomize: "true" # Randomize server selection
-        openvpn:
-          OPENVPN_PROTOCOL: "udp"
-          PROTONVPN_TIER: "2" # 0 is free, 2 is paid (Plus/Visionary)
-          SERVER_FEATURES: "p2p" # For torrent support
-      credentials:
-        create: false # set to false if using existing secret
-        existingSecret: "qbittorrent-vpn-auth"
-        usernameKey: "PROTON_USERNAME"
-        passwordKey: "PROTON_PASSWORD"
+          gluetun:
+            resources:
+              requests:
+                cpu: 75m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            image:
+              repository: qmcgaw/gluetun
+              tag: v3.41.1
+            env:
+              VPN_SERVICE_PROVIDER: protonvpn
+              VPN_TYPE: openvpn
+              VPN_PORT_FORWARDING: on
+              VPN_PORT_FORWARDING_PROVIDER: protonvpn
+              SERVER_COUNTRIES: "Netherlands,Switzerland"
+              PORT_FORWARD_ONLY: "on"
+              DOT: off
+              DOT_IPV6: off
+              DNS_KEEP_NAMESERVER: "off"
+              DNS_ADDRESS: 1.1.1.1
+              FIREWALL_INPUT_PORTS: 80,8000,9000
+              FIREWALL_OUTBOUND_SUBNETS: "10.0.0.0/8,192.168.0.0/16"
+            envFrom:
+              - secretRef:
+                  name: qbittorrent-vpn-auth
+            probes:
+              liveness: &gluetunProbe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /v1/publicip/ip
+                    port: 8000
+                  periodSeconds: 30
+                  timeoutSeconds: 10
+                  failureThreshold: 6
+              readiness: *gluetunProbe
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /v1/publicip/ip
+                    port: 8000
+                  timeoutSeconds: 10
+                  failureThreshold: 30
+                  periodSeconds: 5
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { add: ["NET_ADMIN"] }
 
-      # General Gluetun settings as environment variables
-      settings:
-        BLOCK_MALICIOUS: "off"
-        FIREWALL: "on"
-        FIREWALL_OUTBOUND_SUBNETS: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
-        DNS_ADDRESS: "1.1.1.1"
-        HEALTH_SERVER_PORT: "8000"
+          port-forward:
+            resources:
+              requests:
+                cpu: 25m
+                memory: 16Mi
+              limits:
+                memory: 64Mi
+            image:
+              repository: ghcr.io/bjw-s-labs/gluetun-qb-port-sync
+              tag: 0.0.4
+            env:
+              GLUETUN_CONTROL_SERVER_HOST: localhost
+              GLUETUN_CONTROL_SERVER_PORT: 8000
+              QBITTORRENT_HOST: localhost
+              QBITTORRENT_WEBUI_PORT: *port
+              CRON_ENABLED: true
+              CRON_SCHEDULE: "*/5 * * * *"
+              LOG_TIMESTAMP: false
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
+              runAsNonRoot: true
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
 
-        # Important: Add these settings to make networking work correctly with ingress
-        SERVER_ALLOWLIST: "qbittorrent:8080" # Allow accessing qBittorrent container
-        FIREWALL_INPUT_PORTS: "8080" # Allow ingress traffic to port 8080
-        FIREWALL_DEBUG: "on" # Enable firewall debugging (temporarily)
-        JOURNALD: "off" # Disable journald (not needed for debugging)
+    service:
+      qbittorrent:
+        ports:
+          http:
+            port: *port
 
-        # Optional port forwarding
-        VPN_PORT_FORWARDING: "off"
+    route:
+      qbittorrent:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - name: main-gateway
+            namespace: network
+            sectionName: https
+        hostnames:
+          - torrent.${DOMAIN}
+        rules:
+          - backendRefs:
+              - identifier: qbittorrent
+                port: *port
 
-      resources:
-        requests:
-          cpu: 50m
-          memory: 128Mi
-        limits:
-          cpu: 1000m # override default chart value of 300m
-          memory: 128Mi
-      persistence:
-        enabled: false
-        # existingClaim: gluetun-config
-        # storageClass: ""
-        # accessMode: ReadWriteOnce
-        # size: 100Mi
-
-    extraVolumes:
-      - name: qbittorrent-downloads
-        nfs:
-          server: ${NFS_IP}
-          path: ${NFS_MOVIES_PATH}/data/downloads
-          readOnly: false
-
-    ingress:
-      enabled: false
+    persistence:
+      config:
+        existingClaim: ${APP}
+        advancedMounts:
+          qbittorrent:
+            app:
+              - path: /config
+      downloads:
+        type: nfs
+        server: ${NFS_IP}
+        path: ${NFS_MOVIES_PATH}/data/downloads
+        advancedMounts:
+          qbittorrent:
+            app:
+              - path: /data/downloads
+      empty-config:
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            port-forward:
+              - path: /config

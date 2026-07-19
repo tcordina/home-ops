@@ -3,6 +3,4 @@ kind: Kustomization
 resources:
   - external-secret.yaml
   - helm-release.yaml
-  - pvc.yaml
-  - http-route.yaml
   - security-policy.yaml

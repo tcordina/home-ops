@@ -35,8 +35,8 @@ spec:
         # --storage.tsdb.retention.time flag instead, which prompp accepts. Revisit if a
         # prompp release adds storage.tsdb.retention config support.
         version: v3.10.0
-        nodeSelector:
-          kubernetes.io/hostname: master-node-1
+        # nodeSelector:
+        #   kubernetes.io/hostname: master-node-1
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
@@ -51,7 +51,7 @@ spec:
             metadata:
               name: data
             spec:
-              storageClassName: longhorn-local
+              storageClassName: openebs-lvm
               accessModes: ["ReadWriteOnce"]
               resources:
                 requests:

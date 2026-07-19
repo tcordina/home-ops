@@ -5,7 +5,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany # Allow sharing between pods
-  storageClassName: longhorn-local
+  storageClassName: openebs-lvm
   resources:
     requests:
       storage: 10Gi
