@@ -10,6 +10,9 @@ spec:
     kind: OCIRepository
     name: cert-manager
   values:
+    extraArgs:
+      - --dns01-recursive-nameservers=1.1.1.1:53,1.0.0.1:53
+      - --dns01-recursive-nameservers-only
     crds:
       enabled: true
       keep: true
