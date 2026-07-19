@@ -1,0 +1,30 @@
+update-badges:
+  stage: badges
+  rules:
+    - if: ($CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "badges") || $CI_PIPELINE_SOURCE == "web"
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache bash curl jq
+  script:
+    - bash .gitlab/badges/badges.sh
+
+  artifacts:
+    paths:
+      - public/
+
+  tags:
+    - docker
+
+pages:
+  stage: pages
+  dependencies:
+    - update-badges
+  script:
+    - echo "deploying badges"
+  artifacts:
+    paths:
+      - public/
+  rules:
+    - if: ($CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "badges")
+  tags:
+    - docker

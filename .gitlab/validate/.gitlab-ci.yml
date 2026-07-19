@@ -1,0 +1,28 @@
+validate-kubernetes:
+  stage: validate
+  rules:
+    - # ignore changes made by renovate
+      if: $CI_COMMIT_TITLE =~ /^chore\(deps\):/
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
+        - kubernetes/apps/**/*
+        - kubernetes/clusters/**/*
+        - kubernetes/components/**/*
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - kubernetes/apps/**/*
+        - kubernetes/clusters/**/*
+        - kubernetes/components/**/*
+  image:
+    name: alpine:3
+  before_script:
+    - apk add --no-cache bash curl
+    - curl -sL "https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz"
+      | tar xz -C /usr/local/bin
+    - curl -sL "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"
+      | bash && mv kustomize /usr/local/bin/
+  script:
+    - bash .gitlab/validate/kubeconform.sh kubernetes
+  tags:
+    - docker

@@ -5,6 +5,6 @@ stages:
   - pages
 
 include:
-  - local: .gitlab/validate.yml
-  - local: .gitlab/badges.yml
-  - local: .gitlab/renovate.yml
+  - local: .gitlab/validate/.gitlab-ci.yml
+  - local: .gitlab/badges/.gitlab-ci.yml
+  - local: .gitlab/renovate/.gitlab-ci.yml

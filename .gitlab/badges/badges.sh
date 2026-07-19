@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+PROM="http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090"
+
+promql() {
+    curl -sf "${PROM}/api/v1/query" \
+        --data-urlencode "query=$1" \
+        | jq -r '.data.result[0].value[1] // "N/A"'
+}
+
+UBUNTU_VER=$(curl -sf "${PROM}/api/v1/query" --data-urlencode 'query=kube_node_info' | jq -r '.data.result[0].metric.os_image // "unknown"' | sed 's/Ubuntu //')
+K3S_VER=$(curl -sf "${PROM}/api/v1/query" --data-urlencode 'query=kube_node_info' | jq -r '.data.result[0].metric.kubelet_version // "unknown"' | sed 's/^v//')
+FLUX_VER=$(curl -sf "${PROM}/api/v1/query" --data-urlencode 'query=flux_instance_info' | jq -r '.data.result[0].metric.revision // "unknown"' | cut -d'@' -f1 | sed 's/^v//')
+
+CLUSTER_AGE=$(promql 'floor((time() - min(kube_node_created)) / 86400)')
+NODES=$(promql 'count(kube_node_info)')
+PODS=$(promql 'count(kube_pod_info)')
+
+FIRING=$(promql 'count(ALERTS{alertstate="firing", alertname!="Watchdog"}) or vector(0)')
+FIRING_COLOR=$([ "$FIRING" = "0" ] && echo "seagreen" || echo "red")
+
+CPU=$(promql 'round(cluster:node_cpu:ratio_rate5m * 100, 0.1)')
+CPU_COLOR=$(awk "BEGIN{if($CPU<=65) print \"seagreen\"; else if($CPU<=90) print \"orange\"; else print \"red\"}")
+
+RAM=$(promql 'round((1 - sum(node_memory_MemAvailable_bytes) / sum(node_memory_MemTotal_bytes)) * 100, 0.1)')
+RAM_COLOR=$(awk "BEGIN{if($RAM<=65) print \"seagreen\"; else if($RAM<=90) print \"orange\"; else print \"red\"}")
+
+STORAGE=$(promql 'floor(sum((longhorn_disk_capacity_bytes - longhorn_disk_usage_bytes) / (1e9)))')
+STORAGE_COLOR=$(awk "BEGIN{if($STORAGE>=100) print \"seagreen\"; else print \"red\"}")
+
+write_badge() {
+    local file=$1 label=$2 message=$3 color=$4
+    jq -n \
+        --arg label "$label" \
+        --arg message "$message" \
+        --arg color "$color" \
+        '{"schemaVersion":1,"label":$label,"message":$message,"color":$color}' \
+        > "public/${file}.json"
+}
+
+mkdir -p public
+
+#             file      label             message            color
+write_badge "ubuntu"  "ubuntu"          "$UBUNTU_VER"      "#E95420"
+write_badge "k3s"     "k3s"             "$K3S_VER"         "#FFC61C"
+write_badge "flux"    "flux"            "$FLUX_VER"        "#5468FF"
+write_badge "age"     "age"             "${CLUSTER_AGE}d"  "blue"
+write_badge "nodes"   "nodes"           "$NODES"           "blue"
+write_badge "pods"    "pods"            "$PODS"            "blue"
+write_badge "alerts"  "alerts"          "$FIRING"          "$FIRING_COLOR"
+write_badge "cpu"     "cpu"             "${CPU}%"          "$CPU_COLOR"
+write_badge "ram"     "ram"             "${RAM}%"          "$RAM_COLOR"
+write_badge "disk"    "available disk"  "${STORAGE}GB"     "$STORAGE_COLOR"
