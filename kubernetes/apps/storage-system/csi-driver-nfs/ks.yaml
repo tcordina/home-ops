@@ -5,12 +5,13 @@ metadata:
   name: csi-driver-nfs
   namespace: flux-system
 spec:
-  interval: 5m
+  interval: 1h
+  retryInterval: 2m
+  timeout: 15m
   prune: true
-  wait: true
-  targetNamespace: kube-system
+  wait: false
 
-  path: ./kubernetes/apps/kube-system/csi-driver-nfs/app
+  path: ./kubernetes/apps/storage-system/csi-driver-nfs/app
   sourceRef:
     kind: GitRepository
     name: flux-system

@@ -8,8 +8,8 @@ resources:
   - ./external-secrets
   - ./flux-system
   - ./network
-  #  - ./ingress-nginx
-  - ./kube-system
+  # - ./ingress-nginx
+  # - ./kube-system
   - ./kube-tools
   # - ./longhorn-system
   - ./monitoring

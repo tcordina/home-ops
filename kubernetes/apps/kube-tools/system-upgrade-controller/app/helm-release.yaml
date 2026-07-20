@@ -12,7 +12,7 @@ spec:
   values:
     controllers:
       system-upgrade-controller:
-        replicas: 2
+        replicas: 1
         pod:
           affinity:
             podAntiAffinity:
