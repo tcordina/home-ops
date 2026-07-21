@@ -12,4 +12,4 @@ resources:
   - ./monitoring
   - ./multimedia
   - ./storage-system
-#  - ./test
+  - ./test
