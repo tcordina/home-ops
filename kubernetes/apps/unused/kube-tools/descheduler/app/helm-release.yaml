@@ -1,0 +1,99 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: descheduler
+  namespace: kube-tools
+spec:
+  interval: 12h
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 0.36.0
+  url: oci://ghcr.io/home-operations/charts-mirror/descheduler
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: descheduler
+  namespace: kube-tools
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: descheduler
+  interval: 1h
+  timeout: 1h
+  dependsOn: []
+  values:
+    deschedulerPolicy:
+      metricsProviders:
+        - source: KubernetesMetrics
+      profiles:
+        - name: Default
+          pluginConfig:
+            - name: DefaultEvictor
+              args:
+                podProtections:
+                  defaultDisabled:
+                    - FailedBarePods
+
+            - name: LowNodeUtilization
+              args:
+                evictableNamespaces:
+                  exclude:
+                    - kube-system
+                    - ingress-nginx
+                    - longhorn-system
+                    - monitoring
+                metricsUtilization:
+                  source: KubernetesMetrics
+                thresholds:
+                  memory: 55
+                targetThresholds:
+                  memory: 65
+
+            - name: RemoveFailedPods
+              args:
+                reasons:
+                  - ContainerStatusUnknown
+                  - NodeAffinity
+                  - NodeShutdown
+                  - Terminated
+                  - UnexpectedAdmissionError
+                includingInitContainers: true
+                excludeOwnerKinds:
+                  - Job
+                minPodLifetimeSeconds: 1800
+
+            - name: RemovePodsViolatingInterPodAntiAffinity
+
+            - name: RemovePodsViolatingNodeAffinity
+              args:
+                nodeAffinityType:
+                  - requiredDuringSchedulingIgnoredDuringExecution
+
+            - name: RemovePodsViolatingNodeTaints
+
+            - name: RemovePodsViolatingTopologySpreadConstraint
+
+          plugins:
+            balance:
+              enabled:
+                - LowNodeUtilization
+                - RemovePodsViolatingTopologySpreadConstraint
+            deschedule:
+              enabled:
+                - RemoveFailedPods
+                - RemovePodsViolatingInterPodAntiAffinity
+                - RemovePodsViolatingNodeAffinity
+                - RemovePodsViolatingNodeTaints
+    deschedulerPolicyAPIVersion: descheduler/v1alpha2
+    kind: Deployment
+    leaderElection:
+      enabled: true
+    replicas: 1
+    service:
+      enabled: true
+    serviceMonitor:
+      enabled: true
