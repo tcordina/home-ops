@@ -18,6 +18,7 @@ spec:
   values:
     crds:
       enabled: true
+
     prometheus:
       serviceAccount: kube-prometheus-stack-prometheus
       namespace: monitoring
@@ -25,3 +26,8 @@ spec:
         enabled: true
       prometheusRule:
         enabled: true
+        # disable alerts for %usage of AddressPool since we only give it one address
+        addressPoolExhausted:
+          enabled: false
+        addressPoolUsage:
+          enabled: false
