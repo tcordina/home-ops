@@ -5,10 +5,12 @@ machine:
       - name: dm_thin_pool
       - name: dm_snapshot
       - name: dm_mirror
----
-apiVersion: v1alpha1
-kind: LVMVolumeGroupConfig
-name: vg0
-provisioning:
-  volumeSelector:
-    match: disk.dev_path == "/dev/sdb"
+
+## LVM features still in beta = not yet supported by talhelper. Copy paste lvm.yaml inside rendered config for now
+# ---
+# apiVersion: v1alpha1
+# kind: LVMVolumeGroupConfig
+# name: vg0
+# provisioning:
+#   volumeSelector:
+#     match: disk.dev_path == "/dev/sdb"

@@ -21,9 +21,6 @@ releases:
     version: 1.46.2
     values:
       - ./templates/values.yaml.gotmpl
-      {{- if eq (env "KUBE_CONTEXT") "staging" }}
-      - replicaCount: 1
-      {{- end }}
 
   - name: cert-manager
     namespace: cert-manager

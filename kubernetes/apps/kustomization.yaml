@@ -9,7 +9,7 @@ resources:
   - ./flux-system
   - ./network
   # - ./ingress-nginx
-  # - ./kube-system
+  - ./kube-system
   - ./kube-tools
   # - ./longhorn-system
   - ./monitoring

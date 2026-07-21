@@ -20,6 +20,9 @@ nodes:
       customization:
         extraKernelArgs:
           - net.ifnames=0
+    nameservers:
+      - 192.168.1.50
+      - 1.1.1.1
     volumes:
       - name: EPHEMERAL
         provisioning:
@@ -29,7 +32,6 @@ nodes:
           maxSize: 50GiB
 
 patches:
-  - "@./patches/pod-security.yaml"
-
-## LVM features still in beta = not yet supported by talhelper. Copy paste lvm.yaml inside rendered config for now
-#   - "@./patches/lvm.yaml"
+  - "@./patches/disable-admission-control.yaml"
+  - "@./patches/disable-coredns.yaml"
+  - "@./patches/lvm.yaml"
