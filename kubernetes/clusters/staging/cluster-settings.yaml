@@ -7,6 +7,7 @@ metadata:
 data:
   TIMEZONE: Europe/Paris
   DOMAIN: staging.tablar.ovh
+  CLUSTER_EXT_IP: 192.168.1.24
 
   # Flux
   CLUSTER_SYNC_PATH: kubernetes/clusters/staging

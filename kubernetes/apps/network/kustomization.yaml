@@ -5,3 +5,4 @@ replacements:
 resources:
   - ./namespace.yaml
   - ./envoy-gateway/ks.yaml
+  - ./metallb/ks.yaml

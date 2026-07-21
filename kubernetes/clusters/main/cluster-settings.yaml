@@ -7,6 +7,7 @@ metadata:
 data:
   TIMEZONE: Europe/Paris
   DOMAIN: lan.tablar.ovh
+  CLUSTER_EXT_IP: 192.168.1.100
 
   # Flux
   CLUSTER_SYNC_PATH: kubernetes/clusters/main
