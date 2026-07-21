@@ -19,7 +19,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v2.7.5 # {"$imagepolicy": "multimedia:immich-server:tag"}
+              tag: v3.0.3 # {"$imagepolicy": "multimedia:immich-server:tag"}
             env:
               TZ: ${TIMEZONE}
               IMMICH_MEDIA_LOCATION: &media-location /data
