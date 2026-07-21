@@ -1,0 +1,14 @@
+---
+machine:
+  kernel:
+    modules:
+      - name: dm_thin_pool
+      - name: dm_snapshot
+      - name: dm_mirror
+---
+apiVersion: v1alpha1
+kind: LVMVolumeGroupConfig
+name: vg0
+provisioning:
+  volumeSelector:
+    match: disk.dev_path == "/dev/sdb"
