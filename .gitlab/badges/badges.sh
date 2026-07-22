@@ -10,8 +10,8 @@ promql() {
         | jq -r '.data.result[0].value[1] // "N/A"'
 }
 
-UBUNTU_VER=$(curl -sf "${PROM}/api/v1/query" --data-urlencode 'query=kube_node_info' | jq -r '.data.result[0].metric.os_image // "unknown"' | sed 's/Ubuntu //')
-K3S_VER=$(curl -sf "${PROM}/api/v1/query" --data-urlencode 'query=kube_node_info' | jq -r '.data.result[0].metric.kubelet_version // "unknown"' | sed 's/^v//')
+TALOS_VER=$(curl -sf "${PROM}/api/v1/query" --data-urlencode 'query=kube_node_info' | jq -r '.data.result[0].metric.os_image // "unknown"' | grep -oP '(?<=\().*(?=\))')
+K8S_VER=$(curl -sf "${PROM}/api/v1/query" --data-urlencode 'query=kube_node_info' | jq -r '.data.result[0].metric.kubelet_version // "unknown"' | sed 's/^v//')
 FLUX_VER=$(curl -sf "${PROM}/api/v1/query" --data-urlencode 'query=flux_instance_info' | jq -r '.data.result[0].metric.revision // "unknown"' | cut -d'@' -f1 | sed 's/^v//')
 
 CLUSTER_AGE=$(promql 'floor((time() - min(kube_node_created)) / 86400)')
@@ -27,8 +27,8 @@ CPU_COLOR=$(awk "BEGIN{if($CPU<=65) print \"seagreen\"; else if($CPU<=90) print 
 RAM=$(promql 'round((1 - sum(node_memory_MemAvailable_bytes) / sum(node_memory_MemTotal_bytes)) * 100, 0.1)')
 RAM_COLOR=$(awk "BEGIN{if($RAM<=65) print \"seagreen\"; else if($RAM<=90) print \"orange\"; else print \"red\"}")
 
-STORAGE=$(promql 'floor(sum((longhorn_disk_capacity_bytes - longhorn_disk_usage_bytes) / (1e9)))')
-STORAGE_COLOR=$(awk "BEGIN{if($STORAGE>=100) print \"seagreen\"; else print \"red\"}")
+STORAGE=$(promql 'floor(sum((lvm_pv_free_size_bytes) / (1e9)))')
+STORAGE_COLOR=$(awk "BEGIN{if($STORAGE>=20) print \"seagreen\"; else print \"red\"}")
 
 write_badge() {
     local file=$1 label=$2 message=$3 color=$4
@@ -42,10 +42,10 @@ write_badge() {
 
 mkdir -p public
 
-#             file      label             message            color
-write_badge "ubuntu"  "ubuntu"          "$UBUNTU_VER"      "#E95420"
-write_badge "k3s"     "k3s"             "$K3S_VER"         "#FFC61C"
-write_badge "flux"    "flux"            "$FLUX_VER"        "#5468FF"
+#           file      label             message            color
+write_badge "talos"   "talos"           "$TALOS_VER"       ""
+write_badge "k8s"     "k8s"             "$K8S_VER"         ""
+write_badge "flux"    "flux"            "$FLUX_VER"        ""
 write_badge "age"     "age"             "${CLUSTER_AGE}d"  "blue"
 write_badge "nodes"   "nodes"           "$NODES"           "blue"
 write_badge "pods"    "pods"            "$PODS"            "blue"

@@ -4,23 +4,22 @@ Everything running inside the Kubernetes cluster is defined in this directory.
 
 ## Infrastructure
 
-| Component                                                                           | Purpose                                                 |
-| ----------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| [Envoy](https://gateway.envoyproxy.io/)                                             | Gateway API implementation                              |
-| [cert-manager](https://cert-manager.io/)                                            | TLS certificates via Let's Encrypt                      |
-| [external-secrets](https://external-secrets.io/)                                    | Load secrets from Bitwarden Secret Store                |
-| [CSI Driver NFS](https://github.com/kubernetes-csi/csi-driver-nfs)                  | NFS persistent volumes backed by TrueNAS                |
-| [Longhorn](https://longhorn.io/)                                                    | Distributed block storage with replication across nodes |
-| [snapshot-controller](https://github.com/kubernetes-csi/external-snapshotter)       | Volume snapshot support                                 |
-| [Crunchy Data PGO](https://access.crunchydata.com/documentation/postgres-operator/) | PostgreSQL operator                                     |
-| [System upgrade Controller](https://github.com/rancher/system-upgrade-controller/)  | Auto update K3s                                         |
+| Component                                                                           | Purpose                                            |
+| ----------------------------------------------------------------------------------- | -------------------------------------------------- |
+| [Envoy](https://gateway.envoyproxy.io/)                                             | Gateway API implementation                         |
+| [cert-manager](https://cert-manager.io/)                                            | TLS certificates via Let's Encrypt                 |
+| [external-secrets](https://external-secrets.io/)                                    | Load secrets from Bitwarden Secret Store           |
+| [CSI Driver NFS](https://github.com/kubernetes-csi/csi-driver-nfs)                  | Provision NFS persistent volumes backed by TrueNAS |
+| [OpenEBS](https://openebs.io/)                                                      | Provision local volumes via lvm-thin               |
+| [Volsync](https://volsync.readthedocs.io/)                                          | Automated volume backup & restore                  |
+| [snapshot-controller](https://github.com/kubernetes-csi/external-snapshotter)       | Volume snapshot support                            |
+| [Crunchy Data PGO](https://access.crunchydata.com/documentation/postgres-operator/) | PostgreSQL operator                                |
 
 ## Observability
 
 | Component                                                                                                           | Purpose                             |
 | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
 | [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) | Prometheus + Grafana + Alertmanager |
-| [Telegram bot webhook](https://core.telegram.org/bots/api#making-requests-when-getting-updates)                     | Receive alerts                      |
 | [Loki](https://grafana.com/oss/loki/) + [Alloy](https://grafana.com/oss/alloy-opentelemetry-collector/)             | Log aggregation                     |
 
 ## Media streaming
@@ -46,7 +45,6 @@ Everything running inside the Kubernetes cluster is defined in this directory.
 | App                                                          | Purpose                                          |
 | ------------------------------------------------------------ | ------------------------------------------------ |
 | [Keycloak](https://www.keycloak.org/)                        | Single sign-on provider                          |
-| [OAuth2 Proxy](https://oauth2-proxy.github.io/oauth2-proxy/) | Middleware providing authentication via Keycloak |
 
 ## Misc
 
