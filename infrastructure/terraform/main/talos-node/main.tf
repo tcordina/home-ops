@@ -2,7 +2,7 @@ locals {
   talos-node = {
     vmid        = 103
     cores       = 6
-    memory      = 6144
+    memory      = 12288
     boot_disk   = "50G"
     data_disk   = "100G"
   }

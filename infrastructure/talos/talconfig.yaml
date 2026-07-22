@@ -35,3 +35,4 @@ patches:
   - "@./patches/disable-admission-control.yaml"
   - "@./patches/disable-coredns.yaml"
   - "@./patches/lvm.yaml"
+  - "@./patches/sysctls.yaml"

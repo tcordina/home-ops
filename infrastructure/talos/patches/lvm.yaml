@@ -6,7 +6,7 @@ machine:
       - name: dm_snapshot
       - name: dm_mirror
 
-## LVM features still in beta = not yet supported by talhelper. Copy paste lvm.yaml inside rendered config for now
+## LVM features still in beta = not yet supported by talhelper. Copy paste LVMVolumeGroupConfig inside rendered config for now
 # ---
 # apiVersion: v1alpha1
 # kind: LVMVolumeGroupConfig
