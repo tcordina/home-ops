@@ -36,7 +36,7 @@ spec:
         [[runners]]
           [runners.kubernetes]
             namespace = "{{.Release.Namespace}}"
-            image = "ubuntu:24.04"
+            image = "ubuntu:26.04"
 
             cpu_request = "500m"
             memory_request = "512Mi"
@@ -67,7 +67,7 @@ spec:
         ephemeral-storage: 512Mi
 
     replicas: 1
-    concurrent: 3
+    concurrent: 1
 
     rbac:
       create: true

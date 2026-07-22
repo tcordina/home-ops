@@ -4,7 +4,7 @@ metadata:
   name: gitlab-runner-cache
 spec:
   accessModes:
-    - ReadWriteMany # Allow sharing between pods
+    - ReadWriteOnce
   storageClassName: openebs-lvm
   resources:
     requests:
