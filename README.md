@@ -6,7 +6,7 @@
 
 **Kubernetes cluster info**
 
-![talos version](https://img.shields.io/endpoint?url=https%3A%2F%2Fhomelab-233dab.gitlab.io%2Ftalos.json&style=for-the-badge&logo=talos&logoColor=white&logoSize=auto&color=%23FF7300)
+![talos version](https://img.shields.io/endpoint?url=https%3A%2F%2Fhomelab-233dab.gitlab.io%2Ftalos.json&style=for-the-badge&logo=talos&logoColor=white&logoSize=auto&color=%23E23359)
 ![k8s version](https://img.shields.io/endpoint?url=https%3A%2F%2Fhomelab-233dab.gitlab.io%2Fk8s.json&style=for-the-badge&logo=kubernetes&logoColor=white&logoSize=auto&color=%23326CE5)
 ![flux version](https://img.shields.io/endpoint?url=https%3A%2F%2Fhomelab-233dab.gitlab.io%2Fflux.json&style=for-the-badge&logo=flux&logoColor=white&logoSize=auto&color=%235468FF)
 

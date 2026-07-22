@@ -10,7 +10,7 @@ promql() {
         | jq -r '.data.result[0].value[1] // "N/A"'
 }
 
-TALOS_VER=$(curl -sf "${PROM}/api/v1/query" --data-urlencode 'query=kube_node_info' | jq -r '.data.result[0].metric.os_image // "unknown"' | grep -oP '(?<=\().*(?=\))')
+TALOS_VER=$(curl -sf "${PROM}/api/v1/query" --data-urlencode 'query=kube_node_info' | jq -r '.data.result[0].metric.os_image // "unknown"' | sed 's/.*(\(.*\))/\1/' | sed 's/^v//')
 K8S_VER=$(curl -sf "${PROM}/api/v1/query" --data-urlencode 'query=kube_node_info' | jq -r '.data.result[0].metric.kubelet_version // "unknown"' | sed 's/^v//')
 FLUX_VER=$(curl -sf "${PROM}/api/v1/query" --data-urlencode 'query=flux_instance_info' | jq -r '.data.result[0].metric.revision // "unknown"' | cut -d'@' -f1 | sed 's/^v//')
 
@@ -43,9 +43,9 @@ write_badge() {
 mkdir -p public
 
 #           file      label             message            color
-write_badge "talos"   "talos"           "$TALOS_VER"       ""
-write_badge "k8s"     "k8s"             "$K8S_VER"         ""
-write_badge "flux"    "flux"            "$FLUX_VER"        ""
+write_badge "talos"   "talos"           "$TALOS_VER"       "#E23359"
+write_badge "k8s"     "k8s"             "$K8S_VER"         "#326CE5"
+write_badge "flux"    "flux"            "$FLUX_VER"        "#5468FF"
 write_badge "age"     "age"             "${CLUSTER_AGE}d"  "blue"
 write_badge "nodes"   "nodes"           "$NODES"           "blue"
 write_badge "pods"    "pods"            "$PODS"            "blue"
