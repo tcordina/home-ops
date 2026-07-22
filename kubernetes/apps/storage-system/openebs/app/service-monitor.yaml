@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: openebs-lvm
+  namespace: storage-system
+spec:
+  endpoints:
+    - port: metrics
+      path: /metrics
+  namespaceSelector:
+    matchNames:
+      - storage-system
+  selector:
+    matchLabels:
+      name: openebs-lvm-node
+      role: openebs-lvm
