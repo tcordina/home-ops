@@ -2,17 +2,23 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: image-update-automation
+  name: &app image-update-automation
   namespace: flux-system
 spec:
-  interval: 5m
+  interval: 1h
+  retryInterval: 2m
+  timeout: 1h
   prune: true
   wait: true
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   targetNamespace: flux-system
 
   path: ./kubernetes/apps/flux-system/image-update-automation/app
   sourceRef:
     kind: GitRepository
     name: flux-system
+    namespace: flux-system
 
   dependsOn: []

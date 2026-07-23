@@ -7,13 +7,12 @@ metadata:
 spec:
   interval: 1h
   retryInterval: 2m
-  timeout: 15m
+  timeout: 1h
   prune: true
-  wait: false
+  wait: true
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  targetNamespace: multimedia
 
   path: ./kubernetes/apps/multimedia/bazarr/app
   components:
