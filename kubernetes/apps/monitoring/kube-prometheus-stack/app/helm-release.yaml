@@ -15,15 +15,6 @@ spec:
       enabled: true
     cleanPrometheusOperatorObjectNames: true
 
-    # defaultRules:
-    #   disabled:
-    #     KubeAPIDown: true
-    #     KubeAPIInstanceUnreachable: true
-    #     KubeControllerManagerDown: true
-    #     KubeControllerManagerInstanceUnreachable: true
-    #     KubeSchedulerDown: true
-    #     KubeSchedulerInstanceUnreachable: true
-
     prometheus:
       prometheusSpec:
         image:
@@ -115,7 +106,7 @@ spec:
               receiver: "telegram"
             - match:
                 severity: warning
-              receiver: "telegram"
+              receiver: "null"
 
         receivers:
           - name: "null"
@@ -176,3 +167,13 @@ spec:
 
     kubeProxy:
       enabled: false
+
+    customRules:
+      KubePodCrashLooping:
+        severity: "critical"
+      KubePodNotReady:
+        severity: "critical"
+      KubeJobFailed:
+        severity: "critical"
+      KubeJobNotCompleted:
+        severity: "critical"
