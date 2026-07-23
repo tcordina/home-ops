@@ -1,7 +1,7 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/master/pkg/config/schemas/talconfig.json
-clusterName: talos-test
-endpoint: "https://192.168.1.24:6443"
+clusterName: home-ops
+endpoint: "https://192.168.1.100:6443"
 
 # renovate: depName=ghcr.io/siderolabs/installer datasource=docker
 talosVersion: "v1.14.0-alpha.2"
@@ -14,7 +14,7 @@ allowSchedulingOnControlPlanes: true
 nodes:
   - hostname: master
     controlPlane: true
-    ipAddress: 192.168.1.24
+    ipAddress: 192.168.1.100
     installDisk: /dev/sda
     schematic:
       customization:
@@ -35,4 +35,5 @@ patches:
   - "@./patches/disable-admission-control.yaml"
   - "@./patches/disable-coredns.yaml"
   - "@./patches/lvm.yaml"
+  - "@./patches/master-network.yaml"
   - "@./patches/sysctls.yaml"

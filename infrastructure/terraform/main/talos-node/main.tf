@@ -1,7 +1,7 @@
 locals {
   talos-node = {
-    vmid        = 103
-    cores       = 6
+    vmid        = 101
+    cores       = 4
     memory      = 12288
     boot_disk   = "50G"
     data_disk   = "100G"
@@ -12,7 +12,7 @@ resource "proxmox_vm_qemu" "talos-node" {
 
   vmid        = local.talos-node.vmid
   name        = "talos-node"
-  target_node = "pve2"
+  target_node = "pve"
   agent       = 1
   cpu {
     cores = local.talos-node.cores
