@@ -75,6 +75,8 @@ spec:
               repository: qmcgaw/gluetun
               tag: v3.41.1
             env:
+              HEALTH_VPN_DURATION_INITIAL: 120s
+              HEALTH_SUCCESS_WAIT_DURATION: 120s
               VPN_SERVICE_PROVIDER: protonvpn
               VPN_TYPE: openvpn
               VPN_PORT_FORWARDING: on
@@ -95,21 +97,14 @@ spec:
                 enabled: true
                 custom: true
                 spec:
-                  httpGet:
-                    path: /v1/publicip/ip
-                    port: 8000
-                  periodSeconds: 30
-                  timeoutSeconds: 10
-                  failureThreshold: 6
+                  exec: &exec
+                    command: [/gluetun-entrypoint, healthcheck]
+                  periodSeconds: 60
               readiness: *gluetunProbe
               startup:
-                enabled: true
-                custom: true
+                <<: *gluetunProbe
                 spec:
-                  httpGet:
-                    path: /v1/publicip/ip
-                    port: 8000
-                  timeoutSeconds: 10
+                  exec: *exec
                   failureThreshold: 30
                   periodSeconds: 5
             securityContext:
