@@ -15,6 +15,7 @@ resource "proxmox_vm_qemu" "talos-node" {
   target_node = "pve"
   agent       = 1
   cpu {
+    type = "x86-64-v3"
     cores = local.talos-node.cores
   }
   memory              = local.talos-node.memory
