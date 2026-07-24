@@ -21,8 +21,8 @@ spec:
             env:
               TZ: ${TIMEZONE}
               LLDAP_HTTP_PORT: &http-port 8080
-              LLDAP_HTTP_URL: https://lldap.${DOMAIN}
               LLDAP_LDAP_PORT: &ldap-port 5389
+              LLDAP_SMTP_OPTIONS__ENABLE_PASSWORD_RESET: false
             envFrom:
               - secretRef:
                   name: lldap-secrets
