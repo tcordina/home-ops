@@ -24,8 +24,8 @@ spec:
         containers:
           app:
             image:
-              repository: linuxserver/bazarr
-              tag: 1.6.1-development
+              repository: ghcr.io/home-operations/bazarr
+              tag: 1.6.0@sha256:cd63bbd0986c93e238eb8b9442604d249f0d4080099b389f822abe2062044417
             env:
               BAZARR__APP__INSTANCENAME: bazarr
               BAZARR__AUTH__METHOD: External
@@ -57,10 +57,10 @@ spec:
                 memory: 384Mi
               limits:
                 memory: 384Mi
-            # securityContext:
-            #   allowPrivilegeEscalation: false
-            #   readOnlyRootFilesystem: true
-            #   capabilities: { drop: ["ALL"] }
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
 
     service:
       app:
