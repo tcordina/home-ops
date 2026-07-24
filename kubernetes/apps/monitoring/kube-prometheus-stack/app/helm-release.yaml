@@ -20,7 +20,7 @@ spec:
         image:
           registry: ghcr.io
           repository: deckhouse/prompp
-          tag: 0.8.4
+          tag: 0.8.5
         # Keep < 3.11.0: at >= 3.11.0 prometheus-operator writes storage.tsdb.retention into
         # the config file, but prompp 0.8.x's parser has no such field (err: "field retention
         # not found in type config.plain") -- below 3.11.0 the operator uses the
