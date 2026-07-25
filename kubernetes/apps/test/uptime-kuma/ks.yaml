@@ -16,6 +16,7 @@ spec:
 
   path: ./kubernetes/apps/test/uptime-kuma/app
   components:
+    - ../../../../components/cnpg/
     - ../../../../components/volsync/
   sourceRef:
     kind: GitRepository
@@ -29,6 +30,8 @@ spec:
 
   dependsOn:
     - name: volsync
+      namespace: flux-system
+    - name: cnpg-operator
       namespace: flux-system
 
   decryption:

@@ -5,3 +5,4 @@ replacements:
 resources:
   - ./namespace.yaml
   - ./postgres/ks.yaml
+  - ./cnpg/ks.yaml
