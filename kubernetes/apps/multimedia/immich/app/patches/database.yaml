@@ -1,0 +1,11 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: ${APP}
+spec:
+  extensions:
+    - name: cube
+    - name: earthdistance
+    - name: postgis
+    - name: vector
+    - name: vchord

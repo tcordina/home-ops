@@ -19,7 +19,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v2.7.5 # {"$imagepolicy": "multimedia:immich-server:tag"}
+              tag: v3.0.3
             env:
               TZ: ${TIMEZONE}
               IMMICH_MEDIA_LOCATION: &media-location /data
@@ -29,8 +29,8 @@ spec:
               DB_URL:
                 valueFrom:
                   secretKeyRef:
-                    name: immich-postgres-auth
-                    key: DB_URL
+                    name: ${APP}-postgres-app
+                    key: uri
               IMMICH_TELEMETRY_INCLUDE: "all"
             ports:
               - name: http
@@ -72,6 +72,7 @@ spec:
                 memory: 1024Mi
               limits:
                 memory: 1024Mi
+
       valkey:
         containers:
           app:
@@ -115,6 +116,7 @@ spec:
                 memory: 64Mi
               limits:
                 memory: 64Mi
+
     service:
       immich:
         controller: immich
@@ -130,6 +132,7 @@ spec:
         ports:
           http:
             port: 6379
+
     route:
       main:
         enabled: true
@@ -144,6 +147,7 @@ spec:
           - backendRefs:
               - identifier: immich
                 port: *http-port
+
     # serviceMonitor:
     #   immich:
     #     enabled: true
@@ -155,6 +159,7 @@ spec:
     #       - port: metrics-ms
     #         scheme: http
     #         path: /metrics
+
     persistence:
       library:
         type: nfs

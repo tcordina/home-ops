@@ -1,0 +1,28 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: ${APP}-postgres
+spec:
+  postgresql:
+    shared_preload_libraries:
+      - "vchord.so"
+
+    extensions:
+      - name: postgis
+        image:
+          reference: ghcr.io/cloudnative-pg/postgis-extension:3.6.2-18-trixie
+        ld_library_path: [system]
+      - name: pgvector
+        image:
+          reference: ghcr.io/cloudnative-pg/pgvector:0.8.1-18-trixie
+      - name: vchord
+        image:
+          reference: ghcr.io/tensorchord/vchord-scratch:pg18-v0.5.3
+        dynamic_library_path: ["/usr/lib/postgresql/18/lib"]
+        extension_control_path: ["/usr/share/postgresql/18/"]
+
+  managed:
+    roles:
+      - name: immich
+        ensure: present
+        login: true
