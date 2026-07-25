@@ -20,8 +20,7 @@ validate-kubernetes:
     - apk add --no-cache bash curl
     - curl -sL "https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz"
       | tar xz -C /usr/local/bin
-    - curl -sL "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"
-      | bash && mv kustomize /usr/local/bin/
+    - curl -s https://fluxcd.io/install.sh | bash
   script:
     - bash .gitlab/validate/kubeconform.sh kubernetes
   tags:
