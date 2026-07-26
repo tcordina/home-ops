@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/storage.k8s.io/storageclass_v1.json
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
@@ -14,6 +15,7 @@ parameters:
   fsType: "ext4"
   recurringJobSelector: '[ { "name":"maintenance", "isGroup":true } ]'
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/storage.k8s.io/storageclass_v1.json
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:

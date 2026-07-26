@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cert-manager.io/clusterissuer_v1.json
 # Base self signed issuer for the bootstrap certificate
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -7,6 +8,7 @@ metadata:
 spec:
   selfSigned: {}
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cert-manager.io/certificate_v1.json
 # Self-signed certificate for the Bitwarden certificate issuer
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -36,6 +38,7 @@ spec:
     kind: ClusterIssuer
     group: cert-manager.io
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cert-manager.io/clusterissuer_v1.json
 # ClusterIssuer for Bitwarden using the self-signed certificate
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
