@@ -1,5 +1,9 @@
 validate-kubernetes:
   stage: validate
+  variables:
+    KUBECONFORM_VERSION: "0.8.0"
+    FLUX_VERSION: "2.9.3"
+    CACHE_DIR: "/cache/${CI_PROJECT_PATH_SLUG}"
   rules:
     - # ignore changes made by renovate
       if: $CI_COMMIT_TITLE =~ /^chore\(deps\):/
@@ -18,9 +22,8 @@ validate-kubernetes:
     name: alpine:3
   before_script:
     - apk add --no-cache bash curl
-    - curl -sL "https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz"
-      | tar xz -C /usr/local/bin
-    - curl -s https://fluxcd.io/install.sh | bash
+    - bash .gitlab/validate/install-tools.sh
+    - export PATH="$PATH:${CACHE_DIR}/bin"
   script:
     - bash .gitlab/validate/kubeconform.sh kubernetes
   tags:
