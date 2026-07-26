@@ -32,7 +32,7 @@ spec:
     gitlabUrl: https://gitlab.com/
 
     runners:
-      tags: "docker, renovate"
+      tags: "selfhosted, ubuntu"
       secret: gitlab-runner-secret
       config: |
         [[runners]]

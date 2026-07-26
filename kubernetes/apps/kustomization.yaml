@@ -9,6 +9,7 @@ resources:
   - ./default
   - ./external-secrets
   - ./flux-system
+  - ./gitlab
   - ./network
   - ./kube-system
   - ./monitoring

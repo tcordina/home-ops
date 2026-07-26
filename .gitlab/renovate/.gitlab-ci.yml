@@ -6,3 +6,5 @@ renovate:
   stage: renovate
   rules:
     - if: ($CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "renovate")
+  tags:
+    - selfhosted

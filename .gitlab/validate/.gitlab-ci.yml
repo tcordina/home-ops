@@ -24,4 +24,4 @@ validate-kubernetes:
   script:
     - bash .gitlab/validate/kubeconform.sh kubernetes
   tags:
-    - docker
+    - selfhosted
