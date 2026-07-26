@@ -10,11 +10,13 @@ validate-kubernetes:
       when: never
     - if: $CI_PIPELINE_SOURCE == "push"
       changes:
+        - .gitlab/validate/*
         - kubernetes/apps/**/*
         - kubernetes/clusters/**/*
         - kubernetes/components/**/*
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
+        - .gitlab/validate/*
         - kubernetes/apps/**/*
         - kubernetes/clusters/**/*
         - kubernetes/components/**/*

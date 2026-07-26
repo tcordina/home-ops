@@ -6,5 +6,5 @@ replacements:
   - path: ../../components/replacements/ks.yaml
 resources:
   - ./namespace.yaml
-  - ./postgres/ks.yaml
+  - ./postgres-operator/ks.yaml
   - ./cnpg/ks.yaml

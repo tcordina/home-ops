@@ -23,7 +23,7 @@ validate() {
     local ks_file=$2
     local path=$3
 
-    echo "INFO - Validating ${ks_file}"
+    echo "[INFO] Validating ${ks_file}"
     flux build kustomization "$name" \
         --path "$path" \
         --kustomization-file "$ks_file" \
@@ -36,7 +36,7 @@ validate() {
     fi
 }
 
-echo "INFO - Validating kustomizations in ${KUBERNETES_DIR}/clusters"
+echo "[INFO] Validating kustomizations in ${KUBERNETES_DIR}/clusters"
 find "${KUBERNETES_DIR}/clusters" -type f -name "cluster.yaml" -print0 | while IFS= read -r -d $'\0' file;
 do
     dir=$(dirname "$file")
@@ -44,7 +44,7 @@ do
     validate "apps" "$file" "$dir"
 done
 
-echo "INFO - Validating kustomizations in ${KUBERNETES_DIR}/apps"
+echo "[INFO] Validating kustomizations in ${KUBERNETES_DIR}/apps"
 find "${KUBERNETES_DIR}/apps" -type f -name "ks.yaml" -not -path "**/unused/*" -print0 | while IFS= read -r -d $'\0' file;
 do
     ks_dir=$(dirname "$file")
