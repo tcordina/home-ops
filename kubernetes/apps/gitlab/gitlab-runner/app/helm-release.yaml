@@ -48,6 +48,8 @@ spec:
             allowed_pull_policies = ["if-not-present", "always", ""]
             poll_timeout = 600
 
+            automount_service_account_token = false
+
             [runners.kubernetes.pod_annotations]
               "container.apparmor.security.beta.kubernetes.io/build" = "unconfined"
 
@@ -74,11 +76,8 @@ spec:
     rbac:
       create: true
       rules:
-        - resources: ["events"]
-          verbs: ["list", "watch"]
-        - resources: ["namespaces"]
-          verbs: ["create", "delete"]
-        - resources: ["pods"]
+        - apiGroups: [""]
+          resources: ["pods"]
           verbs: ["list", "watch", "create", "delete", "get"]
         - apiGroups: [""]
           resources: ["pods/attach", "pods/exec"]
@@ -86,9 +85,9 @@ spec:
         - apiGroups: [""]
           resources: ["pods/log"]
           verbs: ["get", "list"]
-        - resources: ["secrets"]
+        - apiGroups: [""]
+          resources: ["secrets"]
           verbs: ["create", "delete", "get", "update"]
-        - resources: ["serviceaccounts"]
+        - apiGroups: [""]
+          resources: ["serviceaccounts"]
           verbs: ["get"]
-        - resources: ["services"]
-          verbs: ["create", "get"]
