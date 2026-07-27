@@ -18,27 +18,6 @@ spec:
           app:
             env:
               TZ: "${TIMEZONE}"
-              UPTIME_KUMA_DB_TYPE: postgres
-              UPTIME_KUMA_DB_HOSTNAME:
-                secretKeyRef:
-                  name: ${APP}-postgres-app
-                  key: dbname
-              UPTIME_KUMA_DB_PORT:
-                secretKeyRef:
-                  name: ${APP}-postgres-app
-                  key: port
-              UPTIME_KUMA_DB_NAME:
-                secretKeyRef:
-                  name: ${APP}-postgres-app
-                  key: dbname
-              UPTIME_KUMA_DB_USERNAME:
-                secretKeyRef:
-                  name: ${APP}-postgres-app
-                  key: username
-              UPTIME_KUMA_DB_PASSWORD:
-                secretKeyRef:
-                  name: ${APP}-postgres-app
-                  key: password
             image:
               repository: louislam/uptime-kuma
               tag: 2.4.0-slim-rootless
