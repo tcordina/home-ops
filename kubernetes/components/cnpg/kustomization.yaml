@@ -6,3 +6,6 @@ kind: Component
 resources:
   - cluster.yaml
   - database.yaml
+  - object-store.yaml
+  - scheduled-backup.yaml
+  - secret.sops.yaml

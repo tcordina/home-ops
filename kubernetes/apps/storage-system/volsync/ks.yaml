@@ -24,5 +24,3 @@ spec:
   dependsOn:
     - name: openebs
       namespace: flux-system
-    - name: restic-rest-server
-      namespace: flux-system

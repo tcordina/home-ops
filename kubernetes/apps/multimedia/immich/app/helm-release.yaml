@@ -22,16 +22,15 @@ spec:
               tag: v3.0.3
             env:
               TZ: ${TIMEZONE}
-              IMMICH_MEDIA_LOCATION: &media-location /data
               REDIS_HOSTNAME: '{{ printf "%s-valkey" .Release.Name }}'
-              IMMICH_MACHINE_LEARNING_URL: false
-              # IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
+              IMMICH_MACHINE_LEARNING_ENABLED: false
+              IMMICH_MACHINE_LEARNING_URL: false  # '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
+              IMMICH_TELEMETRY_INCLUDE: "all"
               DB_URL:
                 valueFrom:
                   secretKeyRef:
                     name: ${APP}-postgres-app
                     key: uri
-              IMMICH_TELEMETRY_INCLUDE: "all"
             ports:
               - name: http
                 containerPort: &http-port 2283
@@ -69,9 +68,9 @@ spec:
             resources:
               requests:
                 cpu: 10m
-                memory: 1024Mi
+                memory: 1Gi
               limits:
-                memory: 1024Mi
+                memory: 3Gi
 
       valkey:
         containers:
@@ -161,9 +160,16 @@ spec:
     #         path: /metrics
 
     persistence:
-      library:
-        type: nfs
-        server: ${NFS_IP}
-        path: /mnt/main/photos-library
-        globalMounts:
-          - path: *media-location
+      data:
+        existingClaim: ${APP}
+        advancedMounts:
+          immich:
+            main:
+              - path: /data
+
+      # library:
+      #   type: nfs
+      #   server: ${NFS_IP}
+      #   path: /mnt/main/photos-library
+      #   globalMounts:
+      #     - path: /data

@@ -9,11 +9,23 @@ metadata:
 spec:
   instances: ${CNPG_REPLICAS:-1}
   imageName: ghcr.io/cloudnative-pg/postgresql:18.4-minimal-trixie
+  postgresql:
+    parameters:
+      # lessen disk writes (default is 5min)
+      archive_timeout: "30min"
 
   bootstrap:
     initdb:
       database: ${APP}
       owner: ${APP}
+
+    ## comment initdb: and uncomment recovery: in order to restore to a previous state.
+    # recovery:
+    #   source: origin
+    #   database: ${APP}
+    #   owner: ${APP}
+    #   recoveryTarget:
+    #     targetTime: "2024-01-15T10:30:00Z"
 
   storage:
     storageClass: ${CNPG_DATA_STORAGE_CLASS:-openebs-lvm}
@@ -29,3 +41,17 @@ spec:
       memory: ${CNPG_MEMORY_REQUEST:-128Mi}
     limits:
       memory: ${CNPG_MEMORY_LIMIT:-512Mi}
+
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: "${APP}-postgres-backup"
+
+  externalClusters:
+    - name: origin
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: "${APP}-postgres-backup"
+          serverName: "${APP}-postgres"

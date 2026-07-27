@@ -18,6 +18,7 @@ spec:
   path: ./kubernetes/apps/multimedia/immich/app
   components:
     - ../../../../components/cnpg/
+    - ../../../../components/volsync/
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -26,9 +27,18 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      VOLSYNC_CAPACITY: 10Gi
+      CNPG_DATA_STORAGE_SIZE: 4Gi
+      CNPG_CPU_REQUEST: 100m
+      CNPG_MEMORY_REQUEST: 128Mi
+      CNPG_MEMORY_LIMIT: 1Gi
 
   dependsOn:
-    - name: cnpg-operator
+    - name: cnpg
+      namespace: flux-system
+    - name: cnpg-barman
+      namespace: flux-system
+    - name: volsync
       namespace: flux-system
 
   decryption:
