@@ -1,0 +1,1306 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kube-prometheus-stack-k3s-cluster
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  discord-top_damage_dealt.json: |
+    {
+      "apiVersion": "dashboard.grafana.app/v2",
+      "kind": "Dashboard",
+      "metadata": {
+        "name": "ad6g6hh",
+        "generation": 45,
+        "creationTimestamp": "2026-02-17T19:36:11Z",
+        "labels": {},
+        "annotations": {}
+      },
+      "spec": {
+        "annotations": [
+          {
+            "kind": "AnnotationQuery",
+            "spec": {
+              "query": {
+                "kind": "DataQuery",
+                "group": "grafana",
+                "version": "v0",
+                "spec": {},
+                "labels": {
+                  "grafana.app/export-label": "grafana-1"
+                }
+              },
+              "enable": true,
+              "hide": true,
+              "iconColor": "rgba(0, 211, 255, 1)",
+              "name": "Annotations & Alerts",
+              "builtIn": true
+            }
+          }
+        ],
+        "cursorSync": "Off",
+        "description": "Stats for the Top Damage Dealt discord server",
+        "editable": true,
+        "elements": {
+          "panel-1": {
+            "kind": "Panel",
+            "spec": {
+              "id": 1,
+              "title": "#discussion | Messages per user",
+              "description": "Total messages sent in #discussion",
+              "links": [],
+              "data": {
+                "kind": "QueryGroup",
+                "spec": {
+                  "queries": [
+                    {
+                      "kind": "PanelQuery",
+                      "spec": {
+                        "query": {
+                          "kind": "DataQuery",
+                          "group": "grafana-postgresql-datasource",
+                          "version": "v0",
+                          "spec": {
+                            "dataset": "discord",
+                            "editorMode": "code",
+                            "format": "table",
+                            "rawQuery": true,
+                            "rawSql": "SELECT\n  user_name AS user,\n  COUNT(message_id) AS message_count\nFROM messages\nWHERE channel_name = 'discussion'\n  AND $__timeFilter(time)\nGROUP BY user_name\nORDER BY message_count DESC;",
+                            "sql": {
+                              "columns": [
+                                {
+                                  "alias": "\"message_count\"",
+                                  "name": "COUNT",
+                                  "parameters": [
+                                    {
+                                      "name": "message_id",
+                                      "type": "functionParameter"
+                                    }
+                                  ],
+                                  "type": "function"
+                                },
+                                {
+                                  "alias": "\"user\"",
+                                  "parameters": [
+                                    {
+                                      "name": "user_name",
+                                      "type": "functionParameter"
+                                    }
+                                  ],
+                                  "type": "function"
+                                }
+                              ],
+                              "groupBy": [
+                                {
+                                  "property": {
+                                    "name": "user_name",
+                                    "type": "string"
+                                  },
+                                  "type": "groupBy"
+                                }
+                              ],
+                              "limit": 50,
+                              "whereJsonTree": {
+                                "children1": [
+                                  {
+                                    "id": "99998b8b-cdef-4012-b456-719c6ce5fee1",
+                                    "properties": {
+                                      "field": "channel_name",
+                                      "fieldSrc": "field",
+                                      "operator": "equal",
+                                      "value": [
+                                        "discussion"
+                                      ],
+                                      "valueError": [
+                                        null
+                                      ],
+                                      "valueSrc": [
+                                        "value"
+                                      ],
+                                      "valueType": [
+                                        "text"
+                                      ]
+                                    },
+                                    "type": "rule"
+                                  }
+                                ],
+                                "id": "88bab8b9-0123-4456-b89a-b19c6ce43e2b",
+                                "type": "group"
+                              },
+                              "whereString": "channel_name = 'discussion'"
+                            },
+                            "table": "messages"
+                          },
+                          "labels": {
+                            "grafana.app/export-label": "grafana-postgresql-datasource-1"
+                          }
+                        },
+                        "refId": "A",
+                        "hidden": false
+                      }
+                    }
+                  ],
+                  "transformations": [
+                    {
+                      "kind": "Transformation",
+                      "group": "organize",
+                      "spec": {
+                        "options": {
+                          "excludeByName": {
+                            "user": false
+                          },
+                          "includeByName": {},
+                          "indexByName": {},
+                          "orderByMode": "manual",
+                          "renameByName": {
+                            "message_count": "",
+                            "user": ""
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "queryOptions": {}
+                }
+              },
+              "vizConfig": {
+                "kind": "VizConfig",
+                "group": "bargauge",
+                "version": "13.0.2",
+                "spec": {
+                  "options": {
+                    "displayMode": "gradient",
+                    "legend": {
+                      "calcs": [],
+                      "displayMode": "list",
+                      "placement": "bottom",
+                      "showLegend": false
+                    },
+                    "maxVizHeight": 300,
+                    "minVizHeight": 16,
+                    "minVizWidth": 8,
+                    "namePlacement": "left",
+                    "orientation": "horizontal",
+                    "reduceOptions": {
+                      "calcs": [
+                        "lastNotNull"
+                      ],
+                      "fields": "",
+                      "values": true
+                    },
+                    "showUnfilled": false,
+                    "sizing": "auto",
+                    "valueMode": "text"
+                  },
+                  "fieldConfig": {
+                    "defaults": {
+                      "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "value": 0,
+                            "color": "green"
+                          }
+                        ]
+                      },
+                      "color": {
+                        "mode": "thresholds"
+                      },
+                      "fieldMinMax": false
+                    },
+                    "overrides": []
+                  }
+                }
+              }
+            }
+          },
+          "panel-2": {
+            "kind": "Panel",
+            "spec": {
+              "id": 2,
+              "title": "#discussion | Messages per hour of the day",
+              "description": "",
+              "links": [],
+              "data": {
+                "kind": "QueryGroup",
+                "spec": {
+                  "queries": [
+                    {
+                      "kind": "PanelQuery",
+                      "spec": {
+                        "query": {
+                          "kind": "DataQuery",
+                          "group": "grafana-postgresql-datasource",
+                          "version": "v0",
+                          "spec": {
+                            "dataset": "discord",
+                            "editorMode": "code",
+                            "format": "time_series",
+                            "rawQuery": true,
+                            "rawSql": "WITH hours AS (\n  SELECT generate_series(0, 23) AS hour\n),\nmessage_counts AS (\n  SELECT\n    EXTRACT(HOUR FROM time)::INTEGER AS hour,\n    guild_id, channel_id, user_name,\n    COUNT(*) AS message_count\n  FROM messages\n  WHERE $__timeFilter(time)\n    AND guild_id = 273436886461054979\n    AND channel_id = 273436886461054979\n  GROUP BY hour, guild_id, channel_id, user_name\n)\nSELECT\n  to_timestamp(h.hour * 3600) AS time,\n  COALESCE(mc.user_name, 'No messages') AS metric,\n  COALESCE(mc.message_count, 0) AS value\nFROM hours h\nLEFT JOIN message_counts mc ON h.hour = mc.hour\nWHERE mc.message_count IS NULL\n   OR mc.message_count > 9\n   OR EXTRACT(EPOCH FROM ($__timeTo()::timestamp - $__timeFrom()::timestamp)) < 31536001  -- 1 year and 1 second in seconds\nORDER BY h.hour",
+                            "sql": {
+                              "columns": [
+                                {
+                                  "parameters": [],
+                                  "type": "function"
+                                }
+                              ],
+                              "groupBy": [
+                                {
+                                  "property": {
+                                    "type": "string"
+                                  },
+                                  "type": "groupBy"
+                                }
+                              ],
+                              "limit": 50
+                            }
+                          },
+                          "labels": {
+                            "grafana.app/export-label": "grafana-postgresql-datasource-1"
+                          }
+                        },
+                        "refId": "A",
+                        "hidden": false
+                      }
+                    }
+                  ],
+                  "transformations": [
+                    {
+                      "kind": "Transformation",
+                      "group": "formatTime",
+                      "spec": {
+                        "options": {
+                          "outputFormat": "HH\\h",
+                          "timeField": "Time",
+                          "timezone": "utc",
+                          "useTimezone": true
+                        }
+                      }
+                    }
+                  ],
+                  "queryOptions": {}
+                }
+              },
+              "vizConfig": {
+                "kind": "VizConfig",
+                "group": "barchart",
+                "version": "13.0.2",
+                "spec": {
+                  "options": {
+                    "barRadius": 0,
+                    "barWidth": 0.9,
+                    "fullHighlight": false,
+                    "groupWidth": 0.7,
+                    "legend": {
+                      "calcs": [],
+                      "displayMode": "table",
+                      "placement": "right",
+                      "showLegend": true
+                    },
+                    "orientation": "vertical",
+                    "showValue": "never",
+                    "stacking": "normal",
+                    "tooltip": {
+                      "hideZeros": true,
+                      "maxHeight": 300,
+                      "mode": "multi",
+                      "sort": "desc"
+                    },
+                    "xField": "Time",
+                    "xTickLabelRotation": 0,
+                    "xTickLabelSpacing": 0
+                  },
+                  "fieldConfig": {
+                    "defaults": {
+                      "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "value": 0,
+                            "color": "green"
+                          },
+                          {
+                            "value": 80,
+                            "color": "red"
+                          }
+                        ]
+                      },
+                      "color": {
+                        "mode": "palette-classic"
+                      },
+                      "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "fillOpacity": 80,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                          "legend": false,
+                          "tooltip": false,
+                          "viz": false
+                        },
+                        "lineWidth": 0,
+                        "scaleDistribution": {
+                          "type": "linear"
+                        },
+                        "thresholdsStyle": {
+                          "mode": "off"
+                        }
+                      }
+                    },
+                    "overrides": [
+                      {
+                        "matcher": {
+                          "id": "byRegexp",
+                          "options": "/.*/"
+                        },
+                        "properties": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "panel-3": {
+            "kind": "Panel",
+            "spec": {
+              "id": 3,
+              "title": "#discussion | Messages over time",
+              "description": "",
+              "links": [],
+              "data": {
+                "kind": "QueryGroup",
+                "spec": {
+                  "queries": [
+                    {
+                      "kind": "PanelQuery",
+                      "spec": {
+                        "query": {
+                          "kind": "DataQuery",
+                          "group": "grafana-postgresql-datasource",
+                          "version": "v0",
+                          "spec": {
+                            "dataset": "discord",
+                            "editorMode": "code",
+                            "format": "table",
+                            "rawQuery": true,
+                            "rawSql": "SELECT\n  time,\n  COUNT(*) OVER (ORDER BY time) AS total_messages\nFROM messages\nORDER BY time",
+                            "sql": {
+                              "columns": [
+                                {
+                                  "alias": "\"message_count\"",
+                                  "name": "COUNT",
+                                  "parameters": [
+                                    {
+                                      "name": "message_id",
+                                      "type": "functionParameter"
+                                    }
+                                  ],
+                                  "type": "function"
+                                }
+                              ],
+                              "groupBy": [],
+                              "limit": 50,
+                              "whereJsonTree": {
+                                "children1": [],
+                                "id": "988b9b9a-0123-4456-b89a-b19c6d3e6007",
+                                "type": "group"
+                              }
+                            },
+                            "table": "messages"
+                          },
+                          "labels": {
+                            "grafana.app/export-label": "grafana-postgresql-datasource-1"
+                          }
+                        },
+                        "refId": "A",
+                        "hidden": false
+                      }
+                    }
+                  ],
+                  "transformations": [],
+                  "queryOptions": {}
+                }
+              },
+              "vizConfig": {
+                "kind": "VizConfig",
+                "group": "timeseries",
+                "version": "13.0.2",
+                "spec": {
+                  "options": {
+                    "annotations": {
+                      "clustering": -1,
+                      "multiLane": false
+                    },
+                    "legend": {
+                      "calcs": [],
+                      "displayMode": "list",
+                      "placement": "bottom",
+                      "showLegend": true
+                    },
+                    "tooltip": {
+                      "hideZeros": false,
+                      "mode": "single",
+                      "sort": "none"
+                    }
+                  },
+                  "fieldConfig": {
+                    "defaults": {
+                      "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "value": 0,
+                            "color": "green"
+                          },
+                          {
+                            "value": 80,
+                            "color": "red"
+                          }
+                        ]
+                      },
+                      "color": {
+                        "mode": "palette-classic"
+                      },
+                      "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "barWidthFactor": 0.6,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                          "legend": false,
+                          "tooltip": false,
+                          "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                          "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "showValues": false,
+                        "spanNulls": false,
+                        "stacking": {
+                          "group": "A",
+                          "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                          "mode": "off"
+                        }
+                      }
+                    },
+                    "overrides": []
+                  }
+                }
+              }
+            }
+          },
+          "panel-4": {
+            "kind": "Panel",
+            "spec": {
+              "id": 4,
+              "title": "Voice activity",
+              "description": "Time spent in a voice channel per user",
+              "links": [],
+              "data": {
+                "kind": "QueryGroup",
+                "spec": {
+                  "queries": [
+                    {
+                      "kind": "PanelQuery",
+                      "spec": {
+                        "query": {
+                          "kind": "DataQuery",
+                          "group": "grafana-postgresql-datasource",
+                          "version": "v0",
+                          "spec": {
+                            "dataset": "discord2",
+                            "editorMode": "code",
+                            "format": "table",
+                            "rawQuery": true,
+                            "rawSql": "SELECT\n    user_name,\n    SUM(CASE WHEN is_afk_channel = false THEN duration_seconds ELSE 0 END) AS active,\n    SUM(CASE WHEN is_afk_channel = true  THEN duration_seconds ELSE 0 END) AS afk\nFROM voice_session_users\nWHERE $__timeFilter(connected_at) AND guild_id = 273436886461054979\nGROUP BY user_name\nORDER BY SUM(duration_seconds) DESC\n",
+                            "sql": {
+                              "columns": [
+                                {
+                                  "parameters": [],
+                                  "type": "function"
+                                }
+                              ],
+                              "groupBy": [
+                                {
+                                  "property": {
+                                    "type": "string"
+                                  },
+                                  "type": "groupBy"
+                                }
+                              ],
+                              "limit": 50
+                            }
+                          },
+                          "labels": {
+                            "grafana.app/export-label": "grafana-postgresql-datasource-2"
+                          }
+                        },
+                        "refId": "A",
+                        "hidden": false
+                      }
+                    }
+                  ],
+                  "transformations": [],
+                  "queryOptions": {}
+                }
+              },
+              "vizConfig": {
+                "kind": "VizConfig",
+                "group": "barchart",
+                "version": "13.0.2",
+                "spec": {
+                  "options": {
+                    "barRadius": 0,
+                    "barWidth": 0.97,
+                    "fullHighlight": false,
+                    "groupWidth": 0.7,
+                    "legend": {
+                      "calcs": [],
+                      "displayMode": "table",
+                      "placement": "right",
+                      "showLegend": true
+                    },
+                    "orientation": "horizontal",
+                    "showValue": "auto",
+                    "stacking": "normal",
+                    "tooltip": {
+                      "hideZeros": false,
+                      "mode": "multi",
+                      "sort": "desc"
+                    },
+                    "xField": "user_name",
+                    "xTickLabelRotation": 0,
+                    "xTickLabelSpacing": 200
+                  },
+                  "fieldConfig": {
+                    "defaults": {
+                      "unit": "dthms",
+                      "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "value": 0,
+                            "color": "green"
+                          },
+                          {
+                            "value": 80,
+                            "color": "red"
+                          }
+                        ]
+                      },
+                      "color": {
+                        "mode": "palette-classic"
+                      },
+                      "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "fillOpacity": 80,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                          "legend": false,
+                          "tooltip": false,
+                          "viz": false
+                        },
+                        "lineWidth": 1,
+                        "scaleDistribution": {
+                          "type": "linear"
+                        },
+                        "thresholdsStyle": {
+                          "mode": "off"
+                        }
+                      }
+                    },
+                    "overrides": [
+                      {
+                        "matcher": {
+                          "id": "byName",
+                          "options": "afk"
+                        },
+                        "properties": [
+                          {
+                            "id": "color",
+                            "value": {
+                              "fixedColor": "dark-yellow",
+                              "mode": "fixed"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "panel-5": {
+            "kind": "Panel",
+            "spec": {
+              "id": 5,
+              "title": "Members",
+              "description": "",
+              "links": [],
+              "data": {
+                "kind": "QueryGroup",
+                "spec": {
+                  "queries": [
+                    {
+                      "kind": "PanelQuery",
+                      "spec": {
+                        "query": {
+                          "kind": "DataQuery",
+                          "group": "grafana-postgresql-datasource",
+                          "version": "v0",
+                          "spec": {
+                            "dataset": "discord2",
+                            "editorMode": "code",
+                            "format": "table",
+                            "rawQuery": true,
+                            "rawSql": "SELECT\n  COUNT(id)\nFROM\n  users\nJOIN users_guilds ug ON users.id = ug.user_id\nWHERE ug.guild_id = 273436886461054979",
+                            "sql": {
+                              "columns": [],
+                              "groupBy": [],
+                              "limit": 50,
+                              "whereJsonTree": {
+                                "children1": [],
+                                "id": "ab8b8998-0123-4456-b89a-b19c9d198b76",
+                                "type": "group"
+                              }
+                            },
+                            "table": "users"
+                          },
+                          "labels": {
+                            "grafana.app/export-label": "grafana-postgresql-datasource-2"
+                          }
+                        },
+                        "refId": "A",
+                        "hidden": false
+                      }
+                    }
+                  ],
+                  "transformations": [],
+                  "queryOptions": {}
+                }
+              },
+              "vizConfig": {
+                "kind": "VizConfig",
+                "group": "stat",
+                "version": "13.0.2",
+                "spec": {
+                  "options": {
+                    "colorMode": "value",
+                    "graphMode": "area",
+                    "justifyMode": "auto",
+                    "orientation": "auto",
+                    "percentChangeColorMode": "standard",
+                    "reduceOptions": {
+                      "calcs": [
+                        "lastNotNull"
+                      ],
+                      "fields": "",
+                      "values": false
+                    },
+                    "showPercentChange": false,
+                    "textMode": "auto",
+                    "wideLayout": true
+                  },
+                  "fieldConfig": {
+                    "defaults": {
+                      "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "value": 0,
+                            "color": "green"
+                          },
+                          {
+                            "value": 80,
+                            "color": "red"
+                          }
+                        ]
+                      },
+                      "color": {
+                        "mode": "thresholds"
+                      }
+                    },
+                    "overrides": []
+                  }
+                }
+              }
+            }
+          },
+          "panel-6": {
+            "kind": "Panel",
+            "spec": {
+              "id": 6,
+              "title": "Age",
+              "description": "",
+              "links": [],
+              "data": {
+                "kind": "QueryGroup",
+                "spec": {
+                  "queries": [
+                    {
+                      "kind": "PanelQuery",
+                      "spec": {
+                        "query": {
+                          "kind": "DataQuery",
+                          "group": "grafana-postgresql-datasource",
+                          "version": "v0",
+                          "spec": {
+                            "dataset": "discord2",
+                            "editorMode": "code",
+                            "format": "table",
+                            "rawQuery": true,
+                            "rawSql": "SELECT\n  EXTRACT(EPOCH FROM NOW() - created_at) / 3600 / 24\nFROM\n  guilds\nWHERE\n  id = 273436886461054979",
+                            "sql": {
+                              "columns": [
+                                {
+                                  "parameters": [],
+                                  "type": "function"
+                                }
+                              ],
+                              "groupBy": [
+                                {
+                                  "property": {
+                                    "type": "string"
+                                  },
+                                  "type": "groupBy"
+                                }
+                              ],
+                              "limit": 50
+                            }
+                          },
+                          "labels": {
+                            "grafana.app/export-label": "grafana-postgresql-datasource-2"
+                          }
+                        },
+                        "refId": "A",
+                        "hidden": false
+                      }
+                    }
+                  ],
+                  "transformations": [],
+                  "queryOptions": {}
+                }
+              },
+              "vizConfig": {
+                "kind": "VizConfig",
+                "group": "stat",
+                "version": "13.0.2",
+                "spec": {
+                  "options": {
+                    "colorMode": "value",
+                    "graphMode": "area",
+                    "justifyMode": "auto",
+                    "orientation": "auto",
+                    "percentChangeColorMode": "standard",
+                    "reduceOptions": {
+                      "calcs": [
+                        "lastNotNull"
+                      ],
+                      "fields": "",
+                      "values": false
+                    },
+                    "showPercentChange": false,
+                    "textMode": "auto",
+                    "wideLayout": true
+                  },
+                  "fieldConfig": {
+                    "defaults": {
+                      "unit": "days",
+                      "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "value": 0,
+                            "color": "green"
+                          }
+                        ]
+                      },
+                      "color": {
+                        "mode": "thresholds"
+                      }
+                    },
+                    "overrides": []
+                  }
+                }
+              }
+            }
+          },
+          "panel-7": {
+            "kind": "Panel",
+            "spec": {
+              "id": 7,
+              "title": "Total messages",
+              "description": "",
+              "links": [],
+              "data": {
+                "kind": "QueryGroup",
+                "spec": {
+                  "queries": [
+                    {
+                      "kind": "PanelQuery",
+                      "spec": {
+                        "query": {
+                          "kind": "DataQuery",
+                          "group": "grafana-postgresql-datasource",
+                          "version": "v0",
+                          "spec": {
+                            "dataset": "discord",
+                            "editorMode": "code",
+                            "format": "table",
+                            "rawQuery": true,
+                            "rawSql": "SELECT\n  COUNT(message_id)\nFROM\n  messages",
+                            "sql": {
+                              "columns": [
+                                {
+                                  "parameters": [],
+                                  "type": "function"
+                                }
+                              ],
+                              "groupBy": [
+                                {
+                                  "property": {
+                                    "type": "string"
+                                  },
+                                  "type": "groupBy"
+                                }
+                              ],
+                              "limit": 50
+                            }
+                          },
+                          "labels": {
+                            "grafana.app/export-label": "grafana-postgresql-datasource-1"
+                          }
+                        },
+                        "refId": "A",
+                        "hidden": false
+                      }
+                    }
+                  ],
+                  "transformations": [],
+                  "queryOptions": {}
+                }
+              },
+              "vizConfig": {
+                "kind": "VizConfig",
+                "group": "stat",
+                "version": "13.0.2",
+                "spec": {
+                  "options": {
+                    "colorMode": "value",
+                    "graphMode": "area",
+                    "justifyMode": "auto",
+                    "orientation": "auto",
+                    "percentChangeColorMode": "standard",
+                    "reduceOptions": {
+                      "calcs": [
+                        "lastNotNull"
+                      ],
+                      "fields": "",
+                      "values": false
+                    },
+                    "showPercentChange": false,
+                    "textMode": "auto",
+                    "wideLayout": true
+                  },
+                  "fieldConfig": {
+                    "defaults": {
+                      "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "value": 0,
+                            "color": "green"
+                          }
+                        ]
+                      },
+                      "color": {
+                        "mode": "thresholds"
+                      }
+                    },
+                    "overrides": []
+                  }
+                }
+              }
+            }
+          },
+          "panel-8": {
+            "kind": "Panel",
+            "spec": {
+              "id": 8,
+              "title": "Religious diversity",
+              "description": "Counts how many sessions were spent in each channel",
+              "links": [],
+              "data": {
+                "kind": "QueryGroup",
+                "spec": {
+                  "queries": [
+                    {
+                      "kind": "PanelQuery",
+                      "spec": {
+                        "query": {
+                          "kind": "DataQuery",
+                          "group": "grafana-postgresql-datasource",
+                          "version": "v0",
+                          "spec": {
+                            "dataset": "discord2",
+                            "editorMode": "code",
+                            "format": "table",
+                            "rawQuery": true,
+                            "rawSql": "SELECT\n    user_name,\n    SUM(CASE WHEN channel_name = '🕌' THEN 1 ELSE 0 END) AS \"🕌 Islam\",\n    SUM(CASE WHEN channel_name = '⛪' THEN 1 ELSE 0 END) AS \"⛪ Christianism\",\n    SUM(CASE WHEN channel_name = '🕍' THEN 1 ELSE 0 END) AS \"🕍 Judaism\",\n    SUM(CASE WHEN channel_name = '⛩' THEN 1 ELSE 0 END) AS \"⛩ Shinto\"\nFROM voice_session_users\nWHERE $__timeFilter(connected_at)\n  AND is_afk_channel = false\n  AND guild_id = 273436886461054979\nGROUP BY user_name\nORDER BY user_name",
+                            "sql": {
+                              "columns": [
+                                {
+                                  "parameters": [],
+                                  "type": "function"
+                                }
+                              ],
+                              "groupBy": [
+                                {
+                                  "property": {
+                                    "type": "string"
+                                  },
+                                  "type": "groupBy"
+                                }
+                              ],
+                              "limit": 50
+                            }
+                          },
+                          "labels": {
+                            "grafana.app/export-label": "grafana-postgresql-datasource-2"
+                          }
+                        },
+                        "refId": "A",
+                        "hidden": false
+                      }
+                    }
+                  ],
+                  "transformations": [
+                    {
+                      "kind": "Transformation",
+                      "group": "partitionByValues",
+                      "spec": {
+                        "options": {
+                          "fields": [
+                            "channel_name"
+                          ],
+                          "keepFields": true,
+                          "naming": {
+                            "asLabels": true
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "kind": "Transformation",
+                      "group": "merge",
+                      "spec": {
+                        "options": {}
+                      }
+                    }
+                  ],
+                  "queryOptions": {}
+                }
+              },
+              "vizConfig": {
+                "kind": "VizConfig",
+                "group": "barchart",
+                "version": "13.0.2",
+                "spec": {
+                  "options": {
+                    "barRadius": 0,
+                    "barWidth": 0.97,
+                    "fullHighlight": false,
+                    "groupWidth": 0.7,
+                    "legend": {
+                      "calcs": [
+                        "sum"
+                      ],
+                      "displayMode": "table",
+                      "placement": "right",
+                      "showLegend": true,
+                      "sortBy": "Total",
+                      "sortDesc": true
+                    },
+                    "orientation": "horizontal",
+                    "showValue": "auto",
+                    "stacking": "normal",
+                    "tooltip": {
+                      "hideZeros": false,
+                      "mode": "multi",
+                      "sort": "none"
+                    },
+                    "xField": "user_name",
+                    "xTickLabelRotation": 0,
+                    "xTickLabelSpacing": 100
+                  },
+                  "fieldConfig": {
+                    "defaults": {
+                      "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "value": 0,
+                            "color": "green"
+                          },
+                          {
+                            "value": 80,
+                            "color": "red"
+                          }
+                        ]
+                      },
+                      "color": {
+                        "mode": "palette-classic"
+                      },
+                      "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "fillOpacity": 80,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                          "legend": false,
+                          "tooltip": false,
+                          "viz": false
+                        },
+                        "lineWidth": 1,
+                        "scaleDistribution": {
+                          "type": "linear"
+                        },
+                        "thresholdsStyle": {
+                          "mode": "off"
+                        }
+                      }
+                    },
+                    "overrides": [
+                      {
+                        "matcher": {
+                          "id": "byName",
+                          "options": "🕌 Islam"
+                        },
+                        "properties": [
+                          {
+                            "id": "color",
+                            "value": {
+                              "fixedColor": "yellow",
+                              "mode": "fixed"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "matcher": {
+                          "id": "byName",
+                          "options": "⛪ Christianism"
+                        },
+                        "properties": [
+                          {
+                            "id": "color",
+                            "value": {
+                              "fixedColor": "text",
+                              "mode": "fixed"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "matcher": {
+                          "id": "byName",
+                          "options": "🕍 Judaism"
+                        },
+                        "properties": [
+                          {
+                            "id": "color",
+                            "value": {
+                              "fixedColor": "orange",
+                              "mode": "fixed"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "matcher": {
+                          "id": "byName",
+                          "options": "⛩ Shinto"
+                        },
+                        "properties": [
+                          {
+                            "id": "color",
+                            "value": {
+                              "fixedColor": "red",
+                              "mode": "fixed"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "layout": {
+          "kind": "GridLayout",
+          "spec": {
+            "items": [
+              {
+                "kind": "GridLayoutItem",
+                "spec": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3,
+                  "height": 3,
+                  "element": {
+                    "kind": "ElementReference",
+                    "name": "panel-5"
+                  }
+                }
+              },
+              {
+                "kind": "GridLayoutItem",
+                "spec": {
+                  "x": 3,
+                  "y": 0,
+                  "width": 3,
+                  "height": 3,
+                  "element": {
+                    "kind": "ElementReference",
+                    "name": "panel-6"
+                  }
+                }
+              },
+              {
+                "kind": "GridLayoutItem",
+                "spec": {
+                  "x": 6,
+                  "y": 0,
+                  "width": 3,
+                  "height": 3,
+                  "element": {
+                    "kind": "ElementReference",
+                    "name": "panel-7"
+                  }
+                }
+              },
+              {
+                "kind": "GridLayoutItem",
+                "spec": {
+                  "x": 9,
+                  "y": 0,
+                  "width": 15,
+                  "height": 12,
+                  "element": {
+                    "kind": "ElementReference",
+                    "name": "panel-2"
+                  }
+                }
+              },
+              {
+                "kind": "GridLayoutItem",
+                "spec": {
+                  "x": 0,
+                  "y": 3,
+                  "width": 9,
+                  "height": 9,
+                  "element": {
+                    "kind": "ElementReference",
+                    "name": "panel-1"
+                  }
+                }
+              },
+              {
+                "kind": "GridLayoutItem",
+                "spec": {
+                  "x": 0,
+                  "y": 12,
+                  "width": 24,
+                  "height": 10,
+                  "element": {
+                    "kind": "ElementReference",
+                    "name": "panel-3"
+                  }
+                }
+              },
+              {
+                "kind": "GridLayoutItem",
+                "spec": {
+                  "x": 0,
+                  "y": 22,
+                  "width": 12,
+                  "height": 10,
+                  "element": {
+                    "kind": "ElementReference",
+                    "name": "panel-4"
+                  }
+                }
+              },
+              {
+                "kind": "GridLayoutItem",
+                "spec": {
+                  "x": 12,
+                  "y": 22,
+                  "width": 12,
+                  "height": 10,
+                  "element": {
+                    "kind": "ElementReference",
+                    "name": "panel-8"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "links": [],
+        "liveNow": false,
+        "preload": false,
+        "tags": [],
+        "timeSettings": {
+          "timezone": "browser",
+          "from": "2017-02-12T23:00:00.000Z",
+          "to": "now",
+          "autoRefresh": "",
+          "autoRefreshIntervals": [
+            "5s",
+            "10s",
+            "30s",
+            "1m",
+            "5m",
+            "15m",
+            "30m",
+            "1h",
+            "2h",
+            "1d"
+          ],
+          "hideTimepicker": false,
+          "fiscalYearStartMonth": 0
+        },
+        "title": "Top Damage Dealt",
+        "variables": []
+      }
+    }

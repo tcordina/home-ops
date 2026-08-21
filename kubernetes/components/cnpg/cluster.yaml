@@ -27,6 +27,22 @@ spec:
     #   recoveryTarget:
     #     targetTime: "2024-01-15T10:30:00Z"
 
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        # Backup Object Store (push, read-write)
+        barmanObjectName: "${APP}-postgres-backup"
+
+  externalClusters:
+    - name: origin
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          # Recovery Object Store (pull, read-only)
+          barmanObjectName: "${APP}-postgres-backup"
+          serverName: "${APP}-postgres"
+
   storage:
     storageClass: ${CNPG_DATA_STORAGE_CLASS:-openebs-lvm}
     size: ${CNPG_DATA_STORAGE_SIZE:-4Gi}
@@ -41,17 +57,3 @@ spec:
       memory: ${CNPG_MEMORY_REQUEST:-128Mi}
     limits:
       memory: ${CNPG_MEMORY_LIMIT:-512Mi}
-
-  plugins:
-    - name: barman-cloud.cloudnative-pg.io
-      isWALArchiver: true
-      parameters:
-        barmanObjectName: "${APP}-postgres-backup"
-
-  externalClusters:
-    - name: origin
-      plugin:
-        name: barman-cloud.cloudnative-pg.io
-        parameters:
-          barmanObjectName: "${APP}-postgres-backup"
-          serverName: "${APP}-postgres"

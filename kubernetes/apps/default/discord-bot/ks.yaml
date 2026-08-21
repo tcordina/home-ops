@@ -16,39 +16,27 @@ spec:
       app.kubernetes.io/name: *app
 
   path: ./kubernetes/apps/default/discord-bot/app
+  components:
+    - ../../../../components/cnpg/
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
 
-  dependsOn:
-    - name: discord-bot-postgres
-      namespace: flux-system
----
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: &app discord-bot-postgres
-  namespace: flux-system
-spec:
-  interval: 1h
-  retryInterval: 2m
-  timeout: 1h
-  prune: true
-  wait: true
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-
-  path: ./kubernetes/apps/default/discord-bot/db
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
+  postBuild:
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 10Gi
+      CNPG_DATA_STORAGE_SIZE: 4Gi
+      CNPG_CPU_REQUEST: 100m
+      CNPG_MEMORY_REQUEST: 128Mi
+      CNPG_MEMORY_LIMIT: 1Gi
 
   dependsOn:
-    - name: volsync
+    - name: cnpg
       namespace: flux-system
-    - name: postgres-operator
+    - name: cnpg-barman
       namespace: flux-system
+
+  decryption:
+    provider: sops

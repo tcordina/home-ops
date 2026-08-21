@@ -25,42 +25,54 @@ spec:
           app:
             image:
               repository: registry.gitlab.com/tcordina/discord-bot
-              tag: latest
-              digest: sha256:bd4b2d419a9a7b93bc4c95aff27750341d018e5f80df722ed0e32d3e2eb02f54 # @bot
+              tag: develop
+              # digest: sha256:bd4b2d419a9a7b93bc4c95aff27750341d018e5f80df722ed0e32d3e2eb02f54 # @bot
               pullPolicy: IfNotPresent
-            env: &env
+            env:
               - name: LOG_LEVEL
                 value: "INFO"
               - name: POSTGRES_HOST
                 valueFrom:
                   secretKeyRef:
-                    name: discord-bot-pguser-discord-bot
+                    name: ${APP}-postgres-app
                     key: host
               - name: POSTGRES_PORT
                 valueFrom:
                   secretKeyRef:
-                    name: discord-bot-pguser-discord-bot
+                    name: ${APP}-postgres-app
                     key: port
               - name: POSTGRES_USER
                 valueFrom:
                   secretKeyRef:
-                    name: discord-bot-pguser-discord-bot
+                    name: ${APP}-postgres-app
                     key: user
               - name: POSTGRES_PASSWORD
                 valueFrom:
                   secretKeyRef:
-                    name: discord-bot-pguser-discord-bot
+                    name: ${APP}-postgres-app
                     key: password
               - name: POSTGRES_DB
                 valueFrom:
                   secretKeyRef:
-                    name: discord-bot-pguser-discord-bot
+                    name: ${APP}-postgres-app
                     key: dbname
             envFrom:
               - secretRef:
                   name: discord-bot-secrets
               - secretRef:
                   name: default-auth-backblaze
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: ["/main", "--health"]
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 3
+              startup: *probes
             resources:
               requests:
                 cpu: 10m
@@ -70,19 +82,4 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-        initContainers:
-          migrations:
-            image:
-              repository: registry.gitlab.com/tcordina/discord-bot
-              tag: migrate-latest
-              digest: sha256:d7921daeb8889ac88e6c9e5c29e9ed25da228176268ab5cfae3b568507ccc890 # @migrate
-              pullPolicy: IfNotPresent
-            env: *env
-            envFrom:
-              - secretRef:
-                  name: discord-bot-secrets
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"] }
