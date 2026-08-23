@@ -45,7 +45,7 @@ spec:
     gatewayApi:
       enabled: true
       gatewayRef:
-        name: main-gateway
+        name: envoy-internal
         namespace: network
         sectionName: https
       hostnames:

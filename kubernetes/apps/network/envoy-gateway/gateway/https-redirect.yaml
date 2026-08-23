@@ -6,7 +6,7 @@ metadata:
   name: https-redirect
 spec:
   parentRefs:
-    - name: main-gateway
+    - name: envoy-internal
       namespace: network
       sectionName: http
     - name: envoy-external

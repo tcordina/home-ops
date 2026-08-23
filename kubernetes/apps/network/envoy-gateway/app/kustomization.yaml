@@ -5,6 +5,3 @@ kind: Kustomization
 resources:
   - ./oci-repo.yaml
   - ./helm-release.yaml
-  # - ./gateway-class.yaml
-  # - ./gateway.yaml
-  # - ./httproute-redirect.yaml

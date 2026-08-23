@@ -137,7 +137,7 @@ spec:
         enabled: true
         kind: HTTPRoute
         parentRefs:
-          - name: main-gateway
+          - name: envoy-internal
             namespace: network
             sectionName: https
         hostnames:
