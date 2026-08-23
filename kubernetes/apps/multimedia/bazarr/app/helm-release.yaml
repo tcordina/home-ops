@@ -44,19 +44,19 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /ping
+                    path: /api/system/ping
                     port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
-                  failureThreshold: 3
+                  failureThreshold: 6
               readiness: *probes
             resources:
               requests:
                 cpu: 10m
-                memory: 384Mi
+                memory: 512Mi
               limits:
-                memory: 384Mi
+                memory: 512Mi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
