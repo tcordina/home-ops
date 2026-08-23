@@ -12,5 +12,13 @@ spec:
     kind: OCIRepository
     name: envoy-gateway
   values:
-    deployment:
-      replicas: 1
+    config:
+      envoyGateway:
+        extensionApis:
+          enableBackend: true
+          enableLua: true
+        provider:
+          type: Kubernetes
+          kubernetes:
+            deploy:
+              type: GatewayNamespace

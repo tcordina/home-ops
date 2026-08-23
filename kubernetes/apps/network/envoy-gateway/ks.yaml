@@ -3,7 +3,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app envoy-gateway
+  name: envoy-gateway
   namespace: flux-system
 spec:
   interval: 1h
@@ -11,9 +11,6 @@ spec:
   timeout: 1h
   prune: true
   wait: true
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
 
   path: ./kubernetes/apps/network/envoy-gateway/app
   sourceRef:
@@ -24,3 +21,26 @@ spec:
   dependsOn: []
   # dependsOn:
   #   - name: certs
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: envoy-gateway-gateway
+  namespace: flux-system
+spec:
+  interval: 1h
+  retryInterval: 2m
+  timeout: 1h
+  prune: true
+  wait: true
+
+  path: "./kubernetes/apps/network/envoy-gateway/gateway"
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+
+  dependsOn:
+    - name: envoy-gateway
+      namespace: flux-system
