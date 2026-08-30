@@ -1,0 +1,50 @@
+---
+# doco-cd itself. This file lives on the host (e.g. /opt/doco-cd/), NOT in
+# the app repo — the controller cannot GitOps itself.
+#
+# Poll-only setup: no published ports, webhook/API endpoints stay disabled
+# (their secrets are unset), the host firewall stays closed.
+secrets:
+  bw_token:
+    file: /var/www/doco-cd/auth/bw_token.env
+  git_token:
+    file: /var/www/doco-cd/auth/git_token.env
+
+services:
+  app:
+    image: ghcr.io/kimdre/doco-cd:0.113.0@sha256:3ba0a834787f08ee0b6271c7d84c315bfa68e5026449d018bbabcd8b3c228bd4
+    container_name: doco-cd
+    restart: unless-stopped
+    environment:
+      DEPLOY_CONFIG_BASE_DIR: ./docker/vps/
+      GIT_ACCESS_TOKEN_FILE: /run/secrets/git_token
+      LOG_LEVEL: info
+      POLL_CONFIG: |-
+        - url: https://gitlab.com/tcordina/home-ops.git
+          reference: refs/heads/main
+          interval: 120
+      SECRET_PROVIDER: bitwarden_sm
+      SECRET_PROVIDER_API_URL: "https://vault.bitwarden.com/api"
+      SECRET_PROVIDER_IDENTITY_URL: "https://vault.bitwarden.com/identity"
+      SECRET_PROVIDER_ACCESS_TOKEN_FILE: /run/secrets/bw_token
+      TZ: Europe/Paris
+    healthcheck:
+      test: ["CMD", "/doco-cd", "healthcheck"]
+      start_period: 60s
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    secrets:
+      - bw_token
+      - git_token
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - data:/data
+
+volumes:
+  data: {}
+
+networks:
+  default:
+    name: edge
+    external: true

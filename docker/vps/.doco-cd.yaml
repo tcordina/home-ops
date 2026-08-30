@@ -1,0 +1,11 @@
+---
+working_dir: ./docker/vps
+reconciliation:
+  enabled: true
+auto_discovery:
+  enabled: true
+  depth: 1
+  delete: true
+force_recreate: false
+external_secrets:
+  VPS_IP: 261283ed-95e5-4397-9bba-b4b6007b31eb

@@ -2,6 +2,7 @@
 .zed
 
 .env
+*.env
 kubeconfig
 *.agekey
 *.drawio

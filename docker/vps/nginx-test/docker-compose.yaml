@@ -1,0 +1,8 @@
+---
+name: nginx-test
+
+services:
+  proxy:
+    image: nginx:alpine
+    ports:
+      - "${VPS_IP}:80:80"
