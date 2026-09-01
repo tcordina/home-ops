@@ -5,6 +5,8 @@
 # Poll-only setup: no published ports, webhook/API endpoints stay disabled
 # (their secrets are unset), the host firewall stays closed.
 secrets:
+  # api_secret:
+  #   file: /var/www/doco-cd/auth/api_secret.env
   bw_token:
     file: /var/www/doco-cd/auth/bw_token.env
   git_token:
@@ -12,10 +14,12 @@ secrets:
 
 services:
   app:
-    image: ghcr.io/kimdre/doco-cd:0.113.0@sha256:3ba0a834787f08ee0b6271c7d84c315bfa68e5026449d018bbabcd8b3c228bd4
+    # renovate: datasource=docker depName=ghcr.io/kimdre/doco-cd
+    image: ghcr.io/kimdre/doco-cd:0.114.0
     container_name: doco-cd
     restart: unless-stopped
     environment:
+      # API_SECRET_FILE: /run/secrets/api_secret
       DEPLOY_CONFIG_BASE_DIR: ./docker/vps/
       GIT_ACCESS_TOKEN_FILE: /run/secrets/git_token
       LOG_LEVEL: info
@@ -28,6 +32,9 @@ services:
       SECRET_PROVIDER_IDENTITY_URL: "https://vault.bitwarden.com/identity"
       SECRET_PROVIDER_ACCESS_TOKEN_FILE: /run/secrets/bw_token
       TZ: Europe/Paris
+    # ports:
+    #   - "8080:80"
+    #   - "9120:9120"
     healthcheck:
       test: ["CMD", "/doco-cd", "healthcheck"]
       start_period: 60s
@@ -35,6 +42,7 @@ services:
       timeout: 5s
       retries: 3
     secrets:
+      # - api_secret
       - bw_token
       - git_token
     volumes:

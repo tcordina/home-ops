@@ -1,0 +1,7 @@
+---
+name: custom/home-whitelist
+description: "Whitelist home ISP (Orange)"
+whitelist:
+  reason: "home ISP (Orange)"
+  expression:
+    - evt.Meta.ASNumber == "3215"

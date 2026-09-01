@@ -8,4 +8,5 @@ auto_discovery:
   delete: true
 force_recreate: false
 external_secrets:
+  ACME_EMAIL: a9943511-d2e5-496e-88a2-b4b600869d8e
   VPS_IP: 261283ed-95e5-4397-9bba-b4b6007b31eb
