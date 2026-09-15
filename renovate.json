@@ -95,11 +95,18 @@
       }
     },
     {
-      "description": "qBittorrent - filter outdated versions",
+      "description": "qBittorrent - filter out outdated versions",
       "matchDatasources": ["docker"],
       "matchPackageNames": ["linuxserver/qbittorrent"],
       "rangeStrategy": "bump",
       "allowedVersions": "!/^(14|18|20)\\./"
+    },
+    {
+      "description": "prompp - filter out bad tag",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["deckhouse/prompp"],
+      "rangeStrategy": "bump",
+      "allowedVersions": "!/^3.8.14/"
     },
     {
       "description": "k3s upgrade plan - isolated MR, no automerge",
