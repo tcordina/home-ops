@@ -109,14 +109,6 @@
       "allowedVersions": "!/^3.8.14/"
     },
     {
-      "description": "k3s upgrade plan - isolated MR, no automerge",
-      "matchDepNames": ["k3s-io/k3s"],
-      "matchDatasources": ["github-releases"],
-      "groupName": "k3s",
-      "automerge": false,
-      "labels": ["dependencies", "renovate", "kubernetes", "k3s"]
-    },
-    {
       "description": "Disable updates for unused apps",
       "matchFileNames": ["kubernetes/apps/unused/**"],
       "enabled": false
