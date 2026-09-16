@@ -3,15 +3,40 @@
 
 version: "3"
 
+env:
+  RENOVATE_CONFIG_FILE: "{{.ROOT_DIR}}/renovate.json"
+  # RENOVATE_TOKEN supplied by dotenv
+
 tasks:
   validate:
     desc: "Validate renovate.json configuration"
     cmds:
-      - npx --yes --package renovate@43 -- renovate-config-validator
+      - npx --yes --package renovate@44 -- renovate-config-validator
 
   dry-run:
-    desc: "Dry run renovate locally"
+    desc: "Dry run renovate against the remote repository using local renovate configuration"
+    requires:
+      vars:
+        - name: LOG_LEVEL
+          enum: [debug, info]
     env:
-      LOG_LEVEL: info
+      LOG_LEVEL: "{{.LOG_LEVEL}}"
     cmds:
-      - npx renovate@43 --platform=local --onboarding=false --dry-run=full --github-token-warn=false
+      - if: '{{ eq .LOG_LEVEL "debug" }}'
+        cmd: |
+          npx --yes --package renovate@44 -- renovate \
+            --onboarding=false \
+            --schedule="" \
+            --require-config=ignored \
+            --dry-run=full \
+            --platform=gitlab \
+            tcordina/home-ops | tee renovate.log
+      - if: '{{ eq .LOG_LEVEL "info" }}'
+        cmd: |
+          npx --yes --package renovate@44 -- renovate \
+            --onboarding=false \
+            --schedule="" \
+            --require-config=ignored \
+            --dry-run=full \
+            --platform=gitlab \
+            tcordina/home-ops

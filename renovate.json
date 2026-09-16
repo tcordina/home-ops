@@ -104,7 +104,7 @@
     {
       "description": "prompp - filter out bad tag",
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["deckhouse/prompp"],
+      "matchPackageNames": ["ghcr.io/deckhouse/prompp"],
       "rangeStrategy": "bump",
       "allowedVersions": "!/^3.8.14/"
     },
