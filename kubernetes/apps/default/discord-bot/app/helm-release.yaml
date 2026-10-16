@@ -25,8 +25,8 @@ spec:
           app:
             image:
               repository: registry.gitlab.com/tcordina/discord-bot
-              tag: develop
-              # digest: sha256:bd4b2d419a9a7b93bc4c95aff27750341d018e5f80df722ed0e32d3e2eb02f54 # @bot
+              tag: latest
+              digest: sha256:45b468199748f4e4043986df940cdd1402951800c130881bf4eb1f14f7c42885 # @bot
               pullPolicy: IfNotPresent
             env:
               - name: LOG_LEVEL
