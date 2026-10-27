@@ -3,7 +3,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app seer
+  name: &app seerr
   namespace: flux-system
 spec:
   interval: 1h
@@ -15,7 +15,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
 
-  path: ./kubernetes/apps/multimedia/seer/app
+  path: ./kubernetes/apps/multimedia/seerr/app
   components:
     - ../../../../components/volsync/
   sourceRef:
