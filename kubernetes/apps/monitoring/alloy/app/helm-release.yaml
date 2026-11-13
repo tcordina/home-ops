@@ -28,7 +28,7 @@ spec:
     image:
       registry: docker.io
       repository: grafana/alloy
-      tag: v1.21.3
+      tag: v1.22.0
 
     controller:
       type: daemonset
