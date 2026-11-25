@@ -17,3 +17,4 @@ data:
   NFS_IP: 192.168.1.30
   NFS_VOLUMES_PATH: /mnt/main/k8s-volumes
   NFS_MOVIES_PATH: /mnt/main/movies-library
+  NFS_MUSIC_PATH: /mnt/main/music-library
