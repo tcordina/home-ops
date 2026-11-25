@@ -10,6 +10,7 @@ resources:
   - ./bazarr/ks.yaml
   - ./immich/ks.yaml
   - ./jellyfin/ks.yaml
+  - ./lidarr/ks.yaml
   - ./navidrome/ks.yaml
   - ./prowlarr/ks.yaml
   - ./qbittorrent/ks.yaml

@@ -1,0 +1,102 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: lidarr
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: default
+  interval: 1h
+  timeout: 1h
+  values:
+    controllers:
+      lidarr:
+        pod:
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
+        containers:
+          app:
+            image:
+              repository: ghcr.io/home-operations/lidarr
+              tag: 3.2.1@sha256:ecbcc0dc629576ccba4af6d54de2fd0ac83b175f3c4fccf3024c44a2d01dbc7f
+            env:
+              lidarr__APP__INSTANCENAME: lidarr
+              lidarr__AUTH__METHOD: External
+              lidarr__AUTH__REQUIRED: DisabledForLocalAddresses
+              lidarr__LOG__DBENABLED: "False"
+              lidarr__LOG__LEVEL: info
+              lidarr__SERVER__PORT: &port 6767
+              lidarr__UPDATE__BRANCH: develop
+              TZ: ${TIMEZONE}
+            envFrom:
+              - secretRef:
+                  name: lidarr-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 6
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 10m
+                memory: 512Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+
+    route:
+      lidarr:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+        hostnames:
+          - lidarr.${DOMAIN}
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+
+    persistence:
+      config:
+        existingClaim: ${APP}
+        globalMounts:
+          - path: /config
+      media:
+        type: nfs
+        server: ${NFS_IP}
+        path: ${NFS_MUSIC_PATH}
+        globalMounts:
+          - path: /data/nas-media
+            readOnly: false
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+            subPath: tmp
