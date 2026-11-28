@@ -21,7 +21,7 @@ spec:
         image:
           registry: ghcr.io
           repository: deckhouse/prompp
-          tag: 0.8.19
+          tag: 0.8.20
         # additionalArgs:
         #   - name: log.level
         #     value: debug

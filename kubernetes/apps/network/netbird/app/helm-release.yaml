@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: netbirdio/netbird
-              tag: 0.83.2-rootless@sha256:23acf9191db22ba009e336496806381fa2311649609982d72cb722e5e97c3a43
+              tag: 0.84.0-rootless@sha256:a66da30af14a9a72b484c58fcff8a02422f2f1bcfc22fcefa555fcee7f135cda
             env:
               NB_HOSTNAME: cluster
               NB_LOG_LEVEL: info
